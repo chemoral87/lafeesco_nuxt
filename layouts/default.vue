@@ -60,9 +60,9 @@
       </v-btn> -->
     </v-app-bar>
     <v-main>
-      <v-container>
-        <Nuxt />
-      </v-container>
+
+      <Nuxt />
+
     </v-main>
     <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
       <v-list>
@@ -98,12 +98,12 @@ export default {
         {
           icon: 'mdi-message-text-lock',
           title: 'Aviso de privacidad',
-          to: '/privacy_notice'
+          to: '/aviso-privacidad'
         },
         {
           icon: 'mdi-account-voice',
           title: 'Contacto',
-          to: '/contact'
+          to: '/contacto'
         }
       ],
       miniVariant: false,
