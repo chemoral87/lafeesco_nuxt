@@ -24,8 +24,8 @@ export default {
   plugins: [
     "./plugins/mixins/user.js",
     "./plugins/mixins/validation.js",
-    "./plugins/axios.js",
-    { src: "./plugins/vue-html-to-paper.js", mode: "client" }
+    "./plugins/axios.js"
+    // { src: "./plugins/vue-html-to-paper.js", mode: "client" }
     // { src: "@/plugins/vue-html2pdf.js", mode: "client" }
   ],
 
@@ -48,8 +48,45 @@ export default {
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {},
-
+  axios: {
+    baseURL: "http://127.0.0.1:8000/api"
+  },
+  auth: {
+    strategies: {
+      // local: {
+      //   endpoints: {
+      //     login: {
+      //       url: "login",
+      //       method: "post",
+      //       propertyName: "meta.access_token"
+      //     },
+      //     user: { url: "user", method: "get", propertyName: "data" },
+      //     logout: { url: "logout", method: "post" }
+      //   }
+      // },
+      laravelJWT: {
+        url: "/",
+        endpoints: {
+          login: {
+            url: "auth/login",
+            method: "post"
+          },
+          refresh: {
+            url: "auth/refresh",
+            method: "post"
+          },
+          logout: {
+            url: "auth/logout",
+            method: "post"
+          },
+          user: {
+            url: "auth/user",
+            method: "post"
+          }
+        }
+      }
+    }
+  },
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
     manifest: {

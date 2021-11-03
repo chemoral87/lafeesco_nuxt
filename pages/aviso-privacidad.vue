@@ -22,9 +22,10 @@
       </h3>
       <p class="text-justify">
         <strong> RAUL OSWALDO CARRILLO GONZALEZ Y/O GRUPO RC MEXICO</strong> con domicilio en Calle 31 Numero 106 Colonia Centro, Chihuahua, Chih., Mexico, C.P. 31000 es responsable del resguardo y confidencialidad de la información que le es proporcionada, es por ello que GRUPO RC MEXICO informará al usuario qué tipo de datos recolecta, cómo los almacena, la finalidad del archivo, cómo los protege, el alcance de su compromiso de confidencialidad y los derechos que éste posee como titular de la información, conforme a lo establecido por la Ley de Protección de Datos Personales en Posesión de los Particulares. La presente declaración de privacidad es aplicable a todos los titulares de datos personales.
-        <strong> TIPO DE INFORMACION</strong>
+
       </p>
       <p class="text-justify">
+        <strong> TIPO DE INFORMACION</strong><br>
         GRUPO RC MEXICO recabará los siguientes datos: nombre, domicilio, fecha y país de nacimiento, nacionalidad, ocupación, profesión, actividad o giro del negocio al que se dedique, números telefónicos, Clave única de Registro de Población, clave del Registro Federal de Contribuyentes, en su caso el formato FM3, sexo, edad, estado civil, correo electrónico, datos familiares, datos escolares, hábitos personales, datos laborales e información financiera, enfocados a datos estadísticos para la contratación.
       </p>
       <p class="text-justify">
