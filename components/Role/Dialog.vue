@@ -9,7 +9,7 @@
       <v-card-text>
         <v-row dense>
           <v-col cols="12">
-            <v-text-field v-model="item.name" label="Nombre" :error-messages="errors.name"></v-text-field>
+            <v-text-field @keyup.enter="save" v-model="item.name" label="Nombre" :error-messages="errors.name"></v-text-field>
           </v-col>
         </v-row>
       </v-card-text>

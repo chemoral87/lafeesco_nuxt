@@ -43,7 +43,7 @@ export default {
   methods: {
     async getRoles() {
       let op = Object.assign({}, this.options);
-      this.response = await this.$roleRepository.index(op);
+      this.response = await this.$repository.Role.index(op);
     },
     sorting(options) {
       this.options = options;
@@ -63,25 +63,26 @@ export default {
     },
     async deleteRole(item) {
       console.log("deleteRole", item);
-      await this.$roleRepository.delete(item.id, item);
+      await this.$repository.Role.delete(item.id, item);
       this.getRoles();
       this.roleDialogDelete = false;
     },
     async saveRole(item) {
       let me = this;
       if (item.id) {
-        await this.$roleRepository.update(item.id, item)
-          .then(res => {
-
-          })
-          .catch(err => { });;
-      } else {
-        await this.$roleRepository.create(item)
+        await this.$repository.Role.update(item.id, item)
           .then(res => {
             me.getRoles();
             me.roleDialog = false;
           })
-          .catch(err => { });
+          .catch(e => { });
+      } else {
+        await this.$repository.Role.create(item)
+          .then(res => {
+            me.getRoles();
+            me.roleDialog = false;
+          })
+          .catch(e => { });
       }
     },
     closeDialog() {
@@ -99,18 +100,14 @@ export default {
 
   },
   async asyncData({ $axios, app }) {
-    try {
-      let op = {
-        sortBy: ["name"],
-        sortDesc: [false]
-      };
-      // const res = await $axios.$get('/roles', { params: op });
-      const res = await app.$roleRepository.index(op);
-      // console.log(app.$roleRepository.index(op))
-      return { response: res, options: op };
-    } catch (e) {
-      console.log(e);
-    }
+    let op = {
+      sortBy: ["name"],
+      sortDesc: [false]
+    };
+    //NOTE Repository https://medium.com/js-dojo/consuming-apis-in-nuxt-using-the-repository-pattern-8a13ea57d520
+    const res = await app.$repository.Role.index(op)
+      .catch(e => { });
+    return { response: res, options: op };
   }
 }
 </script>
