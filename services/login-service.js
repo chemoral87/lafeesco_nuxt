@@ -1,4 +1,2 @@
-export default LoginService(){
-
-  
+export default class LoginService { 
 }

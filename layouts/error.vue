@@ -1,15 +1,38 @@
 <template>
-  <v-app dark>
-    <h1 v-if="error.statusCode === 404">
-      {{ pageNotFound }}
-    </h1>
-    <h1 v-else>
-      {{ otherError }}
-    </h1>
-    <NuxtLink to="/">
-      Home page
-    </NuxtLink>
-  </v-app>
+  <v-container style="max-width:800px">
+
+    <v-card>
+      <v-card-title class="text-h4">
+        <v-icon color="orange" size="70">mdi-alert</v-icon> Ocurrió un problema
+      </v-card-title>
+      <v-card-text>
+        <div class="text-h6 text--primary">
+          {{errorMessage}}
+          <br>
+          <br>
+
+        </div>
+
+        <div class="text-h6 text--primary mt-12">
+          Presione el botón para continuar.
+        </div>
+      </v-card-text>
+      <v-card-actions>
+        <NuxtLink v-if="!authenticated" to="/">
+          <v-btn color="primary">
+            Ir al Inicio
+          </v-btn>
+        </NuxtLink>
+        <NuxtLink v-if="authenticated" to="/dashboard">
+          <v-btn color="primary">
+            Ir al Dashboard
+          </v-btn>
+        </NuxtLink>
+      </v-card-actions>
+
+    </v-card>
+
+  </v-container>
 </template>
 
 <script>
@@ -21,15 +44,23 @@ export default {
       default: null
     }
   },
-  data () {
+  data() {
     return {
       pageNotFound: '404 Not Found',
       otherError: 'An error occurred'
     }
   },
-  head () {
+  computed: {
+    errorMessage() {
+      if (this.error.statusCode == 403) {
+        return "No tiene los suficientes permisos para ver esta página, verifique con el administrador del sistema.";
+      }
+      return "Ocurrio un error inesperado."
+    }
+  },
+  head() {
     const title =
-      this.error.statusCode === 404 ? this.pageNotFound : this.otherError
+      this.error.statusCode === 404 ? this.pageNotFound : this.error.message
     return {
       title
     }

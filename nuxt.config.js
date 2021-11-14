@@ -6,8 +6,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: "%s - rc_desarrolladora_frontend",
-    title: "rc_desarrolladora_frontend",
+    titleTemplate: "%s",
+    title: "RC Desarrolladora",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -24,7 +24,8 @@ export default {
   plugins: [
     "./plugins/mixins/user.js",
     "./plugins/mixins/validation.js",
-    "./plugins/axios.js"
+    "./plugins/axios.js",
+    "./plugins/repository.js"
     // { src: "./plugins/vue-html-to-paper.js", mode: "client" }
     // { src: "@/plugins/vue-html2pdf.js", mode: "client" }
   ],
