@@ -1,21 +1,27 @@
-export default function({ $axios, store, redirect }) {
-  $axios.onError(error => {
-    console.log("axios error");
+export default function(context) {
+  // export default function({ $axios, store, redirect }) {
+  context.$axios.onError(error => {
     if (error.message == "Network Error") {
       alert("Error de Red, verifique su conexión a internet");
     }
 
     if (error.response)
       if (error.response.status === 422) {
-        store.dispatch("validation/setErrors", error.response.data.errors);
+        context.store.dispatch(
+          "validation/setErrors",
+          error.response.data.errors
+        );
         // return redirect('/login')
       }
 
     return Promise.reject(error);
   });
 
-  $axios.onRequest(() => {
-    console.log("axios clear error");
-    store.dispatch("validation/clearErrors");
+  context.$axios.onRequest(() => {
+    context.store.dispatch("validation/clearErrors");
+  });
+
+  context.$axios.onResponse(res => {
+    if (res.data) context.store.dispatch("notify", res.data);
   });
 }

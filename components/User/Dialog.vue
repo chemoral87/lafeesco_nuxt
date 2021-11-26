@@ -29,7 +29,7 @@
 
 <script>
 export default {
-  props: ["value", "permission"],
+  props: ["value", "userx"],
   data() {
     return {
       item: {},
@@ -45,9 +45,9 @@ export default {
     },
     formTitle() {
       if (this.item.id) {
-        return "Editar Permiso";
+        return "Editar Rol";
       } else {
-        return "Nuevo Permiso";
+        return "Nuevo Rol";
       }
     }
   },
@@ -60,8 +60,9 @@ export default {
     }
   },
   mounted() {
-    if (this.permission) {
-      this.item = this.permission;
+
+    if (this.role) {
+      this.item = this.role;
     }
   }
 }

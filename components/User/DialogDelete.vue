@@ -2,25 +2,22 @@
   <v-dialog :value="true" persistent width="400px">
     <v-card>
       <v-card-title>
-        <v-icon class="mr-2">{{iconTitle}}</v-icon>
+        <v-icon class="mr-2">mdi-alert</v-icon>
         <span class="text-h5">{{ formTitle }}</span>
       </v-card-title>
 
       <v-card-text>
-        <v-row dense>
-          <v-col cols="12">
-            <v-text-field @keyup.enter="save" v-model="item.name" label="Nombre" :error-messages="errors.name"></v-text-field>
-          </v-col>
-        </v-row>
+        <div class="text-body-1 text--primary">Esta seguro de elminar el PermissionTable
+          <strong>{{item.name}}</strong> ?
+        </div>
       </v-card-text>
-
       <v-card-actions>
         <v-spacer />
         <v-btn color="grey" outlined @click.native="close">
-          Cancelar
+          NO
         </v-btn>
-        <v-btn color="primary" @click.native="save">
-          Guardar
+        <v-btn color="primary" @click.native="ok">
+          SI
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -32,31 +29,21 @@ export default {
   props: ["value", "permission"],
   data() {
     return {
-      item: {},
+      item: {}
     };
   },
   computed: {
-    iconTitle() {
-      if (this.item.id) {
-        return "mdi-pencil";
-      } else {
-        return "mdi-plus";
-      }
-    },
     formTitle() {
-      if (this.item.id) {
-        return "Editar Permiso";
-      } else {
-        return "Nuevo Permiso";
-      }
+      return "Confirmación";
+      // return `Esta seguro de elminar el Rol ${this.item.name} ?`;
     }
   },
   methods: {
     close() {
       this.$emit("close");
     },
-    save() {
-      this.$emit("save", this.item);
+    ok() {
+      this.$emit("ok", this.item);
     }
   },
   mounted() {

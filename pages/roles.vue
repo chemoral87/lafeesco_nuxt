@@ -8,6 +8,7 @@
         </h1>
       </v-col>
       <v-col cols="12">
+        <v-divider></v-divider>
         <v-btn @click="newRole()" color="primary">
           <v-icon class="mr-1">mdi-plus</v-icon> Nuevo
         </v-btn>
@@ -17,7 +18,7 @@
       </v-col>
       <v-col cols="12">
         <client-only>
-          <RoleTable @sorting="sorting" :options="options" :response="response" @edit="editRole" @delete="beforeDeleteRole"></RoleTable>
+          <RoleTable @sorting="getRoles" :options="options" :response="response" @edit="editRole" @delete="beforeDeleteRole"></RoleTable>
         </client-only>
       </v-col>
     </v-row>
@@ -28,6 +29,12 @@
 <script>
 
 export default {
+  validate({ store, error }) {
+    if (store.getters.permissions.includes('role-index'))
+      return true;
+    else
+      throw error({ statusCode: 403 });
+  },
   data() {
     return {
       role: {},
@@ -39,16 +46,16 @@ export default {
       roleDialogDelete: false
     };
   },
-
   methods: {
-    async getRoles() {
+    async getRoles(options) {
+      if (options) { this.options = options; }
       let op = Object.assign({}, this.options);
       this.response = await this.$repository.Role.index(op);
     },
-    sorting(options) {
-      this.options = options;
-      this.getRoles();
-    },
+    // sorting(options) {
+    //   this.options = options;
+    //   this.getRoles();
+    // },
     newRole() {
       this.role = {};
       this.roleDialog = true;
@@ -62,10 +69,12 @@ export default {
       this.role = Object.assign({}, item);
     },
     async deleteRole(item) {
-      console.log("deleteRole", item);
-      await this.$repository.Role.delete(item.id, item);
-      this.getRoles();
-      this.roleDialogDelete = false;
+      await this.$repository.Role.delete(item.id, item)
+        .then(res => {
+          this.getRoles();
+          this.roleDialogDelete = false;
+        })
+        .catch(e => { });
     },
     async saveRole(item) {
       let me = this;
@@ -91,14 +100,7 @@ export default {
       // this.$store.dispatch("validation/clearErrors");
     }
   },
-  validate({ store, error }) {
-    if (store.getters.permissions.includes('roles-index')) {
-      return true;
-    } else {
-      throw error({ statusCode: 403 });
-    }
 
-  },
   async asyncData({ $axios, app }) {
     let op = {
       sortBy: ["name"],

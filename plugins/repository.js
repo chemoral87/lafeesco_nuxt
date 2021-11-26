@@ -1,7 +1,7 @@
 // https://codesandbox.io/s/github/manniL/nuxt-decouple-and-organize-api-calls?file=/plugins/repository.js:0-446
 // https://blog.lichter.io/posts/nuxt-api-call-organization-and-decoupling/
 // import createRepository from "@/api/repository";
-import factoryRepository from "@/repositories/Repository";
+import factoryRepository from "@/repositories/FactoryRepository";
 export default (ctx, inject) => {
   // inject the repository in the context (ctx.app.$repository)
   // And in the Vue instances (this.$repository in your components)

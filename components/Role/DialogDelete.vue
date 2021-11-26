@@ -7,13 +7,13 @@
       </v-card-title>
 
       <v-card-text>
-        <div class="text-body-1 text--primary">Esta seguro de elminar el Rol
+        <div class="text-body-1 text--primary">Esta seguro de elminar el PermissionTable
           <strong>{{item.name}}</strong> ?
         </div>
       </v-card-text>
 
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <v-spacer />
 
         <v-btn color="grey" outlined @click.native="close">
           NO
@@ -28,7 +28,7 @@
 
 <script>
 export default {
-  props: ["value", "role"],
+  props: ["value", "permission"],
   data() {
     return {
       item: {}
@@ -45,13 +45,12 @@ export default {
       this.$emit("close");
     },
     ok() {
-
       this.$emit("ok", this.item);
     }
   },
   mounted() {
-    if (this.role) {
-      this.item = this.role;
+    if (this.permission) {
+      this.item = this.permission;
     }
   }
 }

@@ -13,6 +13,13 @@ const validation = {
         clearErrors: function() {
           // metodo global para limpiar errorres
           this.$store.dispatch("validation/clearErrors");
+        },
+        validatePermission: function(permission) {
+          if (this.$store.getters.permissions.includes(permission)) {
+            return true;
+          } else {
+            throw error({ statusCode: 403 });
+          }
         }
       }
     });

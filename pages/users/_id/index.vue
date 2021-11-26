@@ -1,0 +1,89 @@
+<template>
+  <v-container>
+    <v-row dense>
+      <v-col cols="12">
+        <h1 class="text-h5">
+          <v-btn @click="$router.push('/users')" class="white--text mr-2" fab small color="red">
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+          <v-icon class="mr-1">mdi-account</v-icon>
+          Usuarios {{ mUser.name }} {{ mUser.last_name }}
+        </h1>
+      </v-col>
+      <v-col cols="12">
+        <RoleCombobox :roles="mUser.roles" @modelChange="setRoles"></RoleCombobox>
+      </v-col>
+      <v-col cols="12">
+        <PermissionCombobox :direct_permissions="mUser.direct_permissions" @modelChange="setDirectPermissions"></PermissionCombobox>
+      </v-col>
+      <v-col cols="12">
+        <v-btn @click="saveUser()" color="primary">
+          Guardar
+        </v-btn>
+      </v-col>
+      <!-- <v-col cols="12">
+        <table>
+          <tr>
+            <th>Rol</th>
+          </tr>
+          <tr v-for="role in mUser.roles" :key="role.id">
+            <td> {{ role.name }} </td>
+          </tr>
+        </table>
+      </v-col> -->
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      mUser: {}
+    };
+  },
+  computed: {
+    user_id() {
+      return this.$route.params.id;
+    }
+  },
+  methods: {
+    setRoles(roles) {
+      this.mUser.roles = roles;
+    },
+    setDirectPermissions(permissions) {
+      this.mUser.direct_permissions = permissions;
+    },
+    async saveUser() {
+      // let role_names = [];
+      // this.mUser.roles.forEach(ele => {
+      //   role_names.push(ele.id);
+      // });
+      let role_ids = this.mUser.roles.map(x => x.id);
+      let permissions_ids = this.mUser.direct_permissions.map(x => x.id);
+      let params = {
+        role_ids: role_ids,
+        permissions_ids: permissions_ids
+      };
+      await this.$repository.User.update(this.mUser.id, params)
+        .then(res => {
+          this.$router.push('/users');
+        });
+    }
+  },
+  validate({ store, error }) {
+    if (store.getters.permissions.includes('user-update'))
+      return true;
+    else
+      throw error({ statusCode: 403 });
+  },
+  async asyncData({ $axios, app, params }) {
+    const res = await app.$repository.User.show(params.id)
+      .catch(e => { });
+    return { mUser: res };
+  }
+}
+</script>
+
+<style>
+</style>

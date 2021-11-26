@@ -64,8 +64,8 @@
                 - {{ housing.name }}
               </template>
             </v-list-item-title>
-          </v-list-item> -->
-          <v-divider></v-divider>
+          </v-list-item> 
+          <v-divider></v-divider> -->
           <v-list-item @click="logout()">
             <v-list-item-content>
               <v-list-item-title>
@@ -81,6 +81,16 @@
     <v-main>
       <Nuxt />
     </v-main>
+    <div class="snackbar-wrapper">
+      <v-snackbar absolute :color="snackbar.color" v-model="snackbar_display" shaped multi-line right bottom :timeout="3800">
+        <span class="text-subtitle-1 font-weight-bold">{{ snackbar.text }}</span>
+        <template v-slot:action="{ attrs }">
+          <v-btn color="grey" v-bind="attrs" fab small @click="closeSnackbar">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </div>
     <!-- <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
       <v-list>
         <v-list-item @click.native="right = !right">
@@ -119,12 +129,18 @@ export default {
       rightDrawer: false,
       menu: false,
       title: 'RC DESARROLLADORA'
-    }
+    };
   },
   computed: {
+    snackbar_display: {
+      get() {
+        return this.snackbar.display;
+      }, set() {
+        this.$store.dispatch("closeNotify");
+      }
+    },
     items() {
       let menu = [];
-
       if (this.authenticated) { // logged
         menu.unshift({
           icon: 'mdi-view-dashboard',
@@ -146,7 +162,7 @@ export default {
             title: 'Permisos',
             to: '/permissions'
           }
-        )
+        );
       } else {
         menu.push(
           {
@@ -173,18 +189,30 @@ export default {
       this.drawer = false;
     },
     gotoLogin() {
-      this.$router.push('/login')
+      this.$router.push('/login');
     },
     gotoHome() {
-      this.$router.push('/')
+      this.$router.push('/');
     },
     logout() {
       this.menu = false;
       this.$auth.logout();
+    },
+    closeSnackbar() {
+      this.$store.dispatch("closeNotify");
     }
   }
 }
 </script>
 <style>
+.snackbar-wrapper {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
 </style>
 

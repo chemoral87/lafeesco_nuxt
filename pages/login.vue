@@ -28,12 +28,11 @@ export default {
       email: '',
       password: '',
       showned: false, // mostrar password
-    }
+    };
   },
   methods: {
     async submitLogin() {
       try {
-        console.log('login');
 
         let credentials = {
           email: this.email,
@@ -41,7 +40,6 @@ export default {
         };
 
         await this.$auth.loginWith("laravelJWT", { data: credentials });
-        console.log('redirect');
         this.$router.push({
           path: this.$route.query.redirect || "/dashboard"
         });

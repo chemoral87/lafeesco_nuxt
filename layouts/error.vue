@@ -10,9 +10,7 @@
           {{errorMessage}}
           <br>
           <br>
-
         </div>
-
         <div class="text-h6 text--primary mt-12">
           Presione el botón para continuar.
         </div>
@@ -48,22 +46,22 @@ export default {
     return {
       pageNotFound: '404 Not Found',
       otherError: 'An error occurred'
-    }
+    };
   },
   computed: {
     errorMessage() {
       if (this.error.statusCode == 403) {
         return "No tiene los suficientes permisos para ver esta página, verifique con el administrador del sistema.";
       }
-      return "Ocurrio un error inesperado."
+      return "Ocurrio un error inesperado.";
     }
   },
   head() {
     const title =
-      this.error.statusCode === 404 ? this.pageNotFound : this.error.message
+      this.error.statusCode === 404 ? this.pageNotFound : this.error.message;
     return {
       title
-    }
+    };
   }
 }
 </script>

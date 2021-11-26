@@ -15,8 +15,7 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-spacer></v-spacer>
-
+        <v-spacer />
         <v-btn color="grey" outlined @click.native="close">
           Cancelar
         </v-btn>

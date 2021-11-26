@@ -2,18 +2,25 @@
   <div>
     <v-data-table mobile-breakpoint="0" :must-sort="true" :headers="headers" :items="items" :options.sync="optionsTable" :server-items-length="total" class="elevation-1">
       <!-- https://stackoverflow.com/questions/61344980/v-slot-directive-doesnt-support-any-modifier -->
-      <template v-slot:[`item.permissions`]="{ item }">
-        <v-chip v-for="it in item.permissions" :key="it.id" class="ma-2" color="primary">
+      <template v-slot:[`item.roles`]="{ item }">
+        <v-chip v-for="it in item.roles" :key="it.id" class="ma-2" color="primary">
           {{it.name}}
         </v-chip>
       </template>
+      <template v-slot:[`item.direct_permissions`]="{ item }">
+        <v-chip v-for="it in item.permissions" :key="it.id" class="ma-2" color="info">
+          {{it.name}}
+        </v-chip>
+
+      </template>
+
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn color="primary" fab small @click="editItem(item)">
+        <v-btn title="Editar" color="primary" fab small @click="editItem(item)">
           <v-icon>
             mdi-pencil
           </v-icon>
         </v-btn>
-        <v-btn color="error" fab small @click="deleteItem(item)">
+        <v-btn title="Eliminar" color="error" fab small @click="deleteItem(item)">
           <v-icon>
             mdi-delete
           </v-icon>
@@ -30,8 +37,12 @@ export default {
       optionsTable: {},
       headers: [
         { text: 'Nombre', align: 'start', value: 'name' },
-        { text: "Permisos", value: "permissions", sortable: false },
-        { text: 'Acciones', value: 'actions', sortable: false },
+        { text: 'Ap. Paterno', value: 'last_name' },
+        { text: 'Ap. Materno', value: 'second_last_name' },
+        { text: 'E-Mail', value: 'email' },
+        { text: 'Roles', value: 'roles' },
+        { text: 'D. Permisos', value: 'direct_permissions' },
+        { text: 'Acciones', value: 'actions', sortable: false, },
       ],
     };
   },
