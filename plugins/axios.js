@@ -2,7 +2,8 @@ export default function(context) {
   // export default function({ $axios, store, redirect }) {
   context.$axios.onError(error => {
     if (error.message == "Network Error") {
-      alert("Error de Red, verifique su conexión a internet");
+      alert("Error de Red, verifique su conexión a internet. Code1");
+      alert(error.response);
     }
 
     if (error.response)

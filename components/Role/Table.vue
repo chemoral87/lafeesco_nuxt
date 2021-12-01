@@ -8,12 +8,17 @@
         </v-chip>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn color="primary" fab small @click="editItem(item)">
+        <v-btn title="Permisos" class="ma-1" color="primary" fab small @click="editRole(item)">
           <v-icon>
             mdi-pencil
           </v-icon>
         </v-btn>
-        <v-btn color="error" fab small @click="deleteItem(item)">
+        <v-btn title="Editar" class="ma-1" color="success" fab small @click="editPermissions(item)">
+          <v-icon>
+            mdi-key
+          </v-icon>
+        </v-btn>
+        <v-btn title="Eliminar" class="ma-1" color="error" fab small @click="deleteRole(item)">
           <v-icon>
             mdi-delete
           </v-icon>
@@ -31,7 +36,7 @@ export default {
       headers: [
         { text: 'Nombre', align: 'start', value: 'name' },
         { text: "Permisos", value: "permissions", sortable: false },
-        { text: 'Acciones', value: 'actions', sortable: false },
+        { text: 'Acciones', value: 'actions', sortable: false, width: "200px" },
       ],
     };
   },
@@ -48,10 +53,13 @@ export default {
     }
   },
   methods: {
-    editItem(item) {
+    editRole(item) {
       this.$emit("edit", item);
     },
-    deleteItem(item) {
+    editPermissions(item) {
+      this.$emit("editPermissions", item);
+    },
+    deleteRole(item) {
       this.$emit("delete", item);
     }
   },

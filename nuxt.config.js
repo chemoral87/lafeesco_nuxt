@@ -1,4 +1,5 @@
 import colors from "vuetify/es5/util/colors";
+require("dotenv").config();
 
 export default {
   // Target: https://go.nuxtjs.dev/config-target
@@ -14,7 +15,7 @@ export default {
       { hid: "description", name: "description", content: "" },
       { name: "format-detection", content: "telephone=no" }
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [{ rel: "icon", type: "image/png", href: "/favicon.png" }]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -45,12 +46,13 @@ export default {
     "@nuxtjs/axios",
     "@nuxtjs/auth-next",
     // https://go.nuxtjs.dev/pwa
-    "@nuxtjs/pwa"
+    "@nuxtjs/pwa",
+    "@nuxtjs/dotenv"
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL: "http://127.0.0.1:8000/api"
+    baseURL: process.env.BASE_URL
   },
   auth: {
     strategies: {
@@ -92,6 +94,9 @@ export default {
   pwa: {
     manifest: {
       lang: "en"
+    },
+    icon: {
+      fileName: "favicon.png"
     }
   },
 
@@ -111,7 +116,7 @@ export default {
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
-          success: colors.green.accent3
+          success: colors.green
         },
         dark: {
           // banner: colors.blue.darken2,
