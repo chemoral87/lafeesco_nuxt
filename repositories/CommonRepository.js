@@ -23,6 +23,11 @@ export default $axios => resource => ({
     return $axios.$put(`${resource}/${id}`, payload);
   },
 
+  // belongsToMany
+  children(id, payload) {
+    return $axios.$put(`${resource}/${id}/children`, payload);
+  },
+
   delete(id) {
     return $axios.$delete(`${resource}/${id}`);
   }

@@ -4,6 +4,8 @@
       <v-card-title>
         <v-icon class="mr-2">{{iconTitle}}</v-icon>
         <span class="text-h5">{{ formTitle }}</span>
+        <v-spacer></v-spacer>
+        <v-icon @click.native="close">$delete</v-icon>
       </v-card-title>
 
       <v-card-text>

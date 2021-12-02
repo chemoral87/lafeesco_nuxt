@@ -15,12 +15,17 @@
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn title="Editar" color="primary" fab small @click="editItem(item)">
+        <v-btn title="Editar" class="ma-1" color="primary" fab small @click="edit(item)">
           <v-icon>
             mdi-pencil
           </v-icon>
         </v-btn>
-        <v-btn title="Eliminar" color="error" fab small @click="deleteItem(item)">
+        <v-btn title="Roles y Permisos" class="ma-1" color="success" fab small @click="editRoles(item)">
+          <v-icon>
+            mdi-redhat
+          </v-icon>
+        </v-btn>
+        <v-btn title="Eliminar" class="ma-1" color="error" fab small @click="deleteItem(item)">
           <v-icon>
             mdi-delete
           </v-icon>
@@ -42,7 +47,7 @@ export default {
         { text: 'E-Mail', value: 'email' },
         { text: 'Roles', value: 'roles' },
         { text: 'Permisos Directos', value: 'direct_permissions' },
-        { text: 'Acciones', value: 'actions', sortable: false, },
+        { text: 'Acciones', value: 'actions', width: "200px", sortable: false, },
       ],
     };
   },
@@ -59,7 +64,10 @@ export default {
     }
   },
   methods: {
-    editItem(item) {
+    editRoles(item) {
+      this.$emit("editRoles", item);
+    },
+    edit(item) {
       this.$emit("edit", item);
     },
     deleteItem(item) {

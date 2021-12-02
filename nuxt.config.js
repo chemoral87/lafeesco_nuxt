@@ -116,7 +116,8 @@ export default {
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
-          success: colors.green
+          success: colors.green,
+          return: colors.red
         },
         dark: {
           // banner: colors.blue.darken2,

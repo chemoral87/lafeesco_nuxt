@@ -4,12 +4,23 @@
       <v-card-title>
         <v-icon class="mr-2">{{iconTitle}}</v-icon>
         <span class="text-h5">{{ formTitle }}</span>
+        <v-spacer></v-spacer>
+        <v-icon @click.native="close">$delete</v-icon>
       </v-card-title>
 
       <v-card-text>
         <v-row dense>
           <v-col cols="12">
             <v-text-field @keyup.enter="save" v-model="item.name" label="Nombre" :error-messages="errors.name"></v-text-field>
+          </v-col>
+          <v-col cols="12">
+            <v-text-field @keyup.enter="save" v-model="item.last_name" label="Ap. Paterno" :error-messages="errors.last_name"></v-text-field>
+          </v-col>
+          <v-col cols="12">
+            <v-text-field @keyup.enter="save" v-model="item.second_last_name" label="Ap. materno" :error-messages="errors.second_last_name"></v-text-field>
+          </v-col>
+          <v-col cols="12" v-if="!item.id">
+            <v-text-field @keyup.enter="save" v-model="item.email" label="E-mail" :error-messages="errors.email"></v-text-field>
           </v-col>
         </v-row>
       </v-card-text>
@@ -45,9 +56,9 @@ export default {
     },
     formTitle() {
       if (this.item.id) {
-        return "Editar Rol";
+        return "Editar Usuario";
       } else {
-        return "Nuevo Rol";
+        return "Nuevo Usuario";
       }
     }
   },
@@ -60,10 +71,7 @@ export default {
     }
   },
   mounted() {
-
-    if (this.role) {
-      this.item = this.role;
-    }
+    if (this.userx) { this.item = this.userx; }
   }
 }
 </script>

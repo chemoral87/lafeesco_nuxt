@@ -8,7 +8,6 @@
         </h1>
       </v-col>
       <v-col cols="12">
-        <v-divider></v-divider>
         <v-btn @click="newUser()" color="primary">
           <v-icon class="mr-1">mdi-plus</v-icon> Nuevo
         </v-btn>
@@ -17,12 +16,12 @@
         </v-btn>
       </v-col>
       <v-col cols="12">
-        <client-only>
-          <UserTable @sorting="getUsers" :options="options" :response="response" @edit="editUser" @delete="beforeDeleteUser"></UserTable>
-        </client-only>
+
+        <UserTable @sorting="getUsers" :options="options" :response="response" @edit="editUser" @editRoles="editUserRoles" @delete="beforeDeleteUser"></UserTable>
+
       </v-col>
     </v-row>
-    <!-- <UserDialog :userx="userx" v-if="userDialog" @close="closeDialog" @save="saveUser" /> -->
+    <UserDialog :userx="userx" v-if="userDialog" @close="closeDialog" @save="saveUser" />
     <UserDialogDelete :userx="userx" v-if="userDialogDelete" @close="userDialogDelete = false" @ok="deleteUser" />
   </v-container>
 </template>
@@ -58,9 +57,11 @@ export default {
       this.userDialog = true;
     },
     editUser(item) {
+      this.userDialog = true;
+      this.userx = Object.assign({}, item);;
+    },
+    editUserRoles(item) {
       this.$router.push(`/users/${item.id}`);
-      // this.userx = Object.assign({}, item);
-      // this.userDialog = true;
     },
     beforeDeleteUser(item) {
       this.userDialogDelete = true;
@@ -79,24 +80,24 @@ export default {
       let op = Object.assign({ filter: this.filterUser }, this.options);
       this.response = await this.$repository.User.index(op);
     },
-    // async saveUser(item) {
-    //   let me = this;
-    //   if (item.id) {
-    //     await this.$repository.User.update(item.id, item)
-    //       .then(res => {
-    //         me.getUsers();
-    //         me.userDialog = false;
-    //       })
-    //       .catch(e => { });
-    //   } else {
-    //     await this.$repository.User.create(item)
-    //       .then(res => {
-    //         me.getUsers();
-    //         me.userDialog = false;
-    //       })
-    //       .catch(e => { });
-    //   }
-    // },
+    async saveUser(item) {
+      let me = this;
+      if (item.id) {
+        await this.$repository.User.update(item.id, item)
+          .then(res => {
+            me.getUsers();
+            me.userDialog = false;
+          })
+          .catch(e => { });
+      } else {
+        await this.$repository.User.create(item)
+          .then(res => {
+            me.getUsers();
+            me.userDialog = false;
+          })
+          .catch(e => { });
+      }
+    },
     closeDialog() {
       this.userDialog = false;
       this.clearErrors();

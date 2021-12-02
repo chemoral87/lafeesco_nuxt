@@ -4,10 +4,13 @@
       <v-card-title>
         <v-icon class="mr-2">mdi-alert</v-icon>
         <span class="text-h5">{{ formTitle }}</span>
+        <v-spacer />
+        <v-icon @click.native="close">$delete</v-icon>
+
       </v-card-title>
 
       <v-card-text>
-        <div class="text-body-1 text--primary">Esta seguro de elminar el PermissionTable
+        <div class="text-body-1 text--primary">Esta seguro de elminar el Usuario
           <strong>{{item.name}}</strong> ?
         </div>
       </v-card-text>
@@ -26,7 +29,7 @@
 
 <script>
 export default {
-  props: ["value", "permission"],
+  props: ["value", "userx"],
   data() {
     return {
       item: {}
@@ -35,7 +38,6 @@ export default {
   computed: {
     formTitle() {
       return "Confirmación";
-      // return `Esta seguro de elminar el Rol ${this.item.name} ?`;
     }
   },
   methods: {
@@ -47,8 +49,8 @@ export default {
     }
   },
   mounted() {
-    if (this.permission) {
-      this.item = this.permission;
+    if (this.userx) {
+      this.item = this.userx;
     }
   }
 }

@@ -8,7 +8,7 @@
         </h1>
       </v-col>
       <v-col cols="12">
-        <v-divider></v-divider>
+
         <v-btn @click="newRole()" color="primary">
           <v-icon class="mr-1">mdi-plus</v-icon> Nuevo
         </v-btn>
@@ -17,9 +17,9 @@
         </v-btn>
       </v-col>
       <v-col cols="12">
-        <client-only>
-          <RoleTable @sorting="getRoles" :options="options" :response="response" @edit="editRole" @delete="beforeDeleteRole"></RoleTable>
-        </client-only>
+        <!-- <client-only> -->
+        <RoleTable @sorting="getRoles" :options="options" @editPermissions="editRolePermissions" :response="response" @edit="editRole" @delete="beforeDeleteRole"></RoleTable>
+        <!-- </client-only> -->
       </v-col>
     </v-row>
     <RoleDialog :role="role" v-if="roleDialog" @close="closeDialog" @save="saveRole" />
@@ -63,6 +63,9 @@ export default {
     editRole(item) {
       this.role = Object.assign({}, item);
       this.roleDialog = true;
+    },
+    editRolePermissions(item) {
+      this.$router.push(`/roles/${item.id}`);
     },
     beforeDeleteRole(item) {
       this.roleDialogDelete = true;

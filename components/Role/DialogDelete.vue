@@ -4,20 +4,19 @@
       <v-card-title>
         <v-icon class="mr-2">mdi-alert</v-icon>
         <span class="text-h5">{{ formTitle }}</span>
+        <v-spacer></v-spacer>
+        <v-icon @click.native="close">$delete</v-icon>
       </v-card-title>
 
       <v-card-text>
-        <div class="text-body-1 text--primary">Esta seguro de elminar el PermissionTable
+        <div class="text-body-1 text--primary">Esta seguro de elminar el Rol
           <strong>{{item.name}}</strong> ?
         </div>
       </v-card-text>
 
       <v-card-actions>
         <v-spacer />
-
-        <v-btn color="grey" outlined @click.native="close">
-          NO
-        </v-btn>
+        <v-btn color="grey" outlined @click.native="close"> NO </v-btn>
         <v-btn color="primary" @click.native="ok">
           SI
         </v-btn>
@@ -28,7 +27,7 @@
 
 <script>
 export default {
-  props: ["value", "permission"],
+  props: ["value", "role"],
   data() {
     return {
       item: {}
@@ -49,8 +48,8 @@ export default {
     }
   },
   mounted() {
-    if (this.permission) {
-      this.item = this.permission;
+    if (this.role) {
+      this.item = this.role;
     }
   }
 }
