@@ -4,11 +4,11 @@
     <v-combobox v-model="model" :filter="filter" item-value="id" item-text="name" :hide-no-data="!search" :items="items" :search-input.sync="search" hide-selected label="Roles" multiple>
       <template v-slot:no-data>
         <v-list-item>
-          Intente con otra busqueda...
+          Intente con otra búsqueda...
         </v-list-item>
       </template>
       <template v-slot:selection="{ attrs, item, parent, selected }">
-        <v-chip v-if="item === Object(item)" v-bind="attrs" :color="`primary`" :input-value="selected" label>
+        <v-chip v-if="item === Object(item)" v-bind="attrs" color="primary" :input-value="selected" label>
           <span class="pr-2">
             {{ item.name }}
           </span>
@@ -18,7 +18,7 @@
         </v-chip>
       </template>
       <template v-slot:item="{ item }">
-        <v-chip :color="`${item.color} `" dark label small>
+        <v-chip color="primary" dark label small>
           {{ item.name }}
         </v-chip>
         <v-spacer></v-spacer>
@@ -31,26 +31,11 @@
 export default {
   props: ["roles"],
   data: () => ({
-    activator: null,
-    attach: null,
-    colors: ['green', 'purple', 'indigo', 'cyan', 'teal', 'orange'],
-    editing: null,
-    editingIndex: -1,
-    items: [
-      // { header: 'Teclee para filtar' },
-
-    ],
-    nonce: 1,
-    menu: false,
-    model: [
-      // {
-      //   name: 'Foo',
-      //   color: 'blue',
-      // },
-    ],
-    x: 0,
+    items: [],
+    model: [],
     search: null,
-    y: 0,
+    // x: 0,
+    // y: 0,
   }),
   computed: {
     roles_id() {
@@ -63,16 +48,8 @@ export default {
   },
   watch: {
     async search(val, prev) {
-      if (val == null || val.trim() == "") {
-        this.items = [
-          // { header: 'Teclee para filtar' }
-        ];
-      }
-      else {
+      if (!(val == null || val.trim() == "")) {
         let itemz = await this.$repository.Role.filter({ queryText: val, ids: this.roles_id });
-        itemz.unshift(
-          // { header: 'Teclee para filtar' }
-        );
         this.items = itemz;
       }
     },
@@ -89,13 +66,7 @@ export default {
     },
   },
   mounted() {
-    this.model = this.roles;
-    // this.items = [];
-    // this.roles.forEach(element => {
-    //   console.log(element.name, 2);
-    //   this.items.push({ text: element.name, color: 'blue' });
-    // });
-    // console.log("mounted");
+    this.model = this.roles || [];
   },
   methods: {
     filter(item, queryText, itemText) {

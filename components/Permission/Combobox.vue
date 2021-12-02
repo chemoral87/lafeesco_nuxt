@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-combobox v-model="model" :filter="filter" item-value="id" item-text="name" hide-selected :hide-no-data="!search" :items="items" :search-input.sync="search" label="Permisos Directos" multiple>
+    <v-combobox v-model="model" :filter="filter" item-value="id" item-text="name" hide-selected :hide-no-data="!search" :items="items" :search-input.sync="search" v-bind="$attrs" multiple>
       <template v-slot:no-data>
         <v-list-item>
-          Intente con otra busqueda...
+          Intente con otra búsqueda...
         </v-list-item>
       </template>
       <template v-slot:selection="{ attrs, item, parent, selected }">
-        <v-chip v-if="item === Object(item)" v-bind="attrs" :color="`info`" :input-value="selected" label>
+        <v-chip v-if="item === Object(item)" v-bind="attrs" color="info" :input-value="selected" label>
           <span class="pr-2">
             {{ item.name }}
           </span>
@@ -17,7 +17,7 @@
         </v-chip>
       </template>
       <template v-slot:item="{ item }">
-        <v-chip :color="`${item.color} `" dark label small>
+        <v-chip color="info" dark label small>
           {{ item.name }}
         </v-chip>
         <v-spacer></v-spacer>
@@ -28,28 +28,13 @@
 </template>
 <script>
 export default {
-  props: ["direct_permissions"],
+  props: ["permissionsx"],
   data: () => ({
-    activator: null,
-    attach: null,
-    colors: ['green', 'purple', 'indigo', 'cyan', 'teal', 'orange'],
-    editing: null,
-    editingIndex: -1,
-    items: [
-      // { header: 'Teclee para filtar' },
-
-    ],
-    nonce: 1,
-    menu: false,
-    model: [
-      // {
-      //   name: 'Foo',
-      //   color: 'blue',
-      // },
-    ],
-    x: 0,
+    items: [],
+    model: [],
+    // x: 0,
+    // y: 0,
     search: null,
-    y: 0,
   }),
   computed: {
     permissions_id() {
@@ -62,16 +47,8 @@ export default {
   },
   watch: {
     async search(val, prev) {
-      if (val == null || val.trim() == "") {
-        this.items = [
-          // { header: 'Teclee para filtar' }
-        ];
-      }
-      else {
+      if (!(val == null || val.trim() == "")) {
         let itemz = await this.$repository.Permission.filter({ queryText: val, ids: this.permissions_id });
-        itemz.unshift(
-          // { header: 'Teclee para filtar' }
-        );
         this.items = itemz;
       }
     },
@@ -88,7 +65,7 @@ export default {
     },
   },
   mounted() {
-    this.model = this.direct_permissions;
+    this.model = this.permissionsx || [];
   },
   methods: {
     filter(item, queryText, itemText) {

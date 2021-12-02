@@ -10,6 +10,17 @@
           Rol: {{ mRole.name }}
         </h1>
       </v-col>
+      <v-col cols="12" md="6">
+        <PermissionCombobox label="Permisos" :permissionsx="mRole.permissions" @modelChange="setPermissions"></PermissionCombobox>
+      </v-col>
+      <v-col cols="12">
+        <v-btn @click="$router.push('/roles')" color="grey" outlined class="mr-2">
+          Cancelar
+        </v-btn>
+        <v-btn @click="saveRolePermissions()" color="primary">
+          Guardar
+        </v-btn>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -26,6 +37,21 @@ export default {
     return {
       mRole: {}
     };
+  },
+  methods: {
+    setPermissions(permissions) {
+      this.mRole.permissions = permissions;
+    },
+    async saveRolePermissions() {
+      let permissions_ids = this.mRole.permissions.map(x => x.id);
+      let params = {
+        permissions_ids: permissions_ids
+      };
+      await this.$repository.Role.children(this.mRole.id, params)
+        .then(res => {
+          this.$router.push('/roles');
+        });
+    }
   },
   async asyncData({ $axios, app, params }) {
     const res = await app.$repository.Role.show(params.id)

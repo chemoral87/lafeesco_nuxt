@@ -17,9 +17,7 @@
         </v-btn>
       </v-col>
       <v-col cols="12">
-        <!-- <client-only> -->
         <RoleTable @sorting="getRoles" :options="options" @editPermissions="editRolePermissions" :response="response" @edit="editRole" @delete="beforeDeleteRole"></RoleTable>
-        <!-- </client-only> -->
       </v-col>
     </v-row>
     <RoleDialog :role="role" v-if="roleDialog" @close="closeDialog" @save="saveRole" />

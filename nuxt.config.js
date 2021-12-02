@@ -1,6 +1,7 @@
 import colors from "vuetify/es5/util/colors";
+// require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
+// require("dotenv").config({ path: ".env." + process.env.NODE_ENV });
 require("dotenv").config();
-
 export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: "static",
@@ -99,7 +100,6 @@ export default {
       fileName: "favicon.png"
     }
   },
-
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ["~/assets/variables.scss"],
