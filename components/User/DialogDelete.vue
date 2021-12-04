@@ -16,7 +16,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="grey" outlined @click.native="close">
+        <v-btn color="grey" class="mr-2" outlined @click.native="close">
           NO
         </v-btn>
         <v-btn color="primary" @click.native="ok">

@@ -16,7 +16,7 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="grey" outlined @click.native="close"> NO </v-btn>
+        <v-btn color="grey" outlined @click.native="close" class="mr-1"> NO </v-btn>
         <v-btn color="primary" @click.native="ok">
           SI
         </v-btn>

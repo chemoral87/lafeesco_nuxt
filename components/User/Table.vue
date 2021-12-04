@@ -15,17 +15,17 @@
       </template>
 
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn title="Editar" class="ma-1" color="primary" fab small @click="edit(item)">
+        <v-btn title="Editar" class="ma-1" color="primary" outlined fab small @click="edit(item)">
           <v-icon>
             mdi-pencil
           </v-icon>
         </v-btn>
-        <v-btn title="Roles y Permisos" class="ma-1" color="success" fab small @click="editRoles(item)">
+        <v-btn title="Roles y Permisos" class="ma-1" color="success" outlined fab small @click="editRoles(item)">
           <v-icon>
             mdi-redhat
           </v-icon>
         </v-btn>
-        <v-btn title="Eliminar" class="ma-1" color="error" fab small @click="deleteItem(item)">
+        <v-btn title="Eliminar" class="ma-1" color="error" outlined fab small @click="deleteItem(item)">
           <v-icon>
             mdi-delete
           </v-icon>

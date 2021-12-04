@@ -1,23 +1,18 @@
 <template>
   <v-container>
     <v-row dense>
-      <v-col cols="12">
-        <h1 class="text-h5">
-          <v-icon class="mr-1">mdi-key</v-icon>
-          Permisos
-        </h1>
-      </v-col>
+
       <v-col cols="12" md="3">
         <v-text-field append-icon="mdi-magnify" clearable hide-details v-model="filterPermission" placeholder="Filtro"></v-text-field>
 
       </v-col>
       <v-col cols="12" md="3">
 
-        <v-btn @click="newPermission()" color="primary">
-          <v-icon class="mr-1">mdi-plus</v-icon> Nuevo
+        <v-btn @click="newPermission()" class="mr-1" color="primary">
+          <v-icon>mdi-plus</v-icon> Nuevo
         </v-btn>
         <v-btn @click="getPermissions()" color="primary">
-          <v-icon class="mr-1">mdi-reload</v-icon> Refrescar
+          <v-icon>mdi-reload</v-icon> Refrescar
         </v-btn>
 
       </v-col>
@@ -28,7 +23,8 @@
       </v-col>
     </v-row>
     <PermissionDialog :permission="permission" v-if="permissionDialog" @close="closeDialog" @save="savePermission" />
-    <PermissionDialogDelete :permission="permission" v-if="permissionDialogDelete" @close="permissionDialogDelete = false" @ok="deletePermission" />
+    <DialogDelete v-if="permissionDialogDelete" :dialog="dialogDelete" @ok="deletePermission" @close="permissionDialogDelete = false"></DialogDelete>
+    <!-- <PermissionDialogDelete :permission="permission" v-if="permissionDialogDelete" @close="permissionDialogDelete = false" @ok="deletePermission" /> -->
   </v-container>
 </template>
 <script>
@@ -48,6 +44,7 @@ export default {
       filterPermission: "",
       permissionDialog: false,
       permissionDialogDelete: false,
+      dialogDelete: {}
     };
   },
   watch: {
@@ -68,8 +65,12 @@ export default {
       this.permissionDialog = true;
     },
     beforeDeletePermission(item) {
+      this.dialogDelete = {
+        text: "Desea eliminar el Permiso ",
+        strong: item.name,
+        payload: item
+      };
       this.permissionDialogDelete = true;
-      this.permission = Object.assign({}, item);
     },
     async deletePermission(item) {
       await this.$repository.Permission.delete(item.id, item)
@@ -118,6 +119,9 @@ export default {
     const res = await app.$repository.Permission.index(op)
       .catch(e => { });
     return { response: res, options: op };
+  },
+  created() {
+    this.$nuxt.$emit("setNavBar", { title: "Permisos", icon: "key" });
   }
 }
 </script>

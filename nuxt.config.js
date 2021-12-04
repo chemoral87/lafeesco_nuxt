@@ -1,11 +1,16 @@
 import colors from "vuetify/es5/util/colors";
 // require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
-// require("dotenv").config({ path: ".env." + process.env.NODE_ENV });
-require("dotenv").config();
+require("dotenv").config({ path: ".env." + process.env.NODE_ENV });
+// console.log(process.env.NODE_ENV, process.env.BASE_URL);
+// require("dotenv").config();
 export default {
   // Target: https://go.nuxtjs.dev/config-target
-  target: "static",
-
+  target: "server",
+  // mode: "spa",
+  ssr: false,
+  router: {
+    trailingSlash: false
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: "%s",
@@ -48,7 +53,8 @@ export default {
     "@nuxtjs/auth-next",
     // https://go.nuxtjs.dev/pwa
     "@nuxtjs/pwa",
-    "@nuxtjs/dotenv"
+    ["@nuxtjs/dotenv", { filename: ".env." + process.env.NODE_ENV }]
+    // "@nuxtjs/dotenv"
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -134,5 +140,7 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {}
+  build: {
+    maxChunkSize: 300000
+  }
 };

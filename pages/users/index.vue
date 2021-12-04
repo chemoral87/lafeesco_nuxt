@@ -1,18 +1,13 @@
 <template>
   <v-container>
     <v-row dense>
+
       <v-col cols="12">
-        <h1 class="text-h5">
-          <v-icon class="mr-1">mdi-account</v-icon>
-          Usuarios
-        </h1>
-      </v-col>
-      <v-col cols="12">
-        <v-btn @click="newUser()" color="primary">
-          <v-icon class="mr-1">mdi-plus</v-icon> Nuevo
+        <v-btn @click="newUser()" color="primary" class="mr-1">
+          <v-icon>mdi-plus</v-icon> Nuevo
         </v-btn>
         <v-btn @click="getUsers()" color="primary">
-          <v-icon class="mr-1">mdi-reload</v-icon> Refrescar
+          <v-icon>mdi-reload</v-icon> Refrescar
         </v-btn>
       </v-col>
       <v-col cols="12">
@@ -114,6 +109,9 @@ export default {
     const res = await app.$repository.User.index(op)
       .catch(e => { });
     return { response: res, options: op };
+  },
+  created() {
+    this.$nuxt.$emit("setNavBar", { title: "Usuarios", icon: "account" });
   }
 }
 </script>

@@ -2,12 +2,12 @@
   <div>
     <v-data-table mobile-breakpoint="0" :must-sort="true" :headers="headers" :items="items" :options.sync="optionsTable" :server-items-length="total" class="elevation-1">
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn color="primary" fab small @click="editItem(item)" class="mx-1">
+        <v-btn color="primary" fab small outlined @click="editItem(item)" class="mr-1 my-1">
           <v-icon>
             mdi-pencil
           </v-icon>
         </v-btn>
-        <v-btn color="error" fab small @click="deleteItem(item)" class="mx-1">
+        <v-btn color="error" fab small outlined @click="deleteItem(item)" class="my-1">
           <v-icon>
             mdi-delete
           </v-icon>

@@ -5,3 +5,7 @@
 .v-btn:not(.v-btn--outlined).return {
   color: #ffffff;
 }
+
+.v-data-table__wrapper {
+  overflow-x: auto;
+}

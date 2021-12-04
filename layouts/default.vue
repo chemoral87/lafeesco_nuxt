@@ -8,10 +8,9 @@
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>
-              {{title}}
+              {{title_companion}}
             </v-list-item-title>
           </v-list-item-content>
-
         </v-list-item>
         <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact @click="closeDrawer">
           <v-list-item-action>
@@ -26,7 +25,13 @@
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app :color=" authenticated? '' : 'banner'">
       <v-app-bar-nav-icon @click.stop=" drawer=!drawer" />
-      <v-toolbar-title style="cursor:pointer" v-text="title" @click="gotoHome()" />
+      <v-toolbar-title class="pl-0">
+        <v-btn v-if="back" @click="$router.push(back)" class="mr-1" outlined fab small elevation="0">
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
+        <v-icon v-if="icon">mdi-{{icon}}</v-icon>
+        {{title}}
+      </v-toolbar-title>
       <v-spacer />
       <v-btn v-if="!authenticated" @click="gotoLogin()" color="banner_item elevation-2" class="mr-2">
         <v-icon>mdi-lock</v-icon> Login
@@ -128,7 +133,10 @@ export default {
       right: true,
       rightDrawer: false,
       menu: false,
-      title: 'RC DESARROLLADORA'
+      title_companion: 'RC DESARROLLADORA',
+      title: '',
+      icon: null,
+      back: null
     };
   },
   computed: {
@@ -142,27 +150,37 @@ export default {
     items() {
       let menu = [];
       if (this.authenticated) { // logged
-        menu.unshift({
-          icon: 'mdi-view-dashboard',
-          title: 'Dashboard',
-          to: '/dashboard'
-        },
-          {
-            icon: 'mdi-account',
-            title: 'Usuarios',
-            to: '/users'
-          },
-          {
-            icon: 'mdi-redhat',
-            title: 'Roles',
-            to: '/roles'
-          },
-          {
-            icon: 'mdi-key',
-            title: 'Permisos',
-            to: '/permissions'
-          }
-        );
+
+        menu.push({ icon: 'mdi-view-dashboard', title: 'Dashboard', to: '/dashboard' });
+        if (this.permissions.includes('user-index'))
+          menu.push({ icon: 'mdi-account', title: 'Usuarios', to: '/users' });
+        if (this.permissions.includes('role-index'))
+          menu.push({ icon: 'mdi-redhat', title: 'Roles', to: '/roles' });
+        if (this.permissions.includes('permission-index'))
+          menu.push({ icon: 'mdi-key', title: 'Permisos', to: '/permissions' });
+        // menu.unshift({
+        //   icon: 'mdi-view-dashboard',
+        //   title: 'Dashboard',
+        //   to: '/dashboard'
+        // },
+        //   {
+        //     icon: 'mdi-account',
+        //     title: 'Usuarios',
+        //     to: '/users'
+        //   },
+        //   {
+        //     icon: 'mdi-redhat',
+        //     title: 'Roles',
+        //     to: '/roles'
+        //   },
+        //   {
+        //     icon: 'mdi-key',
+        //     title: 'Permisos',
+        //     to: '/permissions'
+        //   }
+        // );
+
+
       } else {
         menu.push(
           {
@@ -185,6 +203,12 @@ export default {
     }
   },
   methods: {
+    setNavBar(navbar) {
+      console.log("setNavBar", navbar);
+      this.title = navbar.title ? navbar.title : "RC DESARROLLADORA";
+      this.icon = navbar.icon ? navbar.icon : null;
+      this.back = navbar.back ? navbar.back : null;
+    },
     closeDrawer() {
       this.drawer = false;
     },
@@ -201,7 +225,10 @@ export default {
     closeSnackbar() {
       this.$store.dispatch("closeNotify");
     }
-  }
+  },
+  created() {
+    this.$nuxt.$on('setNavBar', ($event) => this.setNavBar($event));
+  },
 }
 </script>
 <style>

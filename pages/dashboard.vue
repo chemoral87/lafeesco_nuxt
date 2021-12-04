@@ -1,7 +1,6 @@
 <template>
   <v-container fluid>
     <div>
-      <h1>dashboard</h1>
       {{authenticated}}
       {{user}} <br><br> a
       {{permissions}}
@@ -14,12 +13,13 @@ export default {
   props: {
   },
   data() {
-    return {}
+    return {};
   },
   methods: {
   },
   mounted() {
     let me = this;
+    this.$nuxt.$emit("setNavBar", { title: "Dashboard" });
   }
 }
 </script>

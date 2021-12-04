@@ -1,20 +1,11 @@
 <template>
   <v-container>
     <v-row dense>
-      <v-col cols="12">
-        <h1 class="text-h5">
-          <v-btn @click="$router.push('/roles')" class="mr-2" fab small color="return">
-            <v-icon>mdi-arrow-left</v-icon>
-          </v-btn>
-          <v-icon class="mr-1">mdi-account</v-icon>
-          Rol: {{ mRole.name }}
-        </h1>
-      </v-col>
       <v-col cols="12" md="6">
         <PermissionCombobox label="Permisos" :permissionsx="mRole.permissions" @modelChange="setPermissions"></PermissionCombobox>
       </v-col>
       <v-col cols="12">
-        <v-btn @click="$router.push('/roles')" color="grey" outlined class="mr-2">
+        <v-btn @click="$router.push('/roles')" color="grey" outlined class="mr-1">
           Cancelar
         </v-btn>
         <v-btn @click="saveRolePermissions()" color="primary">
@@ -57,6 +48,10 @@ export default {
     const res = await app.$repository.Role.show(params.id)
       .catch(e => { });
     return { mRole: res };
+  },
+  created() {
+    let role_name = this.mRole.name || "";
+    this.$nuxt.$emit("setNavBar", { title: "Rol " + role_name, icon: "redhat", back: "/roles" });
   }
 }
 </script>

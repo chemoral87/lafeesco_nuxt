@@ -1,19 +1,14 @@
 <template>
   <v-container>
     <v-row dense>
-      <v-col cols="12">
-        <h1 class="text-h5">
-          <v-icon class="mr-1">mdi-redhat</v-icon>
-          Roles
-        </h1>
-      </v-col>
+
       <v-col cols="12">
 
-        <v-btn @click="newRole()" color="primary">
-          <v-icon class="mr-1">mdi-plus</v-icon> Nuevo
+        <v-btn @click="newRole()" color="primary" class="mr-1">
+          <v-icon>mdi-plus</v-icon> Nuevo
         </v-btn>
         <v-btn @click="getRoles()" color="primary">
-          <v-icon class="mr-1">mdi-reload</v-icon> Refrescar
+          <v-icon>mdi-reload</v-icon> Refrescar
         </v-btn>
       </v-col>
       <v-col cols="12">
@@ -21,7 +16,8 @@
       </v-col>
     </v-row>
     <RoleDialog :role="role" v-if="roleDialog" @close="closeDialog" @save="saveRole" />
-    <RoleDialogDelete :role="role" v-if="roleDialogDelete" @close="roleDialogDelete = false" @ok="deleteRole" />
+    <DialogDelete v-if="roleDialogDelete" :dialog="dialogDelete" @ok="deleteRole" @close="roleDialogDelete = false"></DialogDelete>
+    <!-- <RoleDialogDelete :role="role" v-if="roleDialogDelete" @close="roleDialogDelete = false" @ok="deleteRole" /> -->
   </v-container>
 </template>
 <script>
@@ -41,7 +37,8 @@ export default {
       },
       options: {},
       roleDialog: false,
-      roleDialogDelete: false
+      roleDialogDelete: false,
+      dialogDelete: {}
     };
   },
   methods: {
@@ -66,8 +63,15 @@ export default {
       this.$router.push(`/roles/${item.id}`);
     },
     beforeDeleteRole(item) {
+
+      // dialogDelete;
+      this.dialogDelete = {
+        text: "Desea eliminar el Rol ",
+        strong: item.name,
+        payload: item
+      };
       this.roleDialogDelete = true;
-      this.role = Object.assign({}, item);
+      // this.role = Object.assign({}, item);
     },
     async deleteRole(item) {
       await this.$repository.Role.delete(item.id, item)
@@ -111,6 +115,9 @@ export default {
     const res = await app.$repository.Role.index(op)
       .catch(e => { });
     return { response: res, options: op };
+  },
+  created() {
+    this.$nuxt.$emit("setNavBar", { title: "Roles", icon: "redhat" });
   }
 }
 </script>

@@ -18,7 +18,7 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="grey" outlined @click.native="close">
+        <v-btn color="grey" class="mr-1" outlined @click.native="close">
           Cancelar
         </v-btn>
         <v-btn color="primary" @click.native="save">

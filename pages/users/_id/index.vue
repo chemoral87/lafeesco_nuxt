@@ -17,7 +17,7 @@
         <PermissionCombobox :permissionsx="mUser.direct_permissions" label="Permisos Directos" @modelChange="setDirectPermissions"></PermissionCombobox>
       </v-col>
       <v-col cols="12">
-        <v-btn @click="$router.push('/users')" color="grey" outlined class="mr-2">
+        <v-btn @click="$router.push('/users')" color="grey" outlined class="mr-1">
           Cancelar
         </v-btn>
         <v-btn @click="saveUserRolesPermissions()" color="primary">
