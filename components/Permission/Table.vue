@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-data-table mobile-breakpoint="0" :must-sort="true" :headers="headers" :items="items" :options.sync="optionsTable" :server-items-length="total" class="elevation-1">
+    <v-data-table dense mobile-breakpoint="0" :must-sort="true" :headers="headers" :items="items" :options.sync="optionsTable" :server-items-length="total" class="elevation-1">
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn color="primary" fab small outlined @click="editItem(item)" class="mr-1 my-1">
           <v-icon>

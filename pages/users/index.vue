@@ -1,8 +1,10 @@
 <template>
   <v-container>
     <v-row dense>
-
-      <v-col cols="12">
+      <v-col cols="12" md="2">
+        <v-text-field append-icon="mdi-magnify" clearable hide-details v-model="filterUser" placeholder="Filtro"></v-text-field>
+      </v-col>
+      <v-col cols="12" md="3">
         <v-btn @click="newUser()" color="primary" class="mr-1">
           <v-icon>mdi-plus</v-icon> Nuevo
         </v-btn>
@@ -17,7 +19,8 @@
       </v-col>
     </v-row>
     <UserDialog :userx="userx" v-if="userDialog" @close="closeDialog" @save="saveUser" />
-    <UserDialogDelete :userx="userx" v-if="userDialogDelete" @close="userDialogDelete = false" @ok="deleteUser" />
+    <DialogDelete v-if="userDialogDelete" :dialog="dialogDelete" @ok="deleteUser" @close="userDialogDelete = false"></DialogDelete>
+    <!-- <UserDialogDelete :userx="userx" v-if="userDialogDelete" @close="userDialogDelete = false" @ok="deleteUser" /> -->
   </v-container>
 </template>
 <script>
@@ -60,7 +63,12 @@ export default {
     },
     beforeDeleteUser(item) {
       this.userDialogDelete = true;
-      this.userx = Object.assign({}, item);
+      this.dialogDelete = {
+        text: "Desea eliminar el Usuario ",
+        strong: `${item.name} ${item.last_name}  ${item.second_last_name ? item.second_last_name : ""}`,
+        payload: item
+      };
+      // this.userx = Object.assign({}, item);
     },
     async deleteUser(item) {
       await this.$repository.User.delete(item.id, item)

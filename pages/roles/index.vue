@@ -1,9 +1,10 @@
 <template>
   <v-container>
     <v-row dense>
-
-      <v-col cols="12">
-
+      <v-col cols="12" md="2">
+        <v-text-field append-icon="mdi-magnify" clearable hide-details v-model="filterRole" placeholder="Filtro"></v-text-field>
+      </v-col>
+      <v-col cols="12" md="3">
         <v-btn @click="newRole()" color="primary" class="mr-1">
           <v-icon>mdi-plus</v-icon> Nuevo
         </v-btn>
@@ -31,6 +32,7 @@ export default {
   },
   data() {
     return {
+      filterRole: "",
       role: {},
       response: {
         data: []
@@ -40,6 +42,13 @@ export default {
       roleDialogDelete: false,
       dialogDelete: {}
     };
+  },
+  watch: {
+    async filterRole(value) {
+      let me = this;
+      let op = Object.assign(me.options, { filter: value, page: 1 });
+      me.response = await me.$repository.Role.index(op);
+    }
   },
   methods: {
     async getRoles(options) {
@@ -63,7 +72,6 @@ export default {
       this.$router.push(`/roles/${item.id}`);
     },
     beforeDeleteRole(item) {
-
       // dialogDelete;
       this.dialogDelete = {
         text: "Desea eliminar el Rol ",

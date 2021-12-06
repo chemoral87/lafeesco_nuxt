@@ -2,9 +2,8 @@
   <v-container>
     <v-row dense>
 
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="2">
         <v-text-field append-icon="mdi-magnify" clearable hide-details v-model="filterPermission" placeholder="Filtro"></v-text-field>
-
       </v-col>
       <v-col cols="12" md="3">
 
