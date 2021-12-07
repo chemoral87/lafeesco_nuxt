@@ -51,7 +51,7 @@ export default {
   },
   created() {
     let role_name = this.mRole.name || "";
-    this.$nuxt.$emit("setNavBar", { title: "Rol " + role_name, icon: "redhat", back: "/roles" });
+    this.$nuxt.$emit("setNavBar", { title: "Rol " + role_name, icon: "redhat", back: "/roles", show_drawer: false });
   }
 }
 </script>

@@ -24,7 +24,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app :color=" authenticated? '' : 'banner'">
-      <v-app-bar-nav-icon @click.stop=" drawer=!drawer" />
+      <v-app-bar-nav-icon v-if="show_drawer" @click.stop=" drawer=!drawer" />
       <v-toolbar-title class="pl-0">
         <v-btn v-if="back" @click="$router.push(back)" class="mr-1" outlined fab small elevation="0">
           <v-icon>mdi-arrow-left</v-icon>
@@ -136,7 +136,8 @@ export default {
       title_companion: 'RC DESARROLLADORA',
       title: '',
       icon: null,
-      back: null
+      back: null,
+      show_drawer: true,
     };
   },
   computed: {
@@ -205,9 +206,11 @@ export default {
   methods: {
     setNavBar(navbar) {
       console.log("setNavBar", navbar);
-      this.title = navbar.title ? navbar.title : "RC DESARROLLADORA";
-      this.icon = navbar.icon ? navbar.icon : null;
-      this.back = navbar.back ? navbar.back : null;
+      this.title = navbar.hasOwnProperty('title') ? navbar.title : "RC DESARROLLADORA";
+      this.icon = navbar.hasOwnProperty('icon') ? navbar.icon : null;
+      this.back = navbar.hasOwnProperty('back') ? navbar.back : null;
+      this.show_drawer = navbar.hasOwnProperty('show_drawer') ? navbar.show_drawer : true;
+      console.log(this.show_drawer);
     },
     closeDrawer() {
       this.drawer = false;

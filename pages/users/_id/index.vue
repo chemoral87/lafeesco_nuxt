@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row dense>
-      <v-col cols="12">
+      <!-- <v-col cols="12">
         <h1 class="text-h5">
           <v-btn @click="$router.push('/users')" class="mr-2" fab small color="return">
             <v-icon>mdi-arrow-left</v-icon>
@@ -9,7 +9,7 @@
           <v-icon class="mr-1">mdi-account</v-icon>
           Usuario: {{ mUser.name }} {{ mUser.last_name }}
         </h1>
-      </v-col>
+      </v-col> -->
       <v-col cols="12" md="6">
         <RoleCombobox :roles="mUser.roles" @modelChange="setRoles"></RoleCombobox>
       </v-col>
@@ -67,12 +67,15 @@ export default {
         });
     }
   },
-
   async asyncData({ $axios, app, params }) {
     const res = await app.$repository.User.show(params.id)
       .catch(e => { });
     return { mUser: res };
+  },
+  created() {
+    this.$nuxt.$emit("setNavBar", { title: `Usuario: ${this.mUser.name} ${this.mUser.last_name}`, icon: "account", back: "/users", show_drawer: false });
   }
+
 }
 </script>
 
