@@ -1,9 +1,13 @@
 <template>
   <v-container fluid>
     <div>
-      {{authenticated}}
+      <v-container>
+        <span class="text-h6">Bienvenido</span>
+
+      </v-container>
+      <!-- {{authenticated}}
       {{user}} <br><br> a
-      {{permissions}}
+      {{permissions}} -->
     </div>
   </v-container>
 
@@ -19,7 +23,7 @@ export default {
   },
   mounted() {
     let me = this;
-    this.$nuxt.$emit("setNavBar", { title: "Dashboard" });
+    this.$nuxt.$emit("setNavBar", { title: "Dashboard", icon: "view-dashboard" });
   }
 }
 </script>

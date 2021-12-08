@@ -159,6 +159,9 @@ export default {
           menu.push({ icon: 'mdi-redhat', title: 'Roles', to: '/roles' });
         if (this.permissions.includes('permission-index'))
           menu.push({ icon: 'mdi-key', title: 'Permisos', to: '/permissions' });
+        if (this.permissions.includes('investment-index'))
+          menu.push({ icon: 'mdi-pencil-box', title: 'Inversiones', to: '/investment' });
+
         // menu.unshift({
         //   icon: 'mdi-view-dashboard',
         //   title: 'Dashboard',
@@ -205,12 +208,10 @@ export default {
   },
   methods: {
     setNavBar(navbar) {
-      console.log("setNavBar", navbar);
       this.title = navbar.hasOwnProperty('title') ? navbar.title : "RC DESARROLLADORA";
       this.icon = navbar.hasOwnProperty('icon') ? navbar.icon : null;
       this.back = navbar.hasOwnProperty('back') ? navbar.back : null;
       this.show_drawer = navbar.hasOwnProperty('show_drawer') ? navbar.show_drawer : true;
-      console.log(this.show_drawer);
     },
     closeDrawer() {
       this.drawer = false;

@@ -7,7 +7,8 @@ export default function(context) {
     }
 
     if (error.response)
-      if (error.response.status === 422) {
+      if (error.response.status === 422 || error.response.status === 401) {
+        console.log(error.response);
         context.store.dispatch(
           "validation/setErrors",
           error.response.data.errors
