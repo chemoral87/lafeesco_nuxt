@@ -170,6 +170,9 @@
 </template>
 <script>
 export default {
+  created() {
+    this.$nuxt.$emit("setNavBar", { title: "Aviso de Privacidad", icon: "message-text-lock", show_login: false });
+  },
   methods: {
     generatePDF() {
       // this.$refs.html2Pdf.generatePdf()
@@ -181,6 +184,7 @@ export default {
   }
 }
 </script>
+
 <style scoped>
 .importante {
   color: darkred;

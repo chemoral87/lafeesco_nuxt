@@ -3,7 +3,7 @@
     <div>
       <v-container>
         <span class="text-h6">Bienvenido</span>
-
+        {{user}}
       </v-container>
       <!-- {{authenticated}}
       {{user}} <br><br> a

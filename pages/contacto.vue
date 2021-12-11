@@ -35,6 +35,9 @@
 </template>
 <script>
 export default {
+  created() {
+    this.$nuxt.$emit("setNavBar", { title: "Contacto", icon: "account-voice", show_login: false });
+  },
   props: {
   },
   data() {
@@ -45,7 +48,7 @@ export default {
         celular: '',
         message: ''
       }
-    }
+    };
   },
   methods: {
     sendMessageContact() {

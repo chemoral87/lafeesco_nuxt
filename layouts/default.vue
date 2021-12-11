@@ -33,7 +33,7 @@
         {{title}}
       </v-toolbar-title>
       <v-spacer />
-      <v-btn v-if="!authenticated" @click="gotoLogin()" color="banner_item elevation-2" class="mr-2">
+      <v-btn v-if="!authenticated && show_login" @click="gotoLogin()" color="banner_item elevation-2" class="mr-2">
         <v-icon>mdi-lock</v-icon> Login
       </v-btn>
 
@@ -138,6 +138,7 @@ export default {
       icon: null,
       back: null,
       show_drawer: true,
+      show_login: true
     };
   },
   computed: {
@@ -212,6 +213,7 @@ export default {
       this.icon = navbar.hasOwnProperty('icon') ? navbar.icon : null;
       this.back = navbar.hasOwnProperty('back') ? navbar.back : null;
       this.show_drawer = navbar.hasOwnProperty('show_drawer') ? navbar.show_drawer : true;
+      this.show_login = navbar.hasOwnProperty('show_login') ? navbar.show_login : true;;
     },
     closeDrawer() {
       this.drawer = false;

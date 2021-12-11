@@ -8,6 +8,7 @@ const User = {
         ...mapGetters({
           user: "user",
           authenticated: "authenticated",
+          verified: "verified",
           permissions: "permissions",
           snackbar: "snackbar"
         })

@@ -4,9 +4,13 @@ export const state = () => ({
     color: "",
     display: false
   }
+  // persistedStates: null
 });
 
 export const getters = {
+  // persistedStates(state) {
+  //   return state.persistedStates;
+  // },
   authenticated(state) {
     return state.auth.loggedIn;
   },
@@ -32,6 +36,9 @@ export const mutations = {
       state.snackbar.display = false;
     }
   }
+  // SET_STATE(state, payload) {
+  //   state.persistedState = payload;
+  // }
 };
 
 export const actions = {
@@ -40,7 +47,6 @@ export const actions = {
     if (data.success) {
       notify = { text: data.success, color: "primary", display: true };
     }
-
     if (notify == null) return;
     // close if snackbar is open
     if (state.snackbar.display == true) {
@@ -48,7 +54,6 @@ export const actions = {
     }
     commit("SET_SNACKBAR", notify);
   },
-
   closeNotify({ commit }) {
     commit("CLOSE_SNACKBAR");
   }

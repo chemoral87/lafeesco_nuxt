@@ -1,8 +1,6 @@
 import colors from "vuetify/es5/util/colors";
 // require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
 require("dotenv").config({ path: ".env." + process.env.NODE_ENV });
-// console.log(process.env.NODE_ENV, process.env.BASE_URL);
-// require("dotenv").config();
 export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: "server",
@@ -32,7 +30,10 @@ export default {
     "./plugins/mixins/user.js",
     "./plugins/mixins/validation.js",
     "./plugins/axios.js",
-    "./plugins/repository.js"
+    "./plugins/filters.js",
+    "./plugins/repository.js",
+    "./plugins/vue-mask.js",
+    { src: "./plugins/localStorage.js", ssr: false }
     // { src: "./plugins/vue-html-to-paper.js", mode: "client" }
     // { src: "@/plugins/vue-html2pdf.js", mode: "client" }
   ],
@@ -43,9 +44,13 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
-    "@nuxtjs/vuetify"
+    "@nuxtjs/vuetify",
+    "@nuxtjs/moment"
   ],
-
+  moment: {
+    defaultLocale: "es",
+    locales: ["es"]
+  },
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
@@ -63,17 +68,6 @@ export default {
   },
   auth: {
     strategies: {
-      // local: {
-      //   endpoints: {
-      //     login: {
-      //       url: "login",
-      //       method: "post",
-      //       propertyName: "meta.access_token"
-      //     },
-      //     user: { url: "user", method: "get", propertyName: "data" },
-      //     logout: { url: "logout", method: "post" }
-      //   }
-      // },
       laravelJWT: {
         url: "/",
         endpoints: {

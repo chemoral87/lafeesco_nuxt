@@ -16,6 +16,7 @@
           <v-btn outlined color="primary" class="mr-2 mb-8">¿Olvidate tu contraseña?</v-btn>
         </v-col>
       </v-row>
+
     </v-form>
   </v-container>
 
@@ -23,6 +24,9 @@
 <script>
 export default {
   middleware: ['guest'],
+  created() {
+    this.$nuxt.$emit("setNavBar", { title: `Login`, icon: "lock" });
+  },
   data() {
     return {
       email: '',
@@ -45,6 +49,7 @@ export default {
         });
 
       } catch (e) {
+
       }
     }
   },

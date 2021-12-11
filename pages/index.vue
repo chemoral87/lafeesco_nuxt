@@ -1,6 +1,19 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
+  <v-container class="pa-0" style="max-width:1400px">
+    <v-row dense justify="center" align="center">
+      <v-col cols="12">
+        <!-- <v-card class="py-4 d-flex justify-center ">
+          <span>RC DESARROLLADORA</span>
+        </v-card> -->
+        <v-card class=" d-flex align-end rc_desarrolladora">
+          <v-card-text>
+            <v-btn @click="invest()" class="ml-5 mb-5" x-large color="success">
+              <v-icon class="mr-1">mdi-sprout</v-icon> Quiero invertir
+            </v-btn>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <!-- <v-col cols="12" sm="8" md="6">
       <v-card class="logo py-4 d-flex justify-center">
         <NuxtLogo />
         <VuetifyLogo />
@@ -46,6 +59,37 @@
           </v-btn>
         </v-card-actions>
       </v-card>
-    </v-col>
-  </v-row>
+    </v-col> -->
+      <v-col cols="12">
+        ULTIMOS PROYECTOS
+      </v-col>
+      <v-col cols="12">
+        REDES SOCIALES
+      </v-col>
+    </v-row>
+
+  </v-container>
 </template>
+<script>
+export default {
+  created() {
+    this.$nuxt.$emit("setNavBar", { title: "RC Desarrolladora", icon: null });
+  },
+  methods: {
+    invest() {
+      this.$router.push('/newinvest/1');
+    }
+  }
+}
+</script>
+<style scoped>
+.rc_desarrolladora {
+  /* background: black; */
+  background: url("/fondo.jpg") no-repeat center top;
+  /* background-repeat: no-repeat; */
+  background-size: cover;
+
+  min-height: 60vh;
+  /* min-height: 600px; */
+}
+</style>
