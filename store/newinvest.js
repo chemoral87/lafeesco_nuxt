@@ -54,5 +54,6 @@ export const mutations = {
     state.email = profile.email;
     state.cellphone = profile.cellphone;
     state.password = profile.password;
+    state.password = profile.password_confirm;
   }
 };

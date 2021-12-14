@@ -23,13 +23,13 @@
           </v-menu> -->
         </v-col>
         <v-col cols="6" sm="4" md="4">
-          <v-text-field v-mask="'##-####-####'" type="tel" v-model="investor.cellphone" persistent-placeholder placeholder="Ingrese número " label="Teléfono Celular" outlined :rules="[rules.required, rules.min_10]"></v-text-field>
+          <v-text-field v-mask="'##-####-####'" type="tel" v-model="investor.cellphone" persistent-placeholder placeholder="Ingrese número " label="Teléfono Celular" outlined :rules="[rules.required, rules.cellphone]"></v-text-field>
         </v-col>
         <v-col cols="12" sm="4" md="4">
           <v-text-field v-model="investor.email" persistent-placeholder placeholder="Ingrese correo electrónico" label="Correo Electrónico" outlined :rules="[rules.email]"></v-text-field>
         </v-col>
         <v-col cols="12" sm="6" md="4">
-          <v-text-field v-model="investor.password" persistent-placeholder placeholder="Ingrese una contraseña de 6 letras" label="Contraseña" outlined :rules="[rules.required]"></v-text-field>
+          <v-text-field v-model="investor.password" persistent-placeholder placeholder="Ingrese una contraseña de 6 letras" label="Contraseña" outlined :rules="[rules.required, rules.password]"></v-text-field>
         </v-col>
         <v-col cols="12" sm="6" md="4">
           <v-text-field v-model="investor.password_confirm" persistent-placeholder placeholder="Confirme nuevamente su contraseña" label="Confirme Contraseña" :error-messages="errors ? errors.password_confirm : []" outlined :rules="[rules.required]"></v-text-field>
@@ -93,7 +93,11 @@ export default {
           const datum = this.$moment(value);
           return datum.isValid() || 'Fecha inválida';
         },
-        min_10: value => {
+        password: value => {
+          let len = value.length;
+          return len >= 6 || 'La contraseña debe tener mínimo 6 caracteres';
+        },
+        cellphone: value => {
           let len = value.length;
           return len >= 10 || 'Introduzca un número de 10 dígitos';
         }
@@ -141,28 +145,13 @@ export default {
       //   this.$store.dispatch("validation/clearErrors");
       // }
       if (isValid) {
-        // let investorDTO = {
-        //   name: this.name,
-        //   last_name: this.last_name,
-        //   second_last_name: this.second_last_name,
-        //   birthday: this.birthday,
-        //   email: this.email,
-        //   cellphone: this.cellphone,
-        //   password: this.password,
-        //   date: this.date,
-        // };
-        console.log(this.investor);
         this.$store.commit("newinvest/SET_PROFILE", this.investor);
         // send email to code verification
         this.$router.push('/newinvest/3');
-
-
-
         // await this.$repository.Investor.newinvest(investorDTO)
         //   .then(res => {
         //     console.log("creado");
         //   });
-
       }
     },
 
