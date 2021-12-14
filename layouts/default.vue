@@ -202,7 +202,13 @@ export default {
             icon: 'mdi-account-voice',
             title: 'Contacto',
             to: '/contacto'
-          });
+          },
+          {
+            icon: 'mdi-lock',
+            title: 'Login',
+            to: '/login'
+          })
+          ;
       }
       return menu;
     }

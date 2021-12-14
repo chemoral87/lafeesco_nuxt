@@ -47,7 +47,13 @@ export default {
     },
     async verifyCode() {
       let post = Object.assign(this.investor, { capital: this.capital, verification_code: this.verification_code });
-      await this.$repository.Investor.verifyCode(post);
+      await this.$repository.Investor.verifyCode(post)
+        .then(res => {
+          if (res.success) { // exitosos
+            this.$router.push('/newinvest/4');
+          }
+          // 
+        });
     }
   },
   computed: {

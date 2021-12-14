@@ -54,6 +54,16 @@ export const mutations = {
     state.email = profile.email;
     state.cellphone = profile.cellphone;
     state.password = profile.password;
-    state.password = profile.password_confirm;
+    state.password_confirm = profile.password_confirm;
+  },
+  CLEAR_INVESTOR(state) {
+    state.capital = null;
+    state.last_name = "";
+    state.second_last_name = "";
+    state.birthday = "";
+    state.email = "";
+    state.cellphone = "";
+    state.password = "";
+    state.password_confirm = "";
   }
 };
