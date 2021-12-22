@@ -154,14 +154,18 @@ export default {
       if (this.authenticated) { // logged
 
         menu.push({ icon: 'mdi-view-dashboard', title: 'Dashboard', to: '/dashboard' });
-        if (this.permissions.includes('user-index'))
+        if (this.inc('user-index'))
           menu.push({ icon: 'mdi-account', title: 'Usuarios', to: '/users' });
-        if (this.permissions.includes('role-index'))
+        if (this.inc('role-index'))
           menu.push({ icon: 'mdi-redhat', title: 'Roles', to: '/roles' });
-        if (this.permissions.includes('permission-index'))
+        if (this.inc('permission-index'))
           menu.push({ icon: 'mdi-key', title: 'Permisos', to: '/permissions' });
-        if (this.permissions.includes('investment-index'))
+        if (this.inc('investment-index'))
           menu.push({ icon: 'mdi-pencil-box', title: 'Inversiones', to: '/investment' });
+
+        if (this.inc('investment-my-index')) {
+          menu.push({ icon: 'mdi-pencil-box', title: 'Inversiones', to: '/investment-my' });
+        }
 
         // menu.unshift({
         //   icon: 'mdi-view-dashboard',
@@ -214,6 +218,9 @@ export default {
     }
   },
   methods: {
+    inc(permission) {
+      return this.permissions.includes(permission);
+    },
     setNavBar(navbar) {
       this.title = navbar.hasOwnProperty('title') ? navbar.title : "RC DESARROLLADORA";
       this.icon = navbar.hasOwnProperty('icon') ? navbar.icon : null;

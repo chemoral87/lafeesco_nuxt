@@ -58,6 +58,7 @@ export const mutations = {
   },
   CLEAR_INVESTOR(state) {
     state.capital = null;
+    state.name = "";
     state.last_name = "";
     state.second_last_name = "";
     state.birthday = "";
