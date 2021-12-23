@@ -8,7 +8,7 @@
         <v-card class=" d-flex align-end rc_desarrolladora">
           <v-card-text>
             <v-btn @click="invest()" class="ml-5 mb-5" x-large color="success">
-              <v-icon class="mr-1">mdi-sprout</v-icon> Quiero invertir
+              <v-icon class="mr-1">mdi-sprout</v-icon> Quiero invertirSS
             </v-btn>
           </v-card-text>
         </v-card>
