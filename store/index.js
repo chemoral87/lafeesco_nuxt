@@ -3,8 +3,8 @@ export const state = () => ({
     text: "",
     color: "",
     display: false
-  }
-  // persistedStates: null
+  },
+  locale: "es"
 });
 
 export const getters = {

@@ -111,7 +111,8 @@ export default {
   async asyncData({ $axios, app }) {
     let op = {
       sortBy: ["name"],
-      sortDesc: [false]
+      sortDesc: [false],
+      itemsPerPage: 10
     };
 
     const res = await app.$repository.User.index(op)

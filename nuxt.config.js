@@ -1,11 +1,19 @@
-import colors from "vuetify/es5/util/colors";
 // require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
-require("dotenv").config({ path: ".env." + process.env.NODE_ENV });
+// const env = require("dotenv").config({ path: ".env." + process.env.NODE_ENV });
+const env = require("dotenv").config();
 console.log("NODE_ENV ", process.env.NODE_ENV);
+
+// import VueI18n from "vue-i18n";
+
+// const i18n = new VueI18n({
+//   locale: "es" // set locale
+//   // messages // set locale messages
+// });
+
 export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: "server",
-  // mode: "spa",
+  env: env.parsed,
   ssr: false,
   router: {
     trailingSlash: false
@@ -32,9 +40,13 @@ export default {
     "./plugins/mixins/validation.js",
     "./plugins/axios.js",
     "./plugins/filters.js",
+    "./plugins/i18n.js",
     "./plugins/repository.js",
     "./plugins/vue-mask.js",
-    { src: "./plugins/localStorage.js", ssr: false }
+    { src: "./plugins/chart.js", ssr: false, mode: "client" }
+    // "./plugins/vue-chartist.js",
+    // { src: "./plugins/vue-chartist.js", ssr: false }
+    // { src: "./plugins/localStorage.js", ssr: false }
     // { src: "./plugins/vue-html-to-paper.js", mode: "client" }
     // { src: "@/plugins/vue-html2pdf.js", mode: "client" }
   ],
@@ -60,9 +72,27 @@ export default {
     // https://go.nuxtjs.dev/pwa
     "@nuxtjs/pwa",
     ["@nuxtjs/dotenv", { filename: ".env." + process.env.NODE_ENV }]
+    // "@nuxtjs/i18n"
+    // [
+    //   "@nuxtjs/i18n",
+    //   {
+    //     locales: ["en", "es"],
+    //     defaultLocale: "es",
+    //     vueI18n: {
+    //       fallbackLocale: "en",
+    //       messages: {
+    //         en: {
+    //           greeting: "Hello world!"
+    //         },
+    //         es: {
+    //           greeting: "¡Hola mundo!"
+    //         }
+    //       }
+    //     }
+    //   }
+    // ]
     // "@nuxtjs/dotenv"
   ],
-
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     baseURL: process.env.BASE_URL
@@ -103,35 +133,15 @@ export default {
   },
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
-    customVariables: ["~/assets/variables.scss"],
-    theme: {
-      dark: false,
-      themes: {
-        light: {
-          // amber accent-3
-          banner: colors.amber.accent3,
-          banner_item: colors.amber.accent2,
-          primary: colors.blue.darken2,
-          accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green,
-          return: colors.red
-        },
-        dark: {
-          // banner: colors.blue.darken2,
-          primary: colors.blue.darken2,
-          accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3
-        }
-      }
-    }
+    // lang: {
+    //   locales: { es, en },
+    //   current: "es"
+    // },
+    // defaultLocale: "es",
+    // lang: {
+    //   t: (key, ...params) => app.i18n.t(key, params)
+    // },
+    optionsPath: "./vuetify.options.js"
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

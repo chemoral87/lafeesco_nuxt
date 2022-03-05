@@ -1,11 +1,15 @@
-import CommonRepository from "@/repositories/CommonRepository";
-import InvestmentRepository from "@/repositories/InvestmentRepository";
-import InvestorRepository from "@/repositories/InvestorRepository";
+import CommonRepository from "./CommonRepository";
+import InvestmentRepository from "./InvestmentRepository";
+import InvestorRepository from "./InvestorRepository";
+import InvestorProfileRepository from "./InvestorProfileRepository";
+import CreditRepository from "./CreditRepository";
 
 export default $axios => ({
   Role: CommonRepository($axios)("/roles"),
   Permission: CommonRepository($axios)("/permissions"),
   User: CommonRepository($axios)("/users"),
   Investor: InvestorRepository($axios)("/investor"),
-  Investment: InvestmentRepository($axios)("/investment")
+  InvestorProfile: InvestorProfileRepository($axios)("/investor-profile"),
+  Investment: InvestmentRepository($axios)("/investment"),
+  Credit: CreditRepository($axios)("/credit")
 });

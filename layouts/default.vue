@@ -1,6 +1,7 @@
 <template>
   <v-app dark>
     <v-navigation-drawer :color=" authenticated? '' : 'banner'" v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" temporary app>
+
       <v-list>
         <v-list-item>
           <v-list-item-action class="mr-2">
@@ -121,14 +122,6 @@ export default {
       clipped: true,
       drawer: false,
       fixed: false, // footer
-      // items: [
-      //   {
-      //     icon: 'mdi-home',
-      //     title: 'Inicio',
-      //     to: '/'
-      //   },
-
-      // ],
       miniVariant: false,
       right: true,
       rightDrawer: false,
@@ -163,8 +156,16 @@ export default {
         if (this.inc('investment-index'))
           menu.push({ icon: 'mdi-pencil-box', title: 'Inversiones', to: '/investment' });
 
+
+        if (this.inc('investment-my-profile')) {
+          menu.push({ icon: 'mdi-account', title: 'Perfil Inversor', to: '/investment-my/profile' });
+        }
         if (this.inc('investment-my-index')) {
           menu.push({ icon: 'mdi-pencil-box', title: 'Inversiones', to: '/investment-my' });
+        }
+
+        if (this.inc('credit-index')) {
+          menu.push({ icon: 'mdi-cash', title: 'Creditos', to: '/credit' });
         }
 
         // menu.unshift({

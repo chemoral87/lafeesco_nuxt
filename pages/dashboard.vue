@@ -2,8 +2,8 @@
   <v-container fluid>
     <div>
       <v-container>
-        <span class="text-h6">Bienvenido</span>
-        {{user}}
+        <span class="text-h6">Bienvenido {{NAME_SECRET}}</span>
+        <!-- {{user}} -->
       </v-container>
       <!-- {{authenticated}}
       {{user}} <br><br> a
@@ -17,7 +17,9 @@ export default {
   props: {
   },
   data() {
-    return {};
+    return {
+      NAME_SECRET: "", // process.env.NAME_SECRET
+    };
   },
   methods: {
   },

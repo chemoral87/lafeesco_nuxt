@@ -1,6 +1,14 @@
 <template>
   <div>
     <v-data-table dense mobile-breakpoint="0" :must-sort="true" :headers="headers" :items="items" :options.sync="optionsTable" :server-items-length="total" class="elevation-1">
+
+      DD-MMM-YYYY
+      <template v-slot:[`item.contract_date`]="{ item }">
+        {{ item.capital | moment( 'DD-MMM-YYYY') }}
+      </template>
+      <template v-slot:[`item.capital`]="{ item }">
+        {{ item.capital | price }}
+      </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn color="primary" fab small outlined @click="editItem(item)" class="mr-1 my-1">
           <v-icon>
@@ -23,7 +31,11 @@ export default {
     return {
       optionsTable: {},
       headers: [
-        { text: 'Nombre', value: 'name' },
+        { text: 'Estado', value: 'status' },
+        { text: 'Fecha Contrato', value: 'contract_date' },
+        { text: 'Capital', value: 'capital', align: 'right' },
+        { text: 'Plazo/Meses', value: 'months', align: 'right' },
+        { text: 'Interés %', value: 'yield', align: 'right' },
         { text: 'Acciones', value: 'actions', sortable: false },
       ],
     };

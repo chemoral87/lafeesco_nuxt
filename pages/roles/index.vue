@@ -46,7 +46,7 @@ export default {
   watch: {
     async filterRole(value) {
       let me = this;
-      let op = Object.assign(me.options, { filter: value, page: 1 });
+      let op = Object.assign(me.options, { filter: value, page: 1, itemsPerPage: 10 });
       me.response = await me.$repository.Role.index(op);
     }
   },
@@ -113,11 +113,11 @@ export default {
       // this.$store.dispatch("validation/clearErrors");
     }
   },
-
-  async asyncData({ $axios, app }) {
+  async asyncData({ app }) {
     let op = {
       sortBy: ["name"],
-      sortDesc: [false]
+      sortDesc: [false],
+      itemsPerPage: 10
     };
     //NOTE Repository https://medium.com/js-dojo/consuming-apis-in-nuxt-using-the-repository-pattern-8a13ea57d520
     const res = await app.$repository.Role.index(op)

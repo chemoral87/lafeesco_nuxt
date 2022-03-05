@@ -50,10 +50,9 @@ export default {
       if (this.$refs.input.value == "" || this.$refs.input.value == null) {
         this.$emit("input", null);
       } else {
-        this.anElement.set(this.$refs.input.value); // fix for samsung browser 13
+        // this.anElement.set(this.$refs.input.value); // fix for samsung browser 13
         this.$emit("input", this.anElement.getNumber());
       }
-
     },
     genInput() {
       const listeners = Object.assign({}, this.listeners$);
@@ -84,9 +83,8 @@ export default {
     }
   },
   watch: {
-    value(newVal) {
+    value() {
       // Check if the last v-model update is fired by the input
-
       if (!this.changedByInput) {
         if (this.value == null || this.value == "") {
           this.anElement.clear();

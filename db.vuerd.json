@@ -1,0 +1,182 @@
+{
+  "canvas": {
+    "version": "2.2.11",
+    "width": 2000,
+    "height": 2000,
+    "scrollTop": -5,
+    "scrollLeft": -1,
+    "zoomLevel": 1,
+    "show": {
+      "tableComment": true,
+      "columnComment": true,
+      "columnDataType": true,
+      "columnDefault": true,
+      "columnAutoIncrement": false,
+      "columnPrimaryKey": true,
+      "columnUnique": false,
+      "columnNotNull": true,
+      "relationship": true
+    },
+    "database": "MySQL",
+    "databaseName": "",
+    "canvasType": "@vuerd/plugin-generate-template",
+    "language": "GraphQL",
+    "tableCase": "pascalCase",
+    "columnCase": "camelCase",
+    "highlightTheme": "VS2015",
+    "bracketType": "none",
+    "setting": {
+      "relationshipDataTypeSync": true,
+      "relationshipOptimization": false,
+      "columnOrder": [
+        "columnName",
+        "columnDataType",
+        "columnNotNull",
+        "columnUnique",
+        "columnAutoIncrement",
+        "columnDefault",
+        "columnComment"
+      ]
+    },
+    "pluginSerializationMap": {}
+  },
+  "table": {
+    "tables": [
+      {
+        "name": "investment",
+        "comment": "",
+        "columns": [
+          {
+            "name": "id",
+            "comment": "",
+            "dataType": "int",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": true,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": true,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "5d69d818-38d8-49f5-a361-142243cda18b"
+          },
+          {
+            "name": "status_id",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": true,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "c289d9e3-0734-457e-93f9-a1256e2c05ae"
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 127,
+          "top": 55,
+          "zIndex": 157,
+          "widthName": 70.453125,
+          "widthComment": 60
+        },
+        "visible": true,
+        "id": "9086a9f5-2687-4213-8aff-b349dee36c15"
+      },
+      {
+        "name": "investment_sta",
+        "comment": "",
+        "columns": [
+          {
+            "name": "id",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": true,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": true,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "8b8df55e-240e-4eff-aba9-9ec5e7617708"
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 109,
+          "top": 293,
+          "zIndex": 153,
+          "widthName": 94.00927734375,
+          "widthComment": 60
+        },
+        "visible": true,
+        "id": "ac4cd318-d1a4-4696-8790-ae49eac4d178"
+      }
+    ],
+    "indexes": []
+  },
+  "memo": {
+    "memos": []
+  },
+  "relationship": {
+    "relationships": [
+      {
+        "identification": false,
+        "relationshipType": "OneOnly",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "ac4cd318-d1a4-4696-8790-ae49eac4d178",
+          "columnIds": [
+            "8b8df55e-240e-4eff-aba9-9ec5e7617708"
+          ],
+          "x": 282.5,
+          "y": 293,
+          "direction": "top"
+        },
+        "end": {
+          "tableId": "9086a9f5-2687-4213-8aff-b349dee36c15",
+          "columnIds": [
+            "c289d9e3-0734-457e-93f9-a1256e2c05ae"
+          ],
+          "x": 300.5,
+          "y": 165,
+          "direction": "bottom"
+        },
+        "constraintName": "fk_investment_sta_to_investment",
+        "visible": true,
+        "id": "5851441d-ec99-44ac-9c7f-0a07a2a0faf3"
+      }
+    ]
+  }
+}

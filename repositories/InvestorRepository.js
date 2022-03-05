@@ -7,5 +7,9 @@ export default $axios => resource => ({
   },
   verifyCode(investorDTO) {
     return $axios.$post(`${resource}/verifyCode`, investorDTO);
+  },
+  saveMyProfile(investorProfile) {
+    const config = { headers: { "content-type": "multipart/form-data" } };
+    return $axios.$post(`${resource}/my-profile`, investorProfile, config);
   }
 });

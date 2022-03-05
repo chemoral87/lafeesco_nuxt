@@ -62,6 +62,11 @@
     </v-col> -->
       <v-col cols="12">
         ULTIMOS PROYECTOS
+        <div style="width:50%">
+          <bar-chart :data="chartData" :options="options"></bar-chart>
+
+        </div>
+
       </v-col>
       <v-col cols="12">
         REDES SOCIALES
@@ -72,6 +77,41 @@
 </template>
 <script>
 export default {
+  data() {
+    return {
+      // chartData: {
+      //   datasets: [{
+      //     label: 'Title',
+      //     data: [45, 55, 48, 35, 12]
+      //   }]
+      // }
+      chartData: {
+        labels: ['January', 'February'],
+        datasets: [
+          {
+            label: 'Data One',
+            backgroundColor: '#f87979',
+            data: [40, 20],
+            minBarLength: 10
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          },
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    };
+  },
   created() {
     this.$nuxt.$emit("setNavBar", { title: "RC Desarrolladora", icon: null });
   },

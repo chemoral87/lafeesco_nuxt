@@ -148,10 +148,7 @@ export default {
         this.$store.commit("newinvest/SET_PROFILE", this.investor);
         // send email to code verification
         this.$router.push('/newinvest/3');
-        // await this.$repository.Investor.newinvest(investorDTO)
-        //   .then(res => {
-        //     console.log("creado");
-        //   });
+
       }
     },
 
@@ -161,7 +158,6 @@ export default {
     var datum = new Date();
     datum.setFullYear(datum.getFullYear() - 18);
     let label = this.$moment(datum).format('YYYY-MM-DD');
-    console.log(this.sInvestor, "ok");
     this.date = label;
     this.investor = this.sInvestor;
   }
