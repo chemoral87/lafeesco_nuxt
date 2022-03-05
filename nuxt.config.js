@@ -1,6 +1,6 @@
 // require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
 // const env = require("dotenv").config({ path: ".env." + process.env.NODE_ENV });
-const env = require("dotenv").config();
+const env = require("dotenv").config({ path: ".env" });
 // console.log("NODE_ENV ", process.env.NODE_ENV);
 
 // import VueI18n from "vue-i18n";
