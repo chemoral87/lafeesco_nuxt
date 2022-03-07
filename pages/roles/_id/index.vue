@@ -5,7 +5,7 @@
         <PermissionCombobox label="Permisos" :permissionsx="mRole.permissions" @modelChange="setPermissions"></PermissionCombobox>
       </v-col>
       <v-col cols="12">
-        <v-btn @click="$router.push('/roles')" color="grey" outlined class="mr-1">
+        <v-btn @click="$router.push('/roles')" color="primary" outlined class="mr-1">
           Cancelar
         </v-btn>
         <v-btn @click="saveRolePermissions()" color="primary">

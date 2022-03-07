@@ -168,29 +168,6 @@ export default {
           menu.push({ icon: 'mdi-cash', title: 'Creditos', to: '/credit' });
         }
 
-        // menu.unshift({
-        //   icon: 'mdi-view-dashboard',
-        //   title: 'Dashboard',
-        //   to: '/dashboard'
-        // },
-        //   {
-        //     icon: 'mdi-account',
-        //     title: 'Usuarios',
-        //     to: '/users'
-        //   },
-        //   {
-        //     icon: 'mdi-redhat',
-        //     title: 'Roles',
-        //     to: '/roles'
-        //   },
-        //   {
-        //     icon: 'mdi-key',
-        //     title: 'Permisos',
-        //     to: '/permissions'
-        //   }
-        // );
-
-
       } else {
         menu.push(
           {
