@@ -45,9 +45,9 @@ export default {
         { text: 'Ap. Paterno', value: 'last_name' },
         { text: 'Ap. Materno', value: 'second_last_name' },
         { text: 'E-Mail', value: 'email' },
-        { text: 'Roles', value: 'roles' },
-        { text: 'Permisos Directos', value: 'direct_permissions' },
-        { text: 'Acciones', value: 'actions', width: "200px", sortable: false, },
+        { text: 'Roles', value: 'roles', sortable: false },
+        { text: 'Permisos Directos', value: 'direct_permissions', sortable: false },
+        { text: 'Acciones', value: 'actions', width: "200px", sortable: false },
       ],
     };
   },
