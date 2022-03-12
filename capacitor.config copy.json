@@ -1,0 +1,18 @@
+{
+  "appId": "com.rcdesarrolladora.app",
+  "appName": "RC Desarrolladora",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  // "server": {
+  //   "hostname": "localhost:3000",
+  //   "iosScheme": "https",
+  //   "androidScheme": "https"
+  //   },
+  "cordova": {}
+}

@@ -18,6 +18,7 @@
       </v-row>
 
     </v-form>
+    <v-btn @click="getCoordinates()">Corr {{name_secret}}</v-btn>
   </v-container>
 
 </template>
@@ -32,6 +33,7 @@ export default {
       email: '',
       password: '',
       showned: false, // mostrar password
+      name_secret: ""
     };
   },
   methods: {
@@ -51,10 +53,18 @@ export default {
       } catch (e) {
 
       }
+    },
+    async getCoordinates() {
+      alert("tomasin");
+      const coordinates = await this.$CapacitorGeolocation.getCurrentPosition();
+      alert(JSON.stringify(coordinates));
     }
   },
   mounted() {
     let me = this;
+
+    this.name_secret = process.env.BASE_URL;
+    // this.name_secret = process.env.NAME_SECRET;
   }
 }
 </script>

@@ -1,7 +1,13 @@
 // require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
 // const env = require("dotenv").config({ path: ".env." + process.env.NODE_ENV });
-const env = require("dotenv").config({ path: ".env" });
-// console.log("NODE_ENV ", process.env.NODE_ENV);
+let env;
+if (process.env.NODE_ENV == "production") {
+  env = require("dotenv").config({ path: ".env.production" });
+} else {
+  env = require("dotenv").config({ path: ".env" });
+}
+
+console.log("NODE_ENV ", process.env.NODE_ENV);
 
 // import VueI18n from "vue-i18n";
 
@@ -43,7 +49,8 @@ export default {
     "./plugins/i18n.js",
     "./plugins/repository.js",
     "./plugins/vue-mask.js",
-    { src: "./plugins/chart.js", ssr: false, mode: "client" }
+    { src: "./plugins/chart.js", ssr: false, mode: "client" },
+    { src: "./plugins/geolocation.js", ssr: false, mode: "client" }
     // "./plugins/vue-chartist.js",
     // { src: "./plugins/vue-chartist.js", ssr: false }
     // { src: "./plugins/localStorage.js", ssr: false }

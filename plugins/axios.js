@@ -3,7 +3,7 @@ export default function(context) {
   context.$axios.onError(error => {
     if (error.message == "Network Error") {
       alert("Error de Red, verifique su conexión a internet. Code1");
-      alert(error.response);
+      alert(JSON.stringify(error));
     }
 
     if (error.response)
