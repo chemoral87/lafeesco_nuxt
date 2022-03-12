@@ -6,9 +6,7 @@ if (process.env.NODE_ENV == "production") {
 } else {
   env = require("dotenv").config({ path: ".env" });
 }
-
 console.log("NODE_ENV ", process.env.NODE_ENV);
-
 // import VueI18n from "vue-i18n";
 
 // const i18n = new VueI18n({
