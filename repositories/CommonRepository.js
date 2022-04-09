@@ -11,8 +11,11 @@ export default $axios => resource => ({
     return $axios.$get(`${resource}/${id}`);
   },
 
-  filter(params) {
-    return $axios.$get(`${resource}/filter`, { params: params });
+  filter(params, headers) {
+    return $axios.$get(`${resource}/filter`, {
+      params: params,
+      headers
+    });
   },
 
   create(payload) {

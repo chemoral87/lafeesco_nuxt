@@ -10,7 +10,8 @@ const User = {
           authenticated: "authenticated",
           // verified: "verified",
           permissions: "permissions",
-          snackbar: "snackbar"
+          snackbar: "snackbar",
+          showLoading: "showLoading"
         })
       }
     });

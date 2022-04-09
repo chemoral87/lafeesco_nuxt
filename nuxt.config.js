@@ -48,7 +48,7 @@ export default {
     "./plugins/i18n.js",
     "./plugins/repository.js",
     "./plugins/vue-mask.js",
-    { src: "./plugins/chart.js", ssr: false, mode: "client" }
+    // { src: "./plugins/chart.js", ssr: false, mode: "client" }
     // "./plugins/vue-chartist.js",
     // { src: "./plugins/vue-chartist.js", ssr: false }
     // { src: "./plugins/localStorage.js", ssr: false }

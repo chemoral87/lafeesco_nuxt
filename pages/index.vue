@@ -12,6 +12,7 @@
             </v-btn>
           </v-card-text>
         </v-card>
+
       </v-col>
       <!-- <v-col cols="12" sm="8" md="6">
       <v-card class="logo py-4 d-flex justify-center">
@@ -63,7 +64,7 @@
       <v-col cols="12">
         ULTIMOS PROYECTOS
         <div style="width:50%">
-          <bar-chart :data="chartData" :options="options"></bar-chart>
+          <!-- <bar-chart :data="chartData" :options="options"></bar-chart> -->
 
         </div>
 

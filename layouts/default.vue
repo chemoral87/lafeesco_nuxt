@@ -70,7 +70,7 @@
                 - {{ housing.name }}
               </template>
             </v-list-item-title>
-          </v-list-item> 
+          </v-list-item>
           <v-divider></v-divider> -->
           <v-list-item @click="logout()">
             <v-list-item-content>
@@ -87,6 +87,7 @@
     <v-main>
       <Nuxt />
     </v-main>
+    <MyLoading :value="loading_display"></MyLoading>
     <div class="snackbar-wrapper">
       <v-snackbar absolute :color="snackbar.color" v-model="snackbar_display" shaped multi-line right bottom :timeout="3800">
         <span class="text-subtitle-1 font-weight-bold">{{ snackbar.text }}</span>
@@ -141,6 +142,9 @@ export default {
       }, set() {
         this.$store.dispatch("closeNotify");
       }
+    },
+    loading_display() {
+      return this.showLoading.display;
     },
     items() {
       let menu = [];
