@@ -3,7 +3,7 @@
     <v-form @submit.prevent="submitLogin">
       <v-row>
         <v-col cols="12">
-          <span class="text-h5">Login</span>
+          <span class="text-h5">Login {{NAME_SECRET}}</span>
         </v-col>
         <v-col cols="12">
           <v-text-field outlined v-model="email" label="Correo Electrónico" placeholder=" " persistent-placeholder :error-messages="errors ? errors.email : []"></v-text-field>
@@ -32,6 +32,7 @@ export default {
       email: '',
       password: '',
       showned: false, // mostrar password
+      NAME_SECRET: process.env.NAME_SECRET
     };
   },
   methods: {

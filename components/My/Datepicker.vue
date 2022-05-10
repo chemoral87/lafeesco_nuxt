@@ -1,6 +1,6 @@
 <template>
   <v-menu v-model="menu_picker" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
-    <template v-slot:activator="{ on, attrs }">
+    <template v-slot:activator="{ on }">
       <v-text-field v-bind="{...$props, ...$attrs}" :value="formated_value" @click:clear="clearPicker" clearable @click.native="menu_picker=true" @click:append="menu_picker=true" append-icon="mdi-calendar" readonly v-on="on"></v-text-field>
     </template>
     <v-date-picker no-title scrollable v-model="date_value" @input="menu_picker = false" locale="es">
