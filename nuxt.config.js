@@ -48,12 +48,12 @@ export default {
     "./plugins/i18n.js",
     "./plugins/repository.js",
     "./plugins/vue-mask.js",
+    { src: "./plugins/vue-html-to-paper.js", mode: "client" }
+    // { src: "@/plugins/vue-html2pdf.js", mode: "client" }
     // { src: "./plugins/chart.js", ssr: false, mode: "client" }
     // "./plugins/vue-chartist.js",
     // { src: "./plugins/vue-chartist.js", ssr: false }
     // { src: "./plugins/localStorage.js", ssr: false }
-    // { src: "./plugins/vue-html-to-paper.js", mode: "client" }
-    // { src: "@/plugins/vue-html2pdf.js", mode: "client" }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

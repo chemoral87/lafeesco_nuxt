@@ -156,7 +156,7 @@
         que usted tiene en todo momento los derechos (ARCO) de acceder, rectificar, cancelar u oponerse al tratamiento que le
         damos a sus datos personales.
       </p>
-      <!-- 
+      <!--
         </section>
 
       </vue-html2pdf> -->
@@ -175,7 +175,7 @@ export default {
   },
   methods: {
     generatePDF() {
-      // this.$refs.html2Pdf.generatePdf()
+      // this.$refs.html2Pdf.generatePdf();
       this.$htmlToPaper('printMe', { windowTitle: 'Aviso_de_Privacidad' });
     }
   },
