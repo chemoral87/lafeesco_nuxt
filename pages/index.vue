@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-0" style="max-width:1400px">
+  <v-container class="mx-1" fluid>
     <v-row dense justify="center" align="center">
       <v-col cols="12">
         <!-- <v-card class="py-4 d-flex justify-center ">
