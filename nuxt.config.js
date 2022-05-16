@@ -1,10 +1,13 @@
 // require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
 // const env = require("dotenv").config({ path: ".env." + process.env.NODE_ENV });
 let env;
+let title;
 if (process.env.NODE_ENV == "production") {
   env = require("dotenv").config({ path: ".env.production" });
+  title = process.env.APP_NAME;
 } else {
   env = require("dotenv").config({ path: ".env" });
+  title = process.env.APP_ENVIRONMENT;
 }
 console.log("NODE_ENV ", process.env.NODE_ENV);
 // import VueI18n from "vue-i18n";
@@ -25,7 +28,7 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: "%s",
-    title: "RC Desarrolladora",
+    title: title,
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },

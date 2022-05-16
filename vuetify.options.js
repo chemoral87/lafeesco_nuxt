@@ -18,8 +18,8 @@ export default function({ app, store }) {
       themes: {
         light: {
           // amber accent-3
-          banner: colors.amber.accent3,
-          banner_item: colors.amber.accent2,
+          banner: colors.blue.lighten5,
+          banner_item: colors.blue.lighten4,
           primary: colors.blue.darken2,
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,

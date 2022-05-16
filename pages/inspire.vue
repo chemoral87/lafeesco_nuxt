@@ -16,7 +16,7 @@
 <script>
 export default {
   created() {
-    this.$nuxt.$emit("setNavBar", { title: "RC Desarrolladora", icon: null });
+    this.$nuxt.$emit("setNavBar", { title: process.env.APP_NAME, icon: null });
   }
 }
 </script>

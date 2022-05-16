@@ -1,6 +1,6 @@
 {
-	"appId": "com.rcdesarrolladora.app",
-	"appName": "RC Desarrolladora",
+	"appId": "com.lafeescobedo.app",
+	"appName": "La Fe Escobedo",
 	"webDir": "dist",
 	"bundledWebRuntime": false,
 	"npmClient": "npm",

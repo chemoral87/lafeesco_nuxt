@@ -5,7 +5,7 @@
       <v-list>
         <v-list-item>
           <v-list-item-action class="mr-2">
-            <v-img class="logo" width="35px" src="/rc_desarrolladora_logo.jpg"></v-img>
+            <v-img class="logo" width="35px" src="/logo.png"></v-img>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>
@@ -70,7 +70,7 @@
                 - {{ housing.name }}
               </template>
             </v-list-item-title>
-          </v-list-item> 
+          </v-list-item>
           <v-divider></v-divider> -->
           <v-list-item @click="logout()">
             <v-list-item-content>
@@ -126,7 +126,7 @@ export default {
       right: true,
       rightDrawer: false,
       menu: false,
-      title_companion: 'RC DESARROLLADORA',
+      title_companion: process.env.APP_NAME,
       title: '',
       icon: null,
       back: null,
@@ -200,7 +200,7 @@ export default {
       return this.permissions.includes(permission);
     },
     setNavBar(navbar) {
-      this.title = navbar.hasOwnProperty('title') ? navbar.title : "RC DESARROLLADORA";
+      this.title = navbar.hasOwnProperty('title') ? navbar.title : "La Fe Escobedo";
       this.icon = navbar.hasOwnProperty('icon') ? navbar.icon : null;
       this.back = navbar.hasOwnProperty('back') ? navbar.back : null;
       this.show_drawer = navbar.hasOwnProperty('show_drawer') ? navbar.show_drawer : true;

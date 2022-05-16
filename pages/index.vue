@@ -2,9 +2,7 @@
   <v-container class="pa-0" style="max-width:1400px">
     <v-row dense justify="center" align="center">
       <v-col cols="12">
-        <!-- <v-card class="py-4 d-flex justify-center ">
-          <span>RC DESARROLLADORA</span>
-        </v-card> -->
+
         <v-card class=" d-flex align-end rc_desarrolladora">
           <v-card-text>
             <v-btn @click="invest()" class="ml-5 mb-5" x-large color="success">
@@ -63,7 +61,7 @@
       <v-col cols="12">
         ULTIMOS PROYECTOS
         <div style="width:50%">
-          <bar-chart :data="chartData" :options="options"></bar-chart>
+          <!-- <bar-chart :data="chartData" :options="options"></bar-chart> -->
 
         </div>
 
@@ -113,7 +111,7 @@ export default {
     };
   },
   created() {
-    this.$nuxt.$emit("setNavBar", { title: "RC Desarrolladora", icon: null });
+    this.$nuxt.$emit("setNavBar", { title: process.env.APP_NAME, icon: null });
   },
   methods: {
     invest() {
