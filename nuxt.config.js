@@ -22,6 +22,7 @@ export default {
   target: "server",
   env: env.parsed,
   ssr: false,
+  telemetry: false,
   router: {
     trailingSlash: false
   },
