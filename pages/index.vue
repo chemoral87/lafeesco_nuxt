@@ -3,11 +3,6 @@
     <v-row dense no-gutters>
       <v-col cols="12">
 
-        <!-- <v-card class=" d-flex align-end ">
-          <v-card-text>
-
-          </v-card-text>
-        </v-card> -->
       </v-col>
 
       <v-col cols="12">

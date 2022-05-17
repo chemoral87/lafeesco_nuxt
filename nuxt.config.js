@@ -1,6 +1,7 @@
 // require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
 // const env = require("dotenv").config({ path: ".env." + process.env.NODE_ENV });
 let env;
+
 let title;
 if (process.env.NODE_ENV == "production") {
   env = require("dotenv").config({ path: ".env.production" });
@@ -10,6 +11,7 @@ if (process.env.NODE_ENV == "production") {
   title = process.env.APP_ENVIRONMENT;
 }
 console.log("NODE_ENV ", process.env.NODE_ENV);
+
 // import VueI18n from "vue-i18n";
 
 // const i18n = new VueI18n({
@@ -56,8 +58,6 @@ export default {
     // "./plugins/vue-chartist.js",
     // { src: "./plugins/vue-chartist.js", ssr: false }
     // { src: "./plugins/localStorage.js", ssr: false }
-    // { src: "./plugins/vue-html-to-paper.js", mode: "client" }
-    // { src: "@/plugins/vue-html2pdf.js", mode: "client" }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

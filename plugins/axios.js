@@ -1,5 +1,6 @@
 export default function(context) {
   // export default function({ $axios, store, redirect }) {
+  context.store.dispatch("hideLoading");
   context.$axios.onError(error => {
     if (error.message == "Network Error") {
       alert("Error de Red, verifique su conexión a internet. Code1");
@@ -17,11 +18,15 @@ export default function(context) {
     return Promise.reject(error);
   });
 
-  context.$axios.onRequest(() => {
+  context.$axios.onRequest(req => {
     context.store.dispatch("validation/clearErrors");
+    if (!(req.headers.loading == false)) {
+      context.store.dispatch("showLoading");
+    }
   });
 
   context.$axios.onResponse(res => {
+    context.store.dispatch("hideLoading");
     if (res.data) context.store.dispatch("notify", res.data);
   });
 }

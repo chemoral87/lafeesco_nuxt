@@ -4,6 +4,9 @@ export const state = () => ({
     color: "",
     display: false
   },
+  show_loading: {
+    display: false
+  },
   locale: "es"
 });
 
@@ -24,6 +27,9 @@ export const getters = {
   },
   snackbar(state) {
     return state.snackbar;
+  },
+  showLoading(state) {
+    return state.show_loading;
   }
 };
 
@@ -34,6 +40,16 @@ export const mutations = {
   CLOSE_SNACKBAR(state) {
     if (state.snackbar.display == true) {
       state.snackbar.display = false;
+    }
+  },
+  SHOW_LOADING(state) {
+    if (state.show_loading.display == false) {
+      state.show_loading.display = true;
+    }
+  },
+  HIDE_LOADING(state) {
+    if (state.show_loading.display == true) {
+      state.show_loading.display = false;
     }
   }
   // SET_STATE(state, payload) {
@@ -56,5 +72,11 @@ export const actions = {
   },
   closeNotify({ commit }) {
     commit("CLOSE_SNACKBAR");
+  },
+  showLoading({ commit }) {
+    commit("SHOW_LOADING");
+  },
+  hideLoading({ commit }) {
+    commit("HIDE_LOADING");
   }
 };

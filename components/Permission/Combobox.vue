@@ -48,7 +48,7 @@ export default {
   watch: {
     async search(val, prev) {
       if (!(val == null || val.trim() == "")) {
-        let itemz = await this.$repository.Permission.filter({ queryText: val, ids: this.permissions_id });
+        let itemz = await this.$repository.Permission.filter({ queryText: val, ids: this.permissions_id }, { loading: false });
         this.items = itemz;
       }
     },
