@@ -175,19 +175,19 @@ export default {
             title: 'Inicio',
             to: '/'
           },
-          {
-            icon: 'mdi-message-text-lock',
-            title: 'Aviso de privacidad',
-            to: '/aviso-privacidad'
-          },
-          {
-            icon: 'mdi-account-voice',
-            title: 'Contacto',
-            to: '/contacto'
-          },
+          // {
+          //   icon: 'mdi-message-text-lock',
+          //   title: 'Aviso de privacidad',
+          //   to: '/aviso-privacidad'
+          // },
+          // {
+          //   icon: 'mdi-account-voice',
+          //   title: 'Contacto',
+          //   to: '/contacto'
+          // },
           {
             icon: 'mdi-lock',
-            title: 'Login',
+            title: 'Inicia Sesión ',
             to: '/login'
           })
           ;

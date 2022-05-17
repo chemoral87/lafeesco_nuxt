@@ -3,7 +3,7 @@
     <v-form @submit.prevent="submitLogin">
       <v-row>
         <v-col cols="12">
-          <span class="text-h5">Login</span>
+          <span class="text-h5">Inicio Sesión</span>
         </v-col>
         <v-col cols="12">
           <v-text-field outlined v-model="email" label="Correo Electrónico" placeholder=" " persistent-placeholder :error-messages="errors ? errors.email : []"></v-text-field>
@@ -18,7 +18,7 @@
       </v-row>
 
     </v-form>
-    <v-btn @click="getCoordinates()">Corr {{name_secret}}</v-btn>
+
   </v-container>
 
 </template>
@@ -26,7 +26,7 @@
 export default {
   middleware: ['guest'],
   created() {
-    this.$nuxt.$emit("setNavBar", { title: `Login`, icon: "lock" });
+    this.$nuxt.$emit("setNavBar", { title: `Inicio Sesión`, icon: "lock", show_login: false });
   },
   data() {
     return {
@@ -54,11 +54,7 @@ export default {
 
       }
     },
-    async getCoordinates() {
-      alert("tomasin");
-      const coordinates = await this.$CapacitorGeolocation.getCurrentPosition();
-      alert(JSON.stringify(coordinates));
-    }
+
   },
   mounted() {
     let me = this;
