@@ -1,6 +1,5 @@
 export default function(context) {
   // export default function({ $axios, store, redirect }) {
-  context.store.dispatch("hideLoading");
   context.$axios.onError(error => {
     if (error.message == "Network Error") {
       alert("Error de Red, verifique su conexión a internet. Code1");
@@ -14,7 +13,7 @@ export default function(context) {
           error.response.data.errors
         );
       }
-
+    context.store.dispatch("hideLoading");
     return Promise.reject(error);
   });
 

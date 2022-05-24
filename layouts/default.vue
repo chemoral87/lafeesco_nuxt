@@ -117,6 +117,8 @@
 </template>
 
 <script>
+
+import { MenuService } from '../services/menu-service';
 export default {
   data() {
     return {
@@ -147,62 +149,13 @@ export default {
       return this.showLoading.display;
     },
     items() {
-      let menu = [];
-      if (this.authenticated) { // logged
 
-        menu.push({ icon: 'mdi-view-dashboard', title: 'Dashboard', to: '/dashboard' });
-        if (this.inc('user-index'))
-          menu.push({ icon: 'mdi-account', title: 'Usuarios', to: '/users' });
-        if (this.inc('role-index'))
-          menu.push({ icon: 'mdi-redhat', title: 'Roles', to: '/roles' });
-        if (this.inc('permission-index'))
-          menu.push({ icon: 'mdi-key', title: 'Permisos', to: '/permissions' });
-        if (this.inc('investment-index'))
-          menu.push({ icon: 'mdi-pencil-box', title: 'Inversiones', to: '/investment' });
-
-
-        if (this.inc('investment-my-profile')) {
-          menu.push({ icon: 'mdi-account', title: 'Perfil Inversor', to: '/investment-my/profile' });
-        }
-        if (this.inc('investment-my-index')) {
-          menu.push({ icon: 'mdi-pencil-box', title: 'Inversiones', to: '/investment-my' });
-        }
-
-        if (this.inc('credit-index')) {
-          menu.push({ icon: 'mdi-cash', title: 'Creditos', to: '/credit' });
-        }
-
-      } else {
-        menu.push(
-          {
-            icon: 'mdi-home',
-            title: 'Inicio',
-            to: '/'
-          },
-          // {
-          //   icon: 'mdi-message-text-lock',
-          //   title: 'Aviso de privacidad',
-          //   to: '/aviso-privacidad'
-          // },
-          // {
-          //   icon: 'mdi-account-voice',
-          //   title: 'Contacto',
-          //   to: '/contacto'
-          // },
-          {
-            icon: 'mdi-lock',
-            title: 'Inicia Sesión ',
-            to: '/login'
-          })
-          ;
-      }
-      return menu;
+      const menu_ = new MenuService(this.authenticated, this.permissions);
+      return menu_.getMenu();
     }
   },
   methods: {
-    inc(permission) {
-      return this.permissions.includes(permission);
-    },
+
     setNavBar(navbar) {
       this.title = navbar.hasOwnProperty('title') ? navbar.title : "La Fe Escobedo";
       this.icon = navbar.hasOwnProperty('icon') ? navbar.icon : null;
