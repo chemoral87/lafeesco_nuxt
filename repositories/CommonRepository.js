@@ -7,6 +7,10 @@ export default $axios => resource => ({
     }
   },
 
+  initialCatalog(params = {}) {
+    return $axios.$get(`${resource}/initialCatalog`, { params: params });
+  },
+
   show(id) {
     return $axios.$get(`${resource}/${id}`);
   },

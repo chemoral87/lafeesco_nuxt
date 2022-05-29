@@ -11,5 +11,6 @@ export default $axios => ({
   Investor: InvestorRepository($axios)("/investor"),
   InvestorProfile: InvestorProfileRepository($axios)("/investor-profile"),
   Investment: InvestmentRepository($axios)("/investment"),
-  Credit: CreditRepository($axios)("/credit")
+  Credit: CreditRepository($axios)("/credit"),
+  Consolidation: CommonRepository($axios)("/consolidation")
 });
