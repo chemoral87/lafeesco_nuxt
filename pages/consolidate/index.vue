@@ -1,13 +1,12 @@
 <template>
   <v-container fluid>
-    <v-flex>
-      <v-btn color="success" @click="$router.push('consolidate/new')">
-        <v-icon class="mr-1 mb-1">mdi-account-plus</v-icon> Nuevo Miembro
-      </v-btn>
-      <v-btn :disabled="!canAddAddress" color="primary" class=" ml-1" @click="addAddress">
-        <v-icon class="mr-1">mdi-home-city</v-icon> Añadir Domicilio
-      </v-btn>
-    </v-flex>
+
+    <v-btn color="success" @click="$router.push('consolidate/new')" class=" mb-1 mr-1">
+      <v-icon class="mr-1">mdi-account-plus</v-icon> Nuevo Miembro
+    </v-btn>
+    <v-btn :disabled="!canAddAddress" color="primary" class="" @click="addAddress">
+      <v-icon class="mr-1">mdi-home-city</v-icon> Añadir Domicilio
+    </v-btn>
 
     <MemberTable :members="members" @deleteItem="beforeDeleteMember"></MemberTable>
     <DialogDelete v-if="showDialogDelete" :dialog="dialogDelete" @ok="deleteMember" @close="showDialogDelete = false"></DialogDelete>

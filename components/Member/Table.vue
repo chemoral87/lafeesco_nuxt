@@ -11,7 +11,7 @@
           <th class="text-left"> Categoría</th>
           <th class="text-left"> Edad</th>
           <th class="text-left"> Estado Civil</th>
-          <th class="text-left"> Acciones</th>
+          <th class="text-left" style="min-width:140px"> Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -39,6 +39,7 @@
           </td>
         </tr>
       </tbody>
+
     </template>
   </v-simple-table>
 </template>
