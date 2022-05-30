@@ -2,11 +2,9 @@ export class MenuService {
   constructor(authenticated, permissions) {
     this.authenticated = authenticated;
     this.permissions = permissions;
-    console.log(this.permissions);
   }
 
   hasPermission(permission) {
-    console.log("hasPermission ", permission);
     return this.permissions.includes(permission);
   }
 

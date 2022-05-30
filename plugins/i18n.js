@@ -6,7 +6,6 @@ import es from "~/locales/es.json";
 import fr from "~/locales/fr.json";
 // https://allenhwkim.medium.com/multiple-language-with-nuxt-vuejs-efc3dad45eac
 export default async function({ app, store }) {
-  console.log(store.state.locale);
   // await app.i18n.setLocale(store.state.locale);
 
   app.i18n = new VueI18n({
@@ -22,9 +21,7 @@ export default async function({ app, store }) {
     }
   });
 
-  app.i18n.beforeLanguageSwitch = (oldLocale, newLocale) => {
-    console.log("beforeLanguageSwitch");
-  };
+  app.i18n.beforeLanguageSwitch = (oldLocale, newLocale) => {};
 
   app.i18n.onLanguageSwitched = (oldLocale, newLocale) => {
     console.log("onLanguageSwitched", oldLocale, newLocale);

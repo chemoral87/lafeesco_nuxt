@@ -79,7 +79,6 @@ export default {
         payload: item
       };
       this.roleDialogDelete = true;
-      // this.role = Object.assign({}, item);
     },
     async deleteRole(item) {
       await this.$repository.Role.delete(item.id, item)

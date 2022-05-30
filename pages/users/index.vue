@@ -1,10 +1,10 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row dense>
-      <v-col cols="12" md="2">
+      <v-col cols="12" md="3">
         <v-text-field append-icon="mdi-magnify" clearable hide-details v-model="filterUser" placeholder="Filtro"></v-text-field>
       </v-col>
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <v-btn @click="newUser()" color="primary" class="mr-1">
           <v-icon>mdi-plus</v-icon> Nuevo
         </v-btn>

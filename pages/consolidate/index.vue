@@ -1,52 +1,16 @@
 <template>
   <v-container fluid>
-    <v-form>
-      <v-row dense>
-        <v-col cols="6" md="3">
-          <v-text-field outlined label="Nombre" model="member.name" :rules="[v => !!v || 'Campo requerido']" />
-        </v-col>
-        <v-col cols="6" md="3">
-          <v-text-field outlined label="Apellido Paterno" model="member.paternal_surame" :rules="[v => !!v || 'Campo requerido']" />
-        </v-col>
-        <v-col cols="6" md="3">
-          <v-text-field outlined label="Apellido Materno" model="member.maternal_surame" />
-        </v-col>
-      </v-row>
-      <!-- <v-row dense>
-        Cumpleaños
-      </v-row>
-      <v-row dense>
+    <v-flex>
+      <v-btn color="success" @click="$router.push('consolidate/new')">
+        <v-icon class="mr-1 mb-1">mdi-account-plus</v-icon> Nuevo Miembro
+      </v-btn>
+      <v-btn :disabled="!canAddAddress" color="primary" class=" ml-1" @click="addAddress">
+        <v-icon class="mr-1">mdi-home-city</v-icon> Añadir Domicilio
+      </v-btn>
+    </v-flex>
 
-        <v-col cols="6" md="2" lg="1">
-          <v-text-field outlined label="Día" name="day_b" model="member.day_b" />
-        </v-col>
-        <v-col cols="6" md="2">
-          <v-text-field outlined label="Mes" name="month_b" model="member.month_b" />
-        </v-col>
-        <v-col cols="6" md="2" lg="1">
-          <v-text-field outlined label="Año" name="year_b" model="member.year_b" />
-        </v-col>
-      </v-row> -->
-      <v-row dense>
-
-        <v-col cols="6" md="3">
-          <v-select outlined hide-details label="Estado Civil" v-model="member.marital_status_id" :items="marital_statuses" item-value="id" item-text="name" clearable="true"></v-select>
-          <!-- <v-text-field label="Estado Civil" name="marital_status_id" model="member.marital_status_id" /> -->
-        </v-col>
-        <v-col cols="6" md="3">
-          <v-select outlined hide-details label="Grupo" v-model="member.category_id" :items="member_groups" item-value="id" item-text="name" clearable="true"></v-select>
-          <!-- <v-text-field label="Grupo" name="category_id" model="member.category_id" /> -->
-        </v-col>
-
-      </v-row>
-      <v-row dense>
-        <v-col cols="6" md="3">
-          <!-- <v-text-field label="Petición Oración" name="prayer_request" model="member.prayer_request" /> -->
-          <v-textarea outlined label="Petición Oración" name="prayer_request" model="member.prayer_request" rows="1" auto-grow></v-textarea>
-        </v-col>
-      </v-row>
-
-    </v-form>
+    <MemberTable :members="members" @deleteItem="beforeDeleteMember"></MemberTable>
+    <DialogDelete v-if="showDialogDelete" :dialog="dialogDelete" @ok="deleteMember" @close="showDialogDelete = false"></DialogDelete>
   </v-container>
 </template>
 <script>
@@ -61,7 +25,7 @@ export default {
     this.$nuxt.$emit("setNavBar", { title: "Consolidar", icon: "account-plus" });
   },
   async asyncData({ $axios, app }) {
-    const res = await app.$repository.Consolidation.initialCatalog()
+    const res = await app.$repository.Member.myMembersNoAddress()
       .catch(e => { });
     return { ...res };
   },
@@ -70,6 +34,7 @@ export default {
   data() {
     return {
       member: {},
+      members: [],
       marital_statuses: [],
       months: [
         { id: "01", name: "Enero" },
@@ -84,10 +49,47 @@ export default {
         { id: "10", name: "Octubre" },
         { id: "11", name: "Noviembre" },
         { id: "12", name: "Diciembre" },
-      ]
+      ],
+      showDialogDelete: false,
+      dialogDelete: {}
     };
   },
+  computed: {
+    canAddAddress() {
+      console.log("canAddress");
+      let match = this.members.find(m => (m.check == true));
+      if (match) return true;
+      return false;
+    }
+  },
   methods: {
+    addAddress() {
+      console.log("agregar domicilio");
+    },
+    beforeDeleteMember(item) {
+
+      this.showDialogDelete = true;
+      this.dialogDelete = {
+        text: "Desea eliminar el Miembro ",
+        strong: `${item.name} ${item.paternal_surname}`,
+        payload: item
+      };
+      // this.userx = Object.assign({}, item);
+    },
+
+    async deleteMember(item) {
+      await this.$repository.Member.delete(item.id)
+        .then(res => {
+          this.showDialogDelete = false;
+          this.getMembersNoAddress();
+        })
+        .catch(e => { });
+    },
+    async getMembersNoAddress() {
+      let { members } = await this.$repository.Member.myMembersNoAddress();
+      this.members = members;
+    },
+
   },
   mounted() {
     let me = this;
