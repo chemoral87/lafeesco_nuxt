@@ -1,16 +1,16 @@
 <template>
-  <v-container fluid>
-
+  <div>
     <v-btn color="success" @click="$router.push('consolidate/new')" class=" mb-1 mr-1">
       <v-icon class="mr-1">mdi-account-plus</v-icon> Nuevo Miembro
     </v-btn>
-    <v-btn :disabled="!canAddAddress" color="primary" class="" @click="addAddress">
+    <v-btn :disabled="!canAddAddress" color="primary" class="" @click="openMemberAddressDialog">
       <v-icon class="mr-1">mdi-home-city</v-icon> Añadir Domicilio
     </v-btn>
 
-    <MemberTable :members="members" @deleteItem="beforeDeleteMember"></MemberTable>
+    <MemberTable :members="members" @editItem="editItem" @deleteItem="beforeDeleteMember" @toogleChecks="toogleChecks"></MemberTable>
     <DialogDelete v-if="showDialogDelete" :dialog="dialogDelete" @ok="deleteMember" @close="showDialogDelete = false"></DialogDelete>
-  </v-container>
+    <MemberAddressDialog v-if="showMemberAddressDialog" @save="saveMemberAddress" @close="showMemberAddressDialog = false"></MemberAddressDialog>
+  </div>
 </template>
 <script>
 export default {
@@ -50,20 +50,33 @@ export default {
         { id: "12", name: "Diciembre" },
       ],
       showDialogDelete: false,
+      showMemberAddressDialog: false,
       dialogDelete: {}
     };
   },
   computed: {
     canAddAddress() {
       console.log("canAddress");
+
       let match = this.members.find(m => (m.check == true));
       if (match) return true;
       return false;
     }
   },
   methods: {
-    addAddress() {
-      console.log("agregar domicilio");
+    toogleChecks({ check, item }) {
+      if (item) {
+        this.members.map(m => (m.id == item.id) ? { ...m, check: check } : m);
+      } else {
+        this.members.forEach((m) => m.check = check);
+      }
+      this.members = [...this.members];
+    },
+    openMemberAddressDialog() {
+      this.showMemberAddressDialog = true;
+    },
+    saveMemberAddress() {
+
     },
     beforeDeleteMember(item) {
 
@@ -75,7 +88,9 @@ export default {
       };
       // this.userx = Object.assign({}, item);
     },
-
+    editItem(item) {
+      this.$router.push(`/consolidate/${item.id}`);
+    },
     async deleteMember(item) {
       await this.$repository.Member.delete(item.id)
         .then(res => {

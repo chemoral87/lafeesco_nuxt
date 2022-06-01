@@ -1,11 +1,8 @@
-.logo {
-  border-radius: 50%;
-}
 
 .v-btn:not(.v-btn--outlined).return {
   color: #ffffff;
 }
 
 .v-data-table__wrapper {
-  overflow-x: auto;
+  overflow-x: visible;
 }

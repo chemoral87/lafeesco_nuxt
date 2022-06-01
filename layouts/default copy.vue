@@ -85,10 +85,7 @@
 
     </v-app-bar>
     <v-main>
-
-      <v-container>
-        <Nuxt />
-      </v-container>
+      <Nuxt />
       <MyLoading :value="loading_display"></MyLoading>
       <div class="snackbar-wrapper">
         <v-snackbar absolute :color="snackbar.color" v-model="snackbar_display" shaped multi-line right bottom :timeout="3800">
@@ -118,7 +115,6 @@
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer> -->
   </v-app>
-
 </template>
 
 <script>
@@ -191,7 +187,7 @@ export default {
 }
 </script>
 <style>
-.snackbar-wrapper {
+/* .snackbar-wrapper {
   position: fixed;
   height: 100%;
   width: 100%;
@@ -199,6 +195,6 @@ export default {
   top: 0;
   left: 0;
   z-index: 1000;
-}
+} */
 </style>
 

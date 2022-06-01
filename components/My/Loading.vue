@@ -26,7 +26,7 @@ export default {
 }
 </script>
 
-<style>
+<style >
 .dialog.centered-dialog,
 .v-dialog.centered-dialog {
   background: #282c2dad;

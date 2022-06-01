@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <v-row dense>
 
       <v-col cols="12" md="2">
@@ -20,11 +20,13 @@
           <PermissionTable @sorting="getPermissions" :options="options" :response="response" @edit="editPermission" @delete="beforeDeletePermission"></PermissionTable>
         </client-only>
       </v-col>
+
     </v-row>
     <PermissionDialog :permission="permission" v-if="permissionDialog" @close="closeDialog" @save="savePermission" />
     <DialogDelete v-if="permissionDialogDelete" :dialog="dialogDelete" @ok="deletePermission" @close="permissionDialogDelete = false"></DialogDelete>
+
     <!-- <PermissionDialogDelete :permission="permission" v-if="permissionDialogDelete" @close="permissionDialogDelete = false" @ok="deletePermission" /> -->
-  </v-container>
+  </div>
 </template>
 <script>
 export default {

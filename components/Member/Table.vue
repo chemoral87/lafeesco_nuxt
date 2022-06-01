@@ -4,7 +4,7 @@
       <thead>
         <tr>
           <th>
-            <v-checkbox v-model="check" @change="toogleChecks" hide-details />
+            <v-checkbox v-model="check" @change="emitAction('toogleChecks', {check})" hide-details />
           </th>
           <th class="text-left"> Nombre Completo </th>
           <th class="text-left"> Celular</th>
@@ -15,9 +15,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in members" :key="item.name">
+        <tr v-for="item in members" :key="item.id">
           <td>
-            <v-checkbox v-model="item.check" hide-details />
+            <v-checkbox v-model="item.check" @change="emitAction('toogleChecks', {check: item.check, item})" hide-details />
           </td>
           <td>{{ getfullName(item.name, item.paternal_surname, item.maternal_surname)  }}</td>
           <td>{{ item.cellphone}}</td>
@@ -56,10 +56,13 @@ export default {
     getfullName(name, paternal_surname, maternal_surname) {
       return [name, paternal_surname, maternal_surname].filter(Boolean).join(" ");
     },
-    toogleChecks() {
-      let check = this.check;
-      this.members.forEach(m => m.check = check);
-    },
+    // toogleChecks() {
+    //   let check = this.check;
+    //   // let arr = this.members.map(m => { m.check = check; });
+    //   let arr = this.members.map((mio) => mio ? { ...mio, check: check } : mio);
+    //   console.log(arr);
+    //   this.members = arr;
+    // },
     emitAction(event, payload) {
       this.$emit(event, payload);
     },
@@ -72,7 +75,6 @@ export default {
   },
   mounted() {
     let me = this;
-    console.log(this.members);
   }
 }
 </script>

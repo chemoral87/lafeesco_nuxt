@@ -1,15 +1,12 @@
 <template>
-  <v-container fluid>
-    <div>
-      <v-container>
-        <span class="text-h6">Bienvenido {{NAME_SECRET}}</span>
-        <!-- {{user}} -->
-      </v-container>
-      <!-- {{authenticated}}
+
+  <div>
+    <span class="text-h6">Bienvenido {{NAME_SECRET}}</span>
+    <!-- {{user}} -->
+  </div>
+  <!-- {{authenticated}}
       {{user}} <br><br> a
       {{permissions}} -->
-    </div>
-  </v-container>
 
 </template>
 <script>

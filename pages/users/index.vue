@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <div>
     <v-row dense>
       <v-col cols="12" md="3">
         <v-text-field append-icon="mdi-magnify" clearable hide-details v-model="filterUser" placeholder="Filtro"></v-text-field>
@@ -21,7 +21,7 @@
     <UserDialog :userx="userx" v-if="userDialog" @close="closeDialog" @save="saveUser" />
     <DialogDelete v-if="userDialogDelete" :dialog="dialogDelete" @ok="deleteUser" @close="userDialogDelete = false"></DialogDelete>
     <!-- <UserDialogDelete :userx="userx" v-if="userDialogDelete" @close="userDialogDelete = false" @ok="deleteUser" /> -->
-  </v-container>
+  </div>
 </template>
 <script>
 export default {

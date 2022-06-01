@@ -1,16 +1,12 @@
 <template>
-  <v-container>
-    <v-row dense no-gutters>
-      <v-col cols="12">
 
-      </v-col>
+  <v-row>
 
-      <v-col cols="12">
-        REDES SOCIALES
-      </v-col>
-    </v-row>
+    <v-col cols="12">
+      REDES SOCIALES
+    </v-col>
+  </v-row>
 
-  </v-container>
 </template>
 <script>
 export default {
@@ -59,14 +55,4 @@ export default {
   }
 }
 </script>
-<style scoped>
-.rc_desarrolladora {
-  /* background: black; */
-  background: url("/fondo.jpg") no-repeat center top;
-  /* background-repeat: no-repeat; */
-  background-size: cover;
 
-  min-height: 60vh;
-  /* min-height: 600px; */
-}
-</style>

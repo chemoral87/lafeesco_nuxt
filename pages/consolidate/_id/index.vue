@@ -11,10 +11,13 @@
         <v-col cols="6" md="3">
           <v-text-field outlined label="Apellido Materno" v-model="member.maternal_surname" />
         </v-col>
+        <v-col cols="6" md="3">
+          <v-text-field outlined label="Fecha cumpleaños" v-model="member.birthday" v-mask="'##-##-####'" :persistent-placeholder="true" placeholder="dd-mm-aaaa" />
+        </v-col>
       </v-row>
       <v-row dense>
         <v-col cols="6" md="3">
-          <v-text-field outlined label="Celular" v-model="member.cellphone" />
+          <v-text-field outlined label="Celular" v-model="member.cellphone" v-mask="'##-####-####'" />
         </v-col>
         <v-col cols="6" md="3">
           <v-select outlined hide-details label="Estado Civil" v-model="member.marital_status_id" :items="marital_statuses" item-value="id" item-text="name" :clearable="true"></v-select>
@@ -40,23 +43,26 @@
 <script>
 export default {
   validate({ store, error }) {
-    if (store.getters.permissions.includes('consolidador-insert'))
+    if (store.getters.permissions.includes('consolidador-update'))
       return true;
     else
       throw error({ statusCode: 403 });
   },
   created() {
-    this.$nuxt.$emit("setNavBar", { title: "Nuevo Miembro", icon: "account-plus" });
+    this.$nuxt.$emit("setNavBar", { title: "Editar Miembro", icon: "account-plus" });
   },
-  async asyncData({ $axios, app }) {
-    const res = await app.$repository.Consolidation.initialCatalog()
+  async asyncData({ $axios, app, params }) {
+    const initialCatalog = await app.$repository.Consolidation.initialCatalog()
       .catch(e => { });
-    return { ...res };
+    const member = await app.$repository.Member.show(params.id);
+    return { ...initialCatalog, member, id: params.id };
   },
   props: {
   },
   data() {
     return {
+      coma: "",
+      id: 0,
       member: {},
       marital_statuses: [],
       months: [
@@ -76,12 +82,13 @@ export default {
     };
   },
   methods: {
+
     cancel() {
       this.$router.push("/consolidate");
     },
     async saveMember() {
       if (!this.$refs.form.validate()) return;
-      await this.$repository.Member.create(this.member)
+      await this.$repository.Member.update(this.id, this.member)
         .then(res => {
           this.$router.push("/consolidate");
         })

@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <v-row dense>
       <v-col cols="12" md="2">
         <v-text-field append-icon="mdi-magnify" clearable hide-details v-model="filterRole" placeholder="Filtro"></v-text-field>
@@ -19,7 +19,7 @@
     <RoleDialog :role="role" v-if="roleDialog" @close="closeDialog" @save="saveRole" />
     <DialogDelete v-if="roleDialogDelete" :dialog="dialogDelete" @ok="deleteRole" @close="roleDialogDelete = false"></DialogDelete>
     <!-- <RoleDialogDelete :role="role" v-if="roleDialogDelete" @close="roleDialogDelete = false" @ok="deleteRole" /> -->
-  </v-container>
+  </div>
 </template>
 <script>
 
