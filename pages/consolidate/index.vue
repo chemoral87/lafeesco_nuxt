@@ -7,7 +7,7 @@
       <v-icon class="mr-1">mdi-home-city</v-icon> Añadir Domicilio
     </v-btn>
 
-    <MemberTable :members="members" @editItem="editItem" @deleteItem="beforeDeleteMember" @toogleChecks="toogleChecks"></MemberTable>
+    <MemberSimpleTable :members="members" @editItem="editItem" @deleteItem="beforeDeleteMember" @toogleChecks="toogleChecks"></MemberSimpleTable>
     <DialogDelete v-if="showDialogDelete" :dialog="dialogDelete" @ok="deleteMember" @close="showDialogDelete = false"></DialogDelete>
     <MemberAddressDialog v-if="showMemberAddressDialog" @save="saveMemberAddress" @close="showMemberAddressDialog = false"></MemberAddressDialog>
   </div>
@@ -24,7 +24,7 @@ export default {
     this.$nuxt.$emit("setNavBar", { title: "Consolidar", icon: "account-plus" });
   },
   async asyncData({ $axios, app }) {
-    const res = await app.$repository.Member.myMembersNoAddress()
+    const res = await app.$repository.Member.indexMyNoAddress()
       .catch(e => { });
     return { ...res };
   },
@@ -56,8 +56,7 @@ export default {
   },
   computed: {
     canAddAddress() {
-      console.log("canAddress");
-
+      console.log(this.members, "this.members");
       let match = this.members.find(m => (m.check == true));
       if (match) return true;
       return false;
@@ -75,8 +74,21 @@ export default {
     openMemberAddressDialog() {
       this.showMemberAddressDialog = true;
     },
-    saveMemberAddress() {
+    async saveMemberAddress(address) {
 
+      let member_ids = this.members.filter(m => (m.check == true)).map(m => m.id);
+      let me = this;
+      console.log("saveMemberAddress", member_ids);
+      await this.$repository.MemberAddess.create({ ...address, member_ids })
+        .then(res => {
+          this.showMemberAddressDialog = false;
+          me.getMembersNoAddress();
+        })
+        .catch(e => { });
+    },
+    async getMembersNoAddress() {
+      let { members } = await this.$repository.Member.indexMyNoAddress();
+      this.members = members;
     },
     beforeDeleteMember(item) {
 
@@ -98,10 +110,6 @@ export default {
           this.getMembersNoAddress();
         })
         .catch(e => { });
-    },
-    async getMembersNoAddress() {
-      let { members } = await this.$repository.Member.myMembersNoAddress();
-      this.members = members;
     },
 
   },

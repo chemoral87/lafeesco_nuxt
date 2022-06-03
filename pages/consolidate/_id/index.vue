@@ -17,7 +17,7 @@
       </v-row>
       <v-row dense>
         <v-col cols="6" md="3">
-          <v-text-field outlined label="Celular" v-model="member.cellphone" v-mask="'##-####-####'" />
+          <v-text-field outlined label="Celular" v-model="member.cellphone" v-mask="'##-####-####'" type="tel" />
         </v-col>
         <v-col cols="6" md="3">
           <v-select outlined hide-details label="Estado Civil" v-model="member.marital_status_id" :items="marital_statuses" item-value="id" item-text="name" :clearable="true"></v-select>

@@ -53,7 +53,7 @@ export default {
   watch: {
     async filterPermission(value) {
       let me = this;
-      let op = Object.assign(me.options, { filter: value, page: 1 });
+      let op = Object.assign(me.options, { filter: value, page: 1, l: false });
       me.response = await me.$repository.Permission.index(op);
     }
 
@@ -84,6 +84,8 @@ export default {
         .catch(e => { });
     },
     async getPermissions(options) {
+      console.log("getPermissions");
+
       if (options) { this.options = options; }
       let op = Object.assign({ filter: this.filterPermission }, this.options);
       this.response = await this.$repository.Permission.index(op);

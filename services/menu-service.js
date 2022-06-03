@@ -53,6 +53,11 @@ export class MenuService {
           title: "Consolidar",
           to: "/consolidate"
         });
+        menu.push({
+          icon: "mdi-account-group",
+          title: "Mis Consolidados",
+          to: "/consolidate/my"
+        });
       }
     } else {
       menu.push(

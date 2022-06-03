@@ -9,9 +9,9 @@
           $delete
         </v-icon>
       </v-card-title>
+      <v-form ref="form" @submit.prevent="save">
+        <v-card-text>
 
-      <v-card-text>
-        <v-form>
           <v-row dense>
             <v-col cols="12">
               <v-select outlined hide-details label="Municipio" v-model="item.municipality_id" :items="municipalities" item-value="id" item-text="name" :clearable="true"></v-select>
@@ -20,34 +20,34 @@
               <v-text-field outlined label="Otro Municipio" v-model="item.other_municipality" hide-details />
             </v-col>
             <v-col cols="7">
-              <v-text-field outlined label="Calle" v-model="item.street" hide-details />
+              <v-text-field outlined label="Calle" v-model="item.street" :rules="[v => !!v || 'Campo requerido']" />
             </v-col>
             <v-col cols="5">
-              <v-text-field outlined label="Número " v-model="item.number" hide-details />
+              <v-text-field outlined label="Número " v-model="item.number" :rules="[v => !!v || 'Campo requerido']" />
             </v-col>
             <v-col cols="7">
-              <v-text-field outlined label="Colonia " v-model="item.suburn" hide-details />
+              <v-text-field outlined label="Colonia " v-model="item.suburn" />
             </v-col>
             <v-col cols="5">
               <v-text-field outlined label="Código Postal " v-model="item.postal_code" hide-details />
             </v-col>
             <v-col cols="7">
-              <v-text-field outlined label="Teléfono" v-model="item.telephone" v-mask="'##-####-####'" hide-details />
+              <v-text-field outlined label="Teléfono de Casa" type="tel" v-model="item.telephone" v-mask="'##-####-####'" hide-details />
             </v-col>
           </v-row>
-        </v-form>
 
-      </v-card-text>
+        </v-card-text>
 
-      <v-card-actions>
-        <v-spacer />
-        <v-btn color="primary" class="mr-1" outlined @click.native="close">
-          Cancelar
-        </v-btn>
-        <v-btn color="primary" @click.native="save">
-          Guardar
-        </v-btn>
-      </v-card-actions>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="primary" class="mr-1" outlined @click.native="close">
+            Cancelar
+          </v-btn>
+          <v-btn color="primary" type="submit">
+            Guardar
+          </v-btn>
+        </v-card-actions>
+      </v-form>
     </v-card>
   </v-dialog>
 </template>
@@ -89,7 +89,8 @@ export default {
       this.$emit("close");
     },
     save() {
-      this.$emit("save", this.item);
+      if (this.$refs.form.validate())
+        this.$emit("save", this.item);
     }
   },
   mounted() {

@@ -43,23 +43,26 @@
 <script>
 export default {
   validate({ store, error }) {
-    if (store.getters.permissions.includes('consolidador-insert'))
+    if (store.getters.permissions.includes('consolidador-update'))
       return true;
     else
       throw error({ statusCode: 403 });
   },
   created() {
-    this.$nuxt.$emit("setNavBar", { title: "Nuevo Miembro", icon: "account-plus" });
+    this.$nuxt.$emit("setNavBar", { title: "Editar Miembro", icon: "account-plus" });
   },
-  async asyncData({ $axios, app }) {
-    const res = await app.$repository.Consolidation.initialCatalog()
+  async asyncData({ $axios, app, params }) {
+    const initialCatalog = await app.$repository.Consolidation.initialCatalog()
       .catch(e => { });
-    return { ...res };
+    const member = await app.$repository.Member.show(params.id);
+    return { ...initialCatalog, member, id: params.id };
   },
   props: {
   },
   data() {
     return {
+      coma: "",
+      id: 0,
       member: {},
       marital_statuses: [],
       months: [
@@ -79,14 +82,15 @@ export default {
     };
   },
   methods: {
+
     cancel() {
-      this.$router.push("/consolidate");
+      this.$router.push("/consolidate/my");
     },
     async saveMember() {
       if (!this.$refs.form.validate()) return;
-      await this.$repository.Member.create(this.member)
+      await this.$repository.Member.update(this.id, this.member)
         .then(res => {
-          this.$router.push("/consolidate");
+          this.$router.push("/consolidate/my");
         })
         .catch(e => { });
     }

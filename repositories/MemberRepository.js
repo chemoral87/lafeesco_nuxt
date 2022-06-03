@@ -2,8 +2,11 @@ export default $axios => resource => ({
   initialCatalog(params = {}) {
     return $axios.$get(`${resource}/initialCatalog`, { params: params });
   },
-  myMembersNoAddress() {
-    return $axios.$get(`${resource}/my-members-no-address`);
+  indexMyNoAddress() {
+    return $axios.$get(`${resource}/my-no-address`);
+  },
+  indexMy(params) {
+    return $axios.$get(`${resource}/my`, { params: params });
   },
   create(payload) {
     return $axios.$post(`${resource}`, payload);
