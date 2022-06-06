@@ -8,6 +8,10 @@ export default $axios => resource => ({
   indexMy(params) {
     return $axios.$get(`${resource}/my`, { params: params });
   },
+  toCall(params) {
+    return $axios.$get(`${resource}/to-call`, { params: params });
+  },
+
   create(payload) {
     return $axios.$post(`${resource}`, payload);
   },

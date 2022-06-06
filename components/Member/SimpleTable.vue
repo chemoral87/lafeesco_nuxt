@@ -38,6 +38,11 @@
 
           </td>
         </tr>
+        <tr v-if="members.length == 0">
+          <td colspan="7">
+            <div align="center" class="text--secondary">No hay registros disponibles</div>
+          </td>
+        </tr>
       </tbody>
 
     </template>

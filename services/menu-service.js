@@ -58,6 +58,11 @@ export class MenuService {
           title: "Mis Consolidados",
           to: "/consolidate/my"
         });
+        menu.push({
+          icon: "mdi-phone",
+          title: "Seguimiento",
+          to: "/consolidate/calls"
+        });
       }
     } else {
       menu.push(

@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-data-table dense mobile-breakpoint="0" @update:sort-by="sortTable" :must-sort="true" :headers="headers" :items="items" :options.sync="optionsTable" :server-items-length="total" class="elevation-1">
-      <!-- https://stackoverflow.com/questions/61344980/v-slot-directive-doesnt-support-any-modifier -->
       <template v-slot:[`item.full_name`]="{ item }">
         {{ getfullName(item.name, item.paternal_surname, item.maternal_surname) }}
       </template>
@@ -10,24 +9,16 @@
           {{ item.next_call_date | moment("DD MMM YYYY") }} |
           <strong>{{ item.next_call_type }}</strong>
         </div>
-
       </template>
-
       <template v-slot:[`item.created_at`]="{ item }">
         {{ item.created_at | moment("DD MMM YYYY/hh:mma") }}
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn title="Editar" class="ma-1" color="primary" outlined fab small @click="emitAction('edit', item)">
+        <v-btn title="LLamar" class="ma-1" color="primary" small @click="emitAction('toCall', item)">
           <v-icon>
-            mdi-pencil
-          </v-icon>
+            mdi-clipboard-text
+          </v-icon> Detalle
         </v-btn>
-
-        <!-- <v-btn title="Eliminar" class="ma-1" color="error" outlined fab small @click="emitAction('delete' ,item)">
-          <v-icon>
-            mdi-delete
-          </v-icon>
-        </v-btn> -->
       </template>
     </v-data-table>
   </div>
@@ -42,7 +33,7 @@ export default {
       sortDesc: false,
       headers: [
         { text: 'Nombre Completo', align: 'start', value: 'full_name', sortable: false },
-        { text: 'Celular', value: 'cellphone', sortable: false },
+        // { text: 'Celular', value: 'cellphone', sortable: false },
         { text: 'Grupo', value: 'category', sortable: false },
         { text: 'Edad', value: 'years', sortable: false },
         { text: 'Fecha Creación', value: 'created_at', firstSortDesc: true },
@@ -77,7 +68,6 @@ export default {
         if (head.firstSortDesc)
           this.optionsTable.sortDesc[0] = true;
       }
-      // console.log(a, b, c, "sortTable", this.sortDesc);
 
     },
     emitAction(action, payload) {

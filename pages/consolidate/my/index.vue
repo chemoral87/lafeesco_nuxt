@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-form ref="filterForm" @submit.prevent="indexMyMembers">
+    <v-form ref="filterForm" @submit.prevent="() => {return indexMyMembers()}">
       <v-row dense>
         <v-col cols="12" md="3">
           <v-text-field clearable hide-details v-model="filter" placeholder="Filtro Nombre">
@@ -59,7 +59,9 @@ export default {
     };
   },
   methods: {
-    async indexMyMembers(ev, options) {
+    async indexMyMembers(options) {
+      // console.log("indexMyMembers", ev);
+
       if (options) { this.options = options; }
       let op = Object.assign({ filter: this.filter }, this.options);
       this.response = await this.$repository.Member.indexMy(op);
