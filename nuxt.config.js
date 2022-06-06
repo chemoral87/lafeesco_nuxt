@@ -134,7 +134,7 @@ export default {
       lang: "en"
     },
     icon: {
-      fileName: "favicon.png"
+      fileName: "favico.png"
     }
   },
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
