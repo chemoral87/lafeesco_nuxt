@@ -133,6 +133,7 @@ export default {
     manifest: {
       lang: "en"
     },
+    // https://www.favicon-generator.org/
     icon: {
       fileName: "favicon-96x96.png"
     }

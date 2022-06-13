@@ -6,10 +6,10 @@
           <v-text-field outlined label="Nombre" v-model="member.name" :rules="[v => !!v || 'Campo requerido']" />
         </v-col>
         <v-col cols="6" md="3">
-          <v-text-field outlined label="Apellido Paterno" v-model="member.paternal_surname" :rules="[v => !!v || 'Campo requerido']" />
+          <v-text-field outlined label="Ape. Paterno" v-model="member.paternal_surname" :rules="[v => !!v || 'Campo requerido']" />
         </v-col>
         <v-col cols="6" md="3">
-          <v-text-field outlined label="Apellido Materno" v-model="member.maternal_surname" />
+          <v-text-field outlined label="Ape. Materno" v-model="member.maternal_surname" />
         </v-col>
         <v-col cols="6" md="3">
           <v-text-field outlined label="Fecha cumpleaños" v-model="member.birthday" v-mask="'##-##-####'" :persistent-placeholder="true" placeholder="dd-mm-aaaa" />
@@ -27,7 +27,7 @@
         </v-col>
       </v-row>
       <v-row dense>
-        <v-col cols="6" md="3">
+        <v-col cols="12" md="6">
           <v-textarea outlined label="Petición Oración" name="prayer_request" v-model="member.prayer_request" rows="1" auto-grow></v-textarea>
         </v-col>
       </v-row>

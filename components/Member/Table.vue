@@ -1,6 +1,7 @@
 <template>
   <div>
-    <v-data-table dense mobile-breakpoint="0" @update:sort-by="sortTable" :must-sort="true" :headers="headers" :items="items" :options.sync="optionsTable" :server-items-length="total" class="elevation-1">
+
+    <v-data-table dense mobile-breakpoint="0" @update:sort-by="sortTable" :must-sort="true" :headers="headers" :items="items" :options.sync="optionsTable" :server-items-length="total" class="elevation-1 xwidth1200">
       <!-- https://stackoverflow.com/questions/61344980/v-slot-directive-doesnt-support-any-modifier -->
       <template v-slot:[`item.full_name`]="{ item }">
         {{ getfullName(item.name, item.paternal_surname, item.maternal_surname) }}
@@ -22,15 +23,10 @@
             mdi-pencil
           </v-icon>
         </v-btn>
-
-        <!-- <v-btn title="Eliminar" class="ma-1" color="error" outlined fab small @click="emitAction('delete' ,item)">
-          <v-icon>
-            mdi-delete
-          </v-icon>
-        </v-btn> -->
       </template>
     </v-data-table>
   </div>
+
 </template>
 <script>
 export default {
@@ -38,7 +34,9 @@ export default {
   data() {
     return {
       flagSetOption: true,
+      pageRule: 1,
       optionsTable: {},
+      pageCountRule: 0,
       sortDesc: false,
       headers: [
         { text: 'Nombre Completo', align: 'start', value: 'full_name', sortable: false },
@@ -77,7 +75,6 @@ export default {
         if (head.firstSortDesc)
           this.optionsTable.sortDesc[0] = true;
       }
-      // console.log(a, b, c, "sortTable", this.sortDesc);
 
     },
     emitAction(action, payload) {
@@ -87,7 +84,6 @@ export default {
       return [name, paternal_surname, maternal_surname].filter(Boolean).join(" ");
     },
     sort_desc: function (val, _prev) {
-      console.log(val, _prev);
       //do what you need to change sort and refresh
     },
   },

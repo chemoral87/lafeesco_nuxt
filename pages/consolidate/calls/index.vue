@@ -2,7 +2,7 @@
   <div>
     <v-row dense>
       <v-col cols="12">
-        <MemberToCallTable @sorting="indexMembersToCall" :options="options" :response="response" @edit="" @delete="" />
+        <MemberToCallTable @sorting="indexMembersToCall" :options="options" :response="response" @toCall="goToCall" @edit="" @delete="" />
       </v-col>
     </v-row>
   </div>
@@ -24,7 +24,7 @@ export default {
       sortDesc: [false],
       itemsPerPage: 10
     };
-    const response = await app.$repository.Member.toCall(options)
+    const response = await app.$repository.Member.indexToCall(options)
       .catch(e => { });
 
     return { response, options };
@@ -46,6 +46,9 @@ export default {
       let op = Object.assign({ filter: this.filter }, this.options);
       this.response = await this.$repository.Member.toCall(op);
     },
+    goToCall(item) {
+      this.$router.push(`/consolidate/calls/${item.id}`);
+    }
   },
   mounted() {
     let me = this;

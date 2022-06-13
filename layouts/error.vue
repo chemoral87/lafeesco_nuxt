@@ -3,16 +3,16 @@
 
     <v-card>
       <v-card-title class="text-h4">
-        <v-icon color="orange" size="70">mdi-alert</v-icon> Ocurrió un problema
+        <v-icon :color="color" size="40">mdi-alert</v-icon> Ocurrió un problema
       </v-card-title>
       <v-card-text>
-        <div class="text-h6 text--primary">
+        <div class="text-h5 text--primary">
           {{errorMessage}}
           <br>
           <br>
         </div>
         <div class="text-h6 text--primary mt-12">
-          Presione el botón para continuar.
+          Presione el siguiente botón.
         </div>
       </v-card-text>
       <v-card-actions>
@@ -44,6 +44,7 @@ export default {
   },
   data() {
     return {
+      color: "orange",
       pageNotFound: '404 Not Found',
       otherError: 'An error occurred'
     };
@@ -52,7 +53,10 @@ export default {
     errorMessage() {
       if (this.error.statusCode == 403) {
         return "No tiene los suficientes permisos para ver esta página, verifique con el administrador del sistema.";
-      }
+      } else if (this.error.statusCode == 404) {
+        this.color = "red";
+        return "Registro No Encontrado.";
+      };
       return "Ocurrio un error inesperado.";
     }
   },

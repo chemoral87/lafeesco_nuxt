@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-data-table dense mobile-breakpoint="0" @update:sort-by="sortTable" :must-sort="true" :headers="headers" :items="items" :options.sync="optionsTable" :server-items-length="total" class="elevation-1">
+    <v-data-table dense mobile-breakpoint="0" @update:sort-by="sortTable" :must-sort="true" :headers="headers" :items="items" :options.sync="optionsTable" :server-items-length="total" class="elevation-1 xwidth900">
       <template v-slot:[`item.full_name`]="{ item }">
         {{ getfullName(item.name, item.paternal_surname, item.maternal_surname) }}
       </template>
@@ -17,7 +17,7 @@
         <v-btn title="LLamar" class="ma-1" color="primary" small @click="emitAction('toCall', item)">
           <v-icon>
             mdi-clipboard-text
-          </v-icon> Detalle
+          </v-icon>
         </v-btn>
       </template>
     </v-data-table>
@@ -25,6 +25,16 @@
 </template>
 <script>
 export default {
+  validate({ store, error }) {
+    if (store.getters.permissions.includes('consolidador-index'))
+      return true;
+    else
+      throw error({ statusCode: 403 });
+  },
+  created() {
+
+    this.$nuxt.$emit("setNavBar", { title: "Seguimiento", icon: "phone" });
+  },
   props: ['response', 'options', "tableHeaders"],
   data() {
     return {
@@ -32,6 +42,7 @@ export default {
       optionsTable: {},
       sortDesc: false,
       headers: [
+        { text: 'Acciones', value: 'actions', sortable: false },
         { text: 'Nombre Completo', align: 'start', value: 'full_name', sortable: false },
         // { text: 'Celular', value: 'cellphone', sortable: false },
         { text: 'Grupo', value: 'category', sortable: false },
@@ -41,7 +52,7 @@ export default {
           text: 'Siguiente Llamadas', value: 'next_call_date',
         },
         { text: 'Última Llamada', value: 'last_call_id', },
-        { text: 'Acciones', value: 'actions', width: "200px", sortable: false },
+
       ],
     };
   },

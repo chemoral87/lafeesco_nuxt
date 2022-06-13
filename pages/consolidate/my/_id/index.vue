@@ -6,10 +6,10 @@
           <v-text-field outlined label="Nombre" v-model="member.name" :rules="[v => !!v || 'Campo requerido']" />
         </v-col>
         <v-col cols="6" md="3">
-          <v-text-field outlined label="Apellido Paterno" v-model="member.paternal_surname" :rules="[v => !!v || 'Campo requerido']" />
+          <v-text-field outlined label="Ape. Paterno" v-model="member.paternal_surname" :rules="[v => !!v || 'Campo requerido']" />
         </v-col>
         <v-col cols="6" md="3">
-          <v-text-field outlined label="Apellido Materno" v-model="member.maternal_surname" />
+          <v-text-field outlined label="Ape. Materno" v-model="member.maternal_surname" />
         </v-col>
         <v-col cols="6" md="3">
           <v-text-field outlined label="Fecha cumpleaños" v-model="member.birthday" v-mask="'##-##-####'" :persistent-placeholder="true" placeholder="dd-mm-aaaa" />
@@ -27,8 +27,12 @@
         </v-col>
       </v-row>
       <v-row dense>
-        <v-col cols="6" md="3">
+        <v-col cols="12" md="6">
           <v-textarea outlined label="Petición Oración" name="prayer_request" v-model="member.prayer_request" rows="1" auto-grow></v-textarea>
+        </v-col>
+        <v-col cols="auto">
+          <v-text-field label="Fecha Siguiente LLamada" v-model="member.next_call_date" outlined></v-text-field>
+
         </v-col>
       </v-row>
       <v-row dense>
@@ -38,6 +42,11 @@
       </v-row>
 
     </v-form>
+    <v-row dense>
+      <v-col cols="12">
+        <MemberCallTable @sorting="getCalls" :options="callOptions" :response="callResponse"></MemberCallTable>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script>
@@ -54,8 +63,14 @@ export default {
   async asyncData({ $axios, app, params }) {
     const initialCatalog = await app.$repository.Consolidation.initialCatalog()
       .catch(e => { });
+    let callOptions = {
+      sortBy: ["created_at"],
+      sortDesc: [true],
+      itemsPerPage: 10
+    };
+    const callResponse = await app.$repository.MemberCall.indexByMember(params.id, callOptions);
     const member = await app.$repository.Member.show(params.id);
-    return { ...initialCatalog, member, id: params.id };
+    return { ...initialCatalog, callOptions, callResponse, member, id: params.id };
   },
   props: {
   },
@@ -65,6 +80,8 @@ export default {
       id: 0,
       member: {},
       marital_statuses: [],
+      callResponse: [],
+      callOptons: {},
       months: [
         { id: "01", name: "Enero" },
         { id: "02", name: "Febrero" },
@@ -93,6 +110,10 @@ export default {
           this.$router.push("/consolidate/my");
         })
         .catch(e => { });
+    },
+    async getCalls(options) {
+      this.options = options ? options : this.options;
+      this.callResponse = await this.$repository.MemberCall.indexByMember(this.id, this.options);
     }
   },
   mounted() {
