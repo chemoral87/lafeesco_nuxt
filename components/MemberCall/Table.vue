@@ -1,11 +1,19 @@
 <template>
-  <v-data-table dense mobile-breakpoint="0" @update:sort-by="sortTable" :must-sort="true" :headers="headers" :items="items" :options.sync="optionsTable" :server-items-length="total" class="elevation-1 xwidth1200">
+  <v-data-table dense mobile-breakpoint="0" @update:sort-by="sortTable" :must-sort="true" :headers="headers" :items="items" :options.sync="optionsTable" :server-items-length="total" class="elevation-1 xwidth1100">
     <template v-slot:[`item.full_name`]="{ item }">
       {{ getfullName(item.name, item.paternal_surname, item.maternal_surname) }}
     </template>
     <template v-slot:[`item.was_contacted`]="{ item }">
-      <v-sheet v-if="item.was_contacted" color="light-green accent-2">SI</v-sheet>
-      <span v-else>NO</span>
+      <div v-if="item.was_contacted">
+        <v-chip color="success">
+          SI
+        </v-chip>
+      </div>
+      <div v-else>
+        <v-chip color="warning">
+          No
+        </v-chip>
+      </div>
     </template>
     <template v-slot:[`item.next_call_date`]="{ item }">
       <div v-if="item.next_call_date">

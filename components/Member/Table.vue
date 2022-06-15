@@ -11,9 +11,21 @@
           {{ item.next_call_date | moment("DD MMM YYYY") }} |
           <strong>{{ item.next_call_type }}</strong>
         </div>
-
       </template>
-
+      <template v-slot:[`item.last_call_date`]="{ item }">
+        <div v-if="item.last_call_date">
+          {{ item.last_call_date | moment("DD MMM YYYY HH:mm") }} |
+          <strong>{{ item.last_call_type }}</strong>
+        </div>
+      </template>
+      <template v-slot:[`item.cellphone`]="{ item }">
+        <span v-if="item.cellphone">
+          {{item.cellphone}}
+        </span>
+        <span v-else>
+          <v-chip color="error">Sin Número</v-chip>
+        </span>
+      </template>
       <template v-slot:[`item.created_at`]="{ item }">
         {{ item.created_at | moment("DD MMM YYYY/hh:mma") }}
       </template>
@@ -47,7 +59,7 @@ export default {
         {
           text: 'Siguiente Llamadas', value: 'next_call_date',
         },
-        { text: 'Última Llamada', value: 'last_call_id', },
+        { text: 'Última Llamada', value: 'last_call_date', },
         { text: 'Acciones', value: 'actions', width: "200px", sortable: false },
       ],
     };

@@ -12,7 +12,11 @@
           <v-text-field outlined label="Ape. Materno" v-model="member.maternal_surname" />
         </v-col>
         <v-col cols="6" md="3">
+
+          <!-- <v-text-field type="date" outlined label="Fecha cumpleaños" v-model="member.birthday" :persistent-placeholder="true" /> -->
+
           <v-text-field outlined label="Fecha cumpleaños" v-model="member.birthday" v-mask="'##-##-####'" :persistent-placeholder="true" placeholder="dd-mm-aaaa" />
+
         </v-col>
       </v-row>
       <v-row dense>

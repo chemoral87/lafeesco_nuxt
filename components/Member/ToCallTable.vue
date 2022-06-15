@@ -20,6 +20,12 @@
           </v-icon>
         </v-btn>
       </template>
+      <template v-slot:[`item.last_call_date`]="{ item }">
+        <div v-if="item.last_call_date">
+          {{ item.last_call_date | moment("DD MMM YYYY HH:mm") }} |
+          <strong>{{ item.last_call_type }}</strong>
+        </div>
+      </template>
     </v-data-table>
   </div>
 </template>
@@ -51,7 +57,7 @@ export default {
         {
           text: 'Siguiente Llamadas', value: 'next_call_date',
         },
-        { text: 'Última Llamada', value: 'last_call_id', },
+        { text: 'Última Llamada', value: 'last_call_date', },
 
       ],
     };

@@ -13,7 +13,11 @@
               <v-icon>mdi-phone</v-icon>
             </v-btn>
             <v-btn color="success">
-              <v-icon>mdi-whatsapp</v-icon>
+              <!-- <a href="whatsapp://send?phone=+528181111591"> -->
+              <!-- <a href="https://wa.me/528181111591?text=bienvenido"> -->
+              <a href="https://wa.me/5218181111590" style="">
+                <v-icon>mdi-whatsapp</v-icon> +new
+              </a>
             </v-btn>
           </v-col>
           <v-col cols="auto" class="mr-2" v-if="member.category">
