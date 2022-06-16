@@ -1,7 +1,6 @@
 <template>
   <v-app dark>
     <v-navigation-drawer :color=" authenticated? '' : 'banner'" v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" temporary app>
-
       <v-list>
         <v-list-item>
           <v-list-item-action class="mr-2">
@@ -24,7 +23,7 @@
         <v-spacer />
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app :color=" authenticated? '' : 'banner'">
+    <v-app-bar :clipped-left="clipped" class="elevation-4" fixed app :color=" authenticated? '' : 'banner'">
       <v-app-bar-nav-icon v-if="show_drawer" @click.stop=" drawer=!drawer" />
       <v-toolbar-title class="pl-0">
         <v-btn v-if="back" @click="$router.push(back)" class="mr-1" outlined fab small elevation="0">
@@ -86,7 +85,7 @@
     </v-app-bar>
     <v-main>
 
-      <v-container>
+      <v-container class="pa-0">
         <Nuxt />
       </v-container>
       <MyLoading :value="loading_display"></MyLoading>

@@ -1,7 +1,7 @@
 <!-- /consolidate/calls/_id -->
 <template>
   <div>
-    <v-card color="lime lighten-5">
+    <v-sheet color="lime lighten-5">
       <v-card-text class="text--primary ">
         <v-row dense>
           <v-col cols="auto" class="mr-2"><strong>Nombre</strong> {{member.name}} {{member.paternal_surname}} {{member.maternal_surname}}</v-col>
@@ -9,16 +9,14 @@
             <strong>Celular</strong> {{member.cellphone}}
           </v-col>
           <v-col cols="auto" class="mr-2">
-            <v-btn color="primary">
+            <v-btn color="primary" fab small @click="openCall">
               <v-icon>mdi-phone</v-icon>
             </v-btn>
-            <v-btn color="success">
-              <!-- <a href="whatsapp://send?phone=+528181111591"> -->
-              <!-- <a href="https://wa.me/528181111591?text=bienvenido"> -->
-              <a href="https://wa.me/5218181111590" style="">
-                <v-icon>mdi-whatsapp</v-icon> +new
-              </a>
-            </v-btn>
+            <!-- <v-btn color="success" @click="openWhatsapp">
+
+              <v-icon>mdi-whatsapp</v-icon> +new
+
+            </v-btn> -->
           </v-col>
           <v-col cols="auto" class="mr-2" v-if="member.category">
             <strong>Grupo</strong> {{member.category}}
@@ -38,7 +36,7 @@
           </v-col>
         </v-row>
       </v-card-text>
-    </v-card>
+    </v-sheet>
     <v-card>
       <v-card-text>
         <v-form ref="formSave" @submit.prevent="saveCall">
@@ -110,6 +108,18 @@ export default {
     };
   },
   methods: {
+    openCall() {
+      let phone = this.member.cellphone.replace("-", "");
+      // window.open(`tel:${phone}`);
+      document.location.href = "tel:" + phone;
+    },
+    // openWhatsapp() {
+    //   let phone = "5218181111590"; //'521' + this.member.cellphone.replace("-", "");
+    //   let a = document.createElement('a');
+    //   a.target = '_blank';
+    //   a.href = `https://wa.me/${phone}`;
+    //   a.click();
+    // },
     async saveCall() {
       let me = this;
       if (!this.$refs.formSave.validate()) return;
