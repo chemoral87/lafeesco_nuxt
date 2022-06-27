@@ -4,9 +4,8 @@ export const state = () => ({
     color: "",
     display: false
   },
-  show_loading: {
-    display: false
-  },
+  block_loading: false,
+  hide_next_loading: false,
   locale: "es"
 });
 
@@ -29,7 +28,10 @@ export const getters = {
     return state.snackbar;
   },
   showLoading(state) {
-    return state.show_loading;
+    return state.block_loading;
+  },
+  hideNextLoading(state) {
+    return state.hide_next_loading;
   }
 };
 
@@ -43,14 +45,20 @@ export const mutations = {
     }
   },
   SHOW_LOADING(state) {
-    if (state.show_loading.display == false) {
-      state.show_loading.display = true;
+    if (state.block_loading == false) {
+      state.block_loading = true;
     }
   },
   HIDE_LOADING(state) {
-    if (state.show_loading.display == true) {
-      state.show_loading.display = false;
+    if (state.block_loading == true) {
+      state.block_loading = false;
     }
+  },
+  HIDE_NEXT_LOADING(state) {
+    state.hide_next_loading = true;
+  },
+  SHOW_NEXT_LOADING(state) {
+    state.hide_next_loading = false;
   }
   // SET_STATE(state, payload) {
   //   state.persistedState = payload;
@@ -78,5 +86,11 @@ export const actions = {
   },
   hideLoading({ commit }) {
     commit("HIDE_LOADING");
+  },
+  hideNextLoading({ commit }) {
+    commit("HIDE_NEXT_LOADING");
+  },
+  showNextLoading({ commit }) {
+    commit("SHOW_NEXT_LOADING");
   }
 };

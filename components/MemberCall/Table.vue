@@ -1,6 +1,6 @@
 <template>
   <v-data-table dense mobile-breakpoint="0" @update:sort-by="sortTable" :must-sort="true" :headers="headers" :items="items" :options.sync="optionsTable" :server-items-length="total" class="elevation-1 xwidth1100">
-    <template v-slot:[`item.full_name`]="{ item }">
+    <template v-slot:[`item.full_name`]=" { item }">
       {{ getfullName(item.name, item.paternal_surname, item.maternal_surname) }}
     </template>
     <template v-slot:[`item.was_contacted`]="{ item }">
@@ -24,6 +24,11 @@
     <template v-slot:[`item.created_at`]="{ item }">
       {{ item.created_at | moment("DD MMM YYYY/hh:mma") }}
     </template>
+    <template v-slot:[`item.actions`]="{ item }">
+      <v-btn @click="emitAction('edit', item)" color="primary" class="ma-1" outlined fab small>
+        <v-icon>mdi-pencil</v-icon>
+      </v-btn>
+    </template>
   </v-data-table>
 </template>
 <script>
@@ -42,6 +47,7 @@ export default {
         { text: 'Comentarios', value: 'comments', sortable: false },
         { text: 'Fecha Creación', value: 'created_at', firstSortDesc: true },
         { text: 'Creado por', value: 'created_name', sortable: false },
+        { text: 'Acciones', value: 'actions', sortable: false },
       ],
     };
   },

@@ -43,9 +43,11 @@ export default {
   },
   watch: {
     async filterUser(value) {
+      this.$store.dispatch("hideNextLoading");
       let me = this;
       let op = Object.assign(me.options, { filter: value, page: 1 });
-      me.response = await me.$repository.User.index(op);
+      // me.response = await me.$repository.User.index(op);
+      me.getUsers(op);
     }
 
   },

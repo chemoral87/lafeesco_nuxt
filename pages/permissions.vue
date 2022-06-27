@@ -84,7 +84,6 @@ export default {
         .catch(e => { });
     },
     async getPermissions(options) {
-      console.log("getPermissions");
 
       if (options) { this.options = options; }
       let op = Object.assign({ filter: this.filterPermission }, this.options);

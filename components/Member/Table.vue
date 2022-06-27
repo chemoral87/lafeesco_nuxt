@@ -30,7 +30,7 @@
         {{ item.created_at | moment("DD MMM YYYY/hh:mma") }}
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn title="Editar" class="ma-1" color="primary" outlined fab small @click="emitAction('edit', item)">
+        <v-btn v-if="user.id == item.created_by" title="Editar" class="ma-1" color="primary" outlined fab small @click="emitAction('edit', item)">
           <v-icon>
             mdi-pencil
           </v-icon>
@@ -82,8 +82,6 @@ export default {
         this.flagSetOption = false;
       } else {
         let head = this.headers.find(x => x.value == columnName);
-        // console.log(columnName);
-        // if (columnName == "next_call_date" || columnName == "created_at")
         if (head.firstSortDesc)
           this.optionsTable.sortDesc[0] = true;
       }

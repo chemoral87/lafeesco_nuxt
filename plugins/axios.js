@@ -19,10 +19,11 @@ export default function(context) {
 
   context.$axios.onRequest(req => {
     context.store.dispatch("validation/clearErrors");
-    if (req.params)
-      if (!(req.params.l == false)) {
-        context.store.dispatch("showLoading");
-      }
+    if (context.store.getters.hideNextLoading) {
+      context.store.dispatch("showNextLoading");
+    } else {
+      context.store.dispatch("showLoading");
+    }
   });
 
   context.$axios.onResponse(res => {

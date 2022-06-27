@@ -11,7 +11,8 @@ const User = {
           // verified: "verified",
           permissions: "permissions",
           snackbar: "snackbar",
-          showLoading: "showLoading"
+          showLoading: "showLoading",
+          hideNextLoading: "hideNextLoading"
         })
       }
     });

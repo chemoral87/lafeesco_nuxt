@@ -12,11 +12,6 @@
             <v-btn color="primary" fab small @click="openCall">
               <v-icon>mdi-phone</v-icon>
             </v-btn>
-            <!-- <v-btn color="success" @click="openWhatsapp">
-
-              <v-icon>mdi-whatsapp</v-icon> +new
-
-            </v-btn> -->
           </v-col>
           <v-col cols="auto" class="mr-2" v-if="member.category">
             <strong>Grupo</strong> {{member.category}}
@@ -56,9 +51,13 @@
           </v-row>
         </v-form>
         <MemberCallTable @sorting="getCalls" :options="options" :response="responseCalls"></MemberCallTable>
-      </v-card-text>
-    </v-card>
 
+      </v-card-text>
+      <v-btn @click="$router.push('/consolidate/calls')">
+        <v-icon>mdi-arrow-left</v-icon>
+        Regresar
+      </v-btn>
+    </v-card>
   </div>
 </template>
 <script>
@@ -113,13 +112,6 @@ export default {
       // window.open(`tel:${phone}`);
       document.location.href = "tel:" + phone;
     },
-    // openWhatsapp() {
-    //   let phone = "5218181111590"; //'521' + this.member.cellphone.replace("-", "");
-    //   let a = document.createElement('a');
-    //   a.target = '_blank';
-    //   a.href = `https://wa.me/${phone}`;
-    //   a.click();
-    // },
     async saveCall() {
       let me = this;
       if (!this.$refs.formSave.validate()) return;

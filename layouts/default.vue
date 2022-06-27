@@ -85,7 +85,7 @@
     </v-app-bar>
     <v-main>
 
-      <v-container class="pa-0">
+      <v-container class="pa-1">
         <Nuxt />
       </v-container>
       <MyLoading :value="loading_display"></MyLoading>
@@ -150,7 +150,7 @@ export default {
       }
     },
     loading_display() {
-      return this.showLoading.display;
+      return this.showLoading;
     },
     items() {
 
@@ -182,7 +182,8 @@ export default {
     },
     closeSnackbar() {
       this.$store.dispatch("closeNotify");
-    }
+    },
+
   },
   created() {
     this.$nuxt.$on('setNavBar', ($event) => this.setNavBar($event));

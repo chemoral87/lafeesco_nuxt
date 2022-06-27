@@ -24,6 +24,30 @@
   padding: 0 7px !important;
 }
 
+/* pagination start */
+.v-application--is-ltr .v-data-footer__pagination {
+  margin: 0 3px 0 3px !important;
+}
+
+.v-application--is-ltr .v-data-footer__select .v-select {
+  margin: 13px 0 13px 5px !important;
+}
+
+.v-application--is-ltr .v-data-footer__icons-before .v-btn:last-child {
+  margin-right: 1px !important;
+}
+
+.v-application--is-ltr .v-data-footer__icons-after .v-btn:first-child {
+  margin-left: 1px !important;
+}
+/* pagination end */
+
 .v-data-table > .v-data-table__wrapper > table > tbody{
 
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

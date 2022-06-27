@@ -61,22 +61,9 @@ export default {
     getfullName(name, paternal_surname, maternal_surname) {
       return [name, paternal_surname, maternal_surname].filter(Boolean).join(" ");
     },
-    // toogleChecks() {
-    //   let check = this.check;
-    //   // let arr = this.members.map(m => { m.check = check; });
-    //   let arr = this.members.map((mio) => mio ? { ...mio, check: check } : mio);
-    //   console.log(arr);
-    //   this.members = arr;
-    // },
     emitAction(event, payload) {
       this.$emit(event, payload);
     },
-    // editItem(item) {
-    //   this.$emit("editItem", item);
-    // },
-    // deleteItem(item) {
-    //   this.$emit("editItem", item);
-    // }
   },
   mounted() {
     let me = this;

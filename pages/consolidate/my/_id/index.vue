@@ -1,51 +1,11 @@
 <template>
   <v-container fluid>
-    <v-form ref="form" @submit.prevent="saveMember">
-      <v-row dense>
-        <v-col cols="6" md="3">
-          <v-text-field outlined label="Nombre" v-model="member.name" :rules="[v => !!v || 'Campo requerido']" />
-        </v-col>
-        <v-col cols="6" md="3">
-          <v-text-field outlined label="Ape. Paterno" v-model="member.paternal_surname" :rules="[v => !!v || 'Campo requerido']" />
-        </v-col>
-        <v-col cols="6" md="3">
-          <v-text-field outlined label="Ape. Materno" v-model="member.maternal_surname" />
-        </v-col>
-        <v-col cols="6" md="3">
-          <v-text-field outlined label="Fecha cumpleaños" v-model="member.birthday" v-mask="'##-##-####'" :persistent-placeholder="true" placeholder="dd-mm-aaaa" />
-          <!-- <v-text-field type="date" outlined label="Fecha cumpleaños" v-model="member.birthday" :persistent-placeholder="true" /> -->
-        </v-col>
-      </v-row>
-      <v-row dense>
-        <v-col cols="6" md="3">
-          <v-text-field outlined label="Celular" v-model="member.cellphone" v-mask="'##-####-####'" type="tel" />
-        </v-col>
-        <v-col cols="6" md="3">
-          <v-select outlined hide-details label="Estado Civil" v-model="member.marital_status_id" :items="marital_statuses" item-value="id" item-text="name" :clearable="true"></v-select>
-        </v-col>
-        <v-col cols="6" md="3">
-          <v-select outlined hide-details label="Grupo" v-model="member.category_id" :items="member_groups" item-value="id" item-text="name" :clearable="true"></v-select>
-        </v-col>
-      </v-row>
-      <v-row dense>
-        <v-col cols="12" md="6">
-          <v-textarea outlined label="Petición Oración" name="prayer_request" v-model="member.prayer_request" rows="1" auto-grow></v-textarea>
-        </v-col>
-        <v-col cols="auto">
-          <v-text-field label="Fecha Siguiente LLamada" v-model="member.next_call_date" outlined></v-text-field>
-
-        </v-col>
-      </v-row>
-      <v-row dense>
-        <v-spacer />
-        <v-btn @click="cancel" outlined color="primary" class="mr-3">Cancelar</v-btn>
-        <v-btn type="submit" color="primary" class="mr-4">Guardar</v-btn>
-      </v-row>
-
-    </v-form>
-    <v-row dense>
+    <MemberFormEdit :member="member" @cancel="cancel" @save="saveMember" />
+    <v-row dense class="mt-2">
       <v-col cols="12">
-        <MemberCallTable @sorting="getCalls" :options="callOptions" :response="callResponse"></MemberCallTable>
+        <v-subheader>Historial de llamadas</v-subheader>
+        <MemberCallTable @sorting="getCalls" :options="callOptions" :response="callResponse" @edit="openDialog"></MemberCallTable>
+        <MemberCallDialog :memberCall="memberCall" v-if="MemberCallDialog" @close="MemberCallDialog = false" @save="saveMemberCall"></MemberCallDialog>
       </v-col>
     </v-row>
   </v-container>
@@ -62,8 +22,8 @@ export default {
     this.$nuxt.$emit("setNavBar", { title: "Editar Miembro", icon: "account-plus" });
   },
   async asyncData({ $axios, app, params }) {
-    const initialCatalog = await app.$repository.Consolidation.initialCatalog()
-      .catch(e => { });
+    // const initialCatalog = await app.$repository.Consolidation.initialCatalog()
+    //   .catch(e => { });
     let callOptions = {
       sortBy: ["created_at"],
       sortDesc: [true],
@@ -71,7 +31,7 @@ export default {
     };
     const callResponse = await app.$repository.MemberCall.indexByMember(params.id, callOptions);
     const member = await app.$repository.Member.show(params.id);
-    return { ...initialCatalog, callOptions, callResponse, member, id: params.id };
+    return { callOptions, callResponse, member, id: params.id };
   },
   props: {
   },
@@ -80,9 +40,11 @@ export default {
       coma: "",
       id: 0,
       member: {},
-      marital_statuses: [],
+
       callResponse: [],
       callOptons: {},
+      MemberCallDialog: false,
+      memberCall: {},
       months: [
         { id: "01", name: "Enero" },
         { id: "02", name: "Febrero" },
@@ -100,21 +62,34 @@ export default {
     };
   },
   methods: {
+    openDialog(item) {
+      this.memberCall = item;
+      this.MemberCallDialog = true;
 
+    },
+    async saveMemberCall(item) {
+      let me = this;
+      await this.$repository.MemberCall.update(item.id, item)
+        .then(res => {
+          me.MemberCallDialog = false;
+          me.getCalls(null);
+        })
+        .catch(e => { });
+    },
     cancel() {
       this.$router.push("/consolidate/my");
     },
-    async saveMember() {
-      if (!this.$refs.form.validate()) return;
-      await this.$repository.Member.update(this.id, this.member)
+    async saveMember(item) {
+      await this.$repository.Member.update(this.id, item)
         .then(res => {
           this.$router.push("/consolidate/my");
         })
         .catch(e => { });
     },
     async getCalls(options) {
-      this.options = options ? options : this.options;
-      this.callResponse = await this.$repository.MemberCall.indexByMember(this.id, this.options);
+      this.callOptions = options ? options : this.callOptions;
+
+      this.callResponse = await this.$repository.MemberCall.indexByMember(this.id, this.callOptions);
     }
   },
   mounted() {

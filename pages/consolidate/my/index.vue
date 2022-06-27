@@ -60,8 +60,6 @@ export default {
   },
   methods: {
     async indexMyMembers(options) {
-      // console.log("indexMyMembers", ev);
-
       if (options) { this.options = options; }
       let op = Object.assign({ filter: this.filter }, this.options);
       this.response = await this.$repository.Member.indexMy(op);

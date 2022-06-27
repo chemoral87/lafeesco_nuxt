@@ -80,8 +80,6 @@ export default {
         this.flagSetOption = false;
       } else {
         let head = this.headers.find(x => x.value == columnName);
-        // console.log(columnName);
-        // if (columnName == "next_call_date" || columnName == "created_at")
         if (head.firstSortDesc)
           this.optionsTable.sortDesc[0] = true;
       }
@@ -94,7 +92,6 @@ export default {
       return [name, paternal_surname, maternal_surname].filter(Boolean).join(" ");
     },
     sort_desc: function (val, _prev) {
-      console.log(val, _prev);
       //do what you need to change sort and refresh
     },
   },
