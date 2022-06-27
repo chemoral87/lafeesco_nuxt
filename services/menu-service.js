@@ -64,6 +64,12 @@ export class MenuService {
           to: "/consolidate/calls"
         });
       }
+
+      menu.push({
+        icon: "mdi-chart-bar",
+        title: "Reportes",
+        to: "/reports"
+      });
     } else {
       menu.push(
         {
