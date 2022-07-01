@@ -55,10 +55,11 @@ export default {
   created() {
     this.$nuxt.$emit("setNavBar", { title: "Nuevo Miembro", icon: "account-plus" });
   },
-  async asyncData({ $axios, app }) {
-    const res = await app.$repository.Consolidation.initialCatalog()
-      .catch(e => { });
-    return { ...res };
+  async asyncData({ $axios, app, store }) {
+
+    var marital_statuses = await store.dispatch("catalogs/fetchMaritalStatuses");
+    var member_groups = await store.dispatch("catalogs/fetchMemberCategories");
+    return { marital_statuses, member_groups };
   },
   props: {
   },

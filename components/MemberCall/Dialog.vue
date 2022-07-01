@@ -84,7 +84,8 @@ export default {
     }
   },
   async mounted() {
-    this.call_types = await this.$repository.MemberCall.getCallTypes();
+    this.call_types = await this.$store.dispatch("catalogs/fetchCallTypes");
+    //await this.$repository.MemberCall.getCallTypes();
     if (this.memberCall) {
       this.item = { ...this.memberCall };
     }

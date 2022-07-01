@@ -53,7 +53,6 @@ export default {
     this.$nuxt.$emit("setNavBar", { title: "Editar Miembro", icon: "account-plus" });
   },
   async asyncData({ $axios, app, params }) {
-    // const initialCatalog = await app.$repository.Consolidation.initialCatalog().catch(e => { });
     const member = await app.$repository.Member.show(params.id).catch(e => { });;
     return { member, id: params.id };
   },

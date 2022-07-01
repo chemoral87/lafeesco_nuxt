@@ -57,9 +57,9 @@ export default {
   },
   async created() {
     let me = this;
-    const initialCatalog = await this.$repository.Consolidation.initialCatalog();
-    this.marital_statuses = initialCatalog.marital_statuses;
-    this.member_groups = initialCatalog.member_groups;
+
+    this.marital_statuses = await this.$store.dispatch("catalogs/fetchMaritalStatuses");
+    this.member_groups = await this.$store.dispatch("catalogs/fetchMemberCategories");
     me.item = this.member;
   },
   mounted() {

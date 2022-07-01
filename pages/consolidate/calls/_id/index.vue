@@ -50,8 +50,8 @@
             </v-col>
           </v-row>
         </v-form>
-        <MemberCallTable @sorting="getCalls" :options="options" :response="responseCalls"></MemberCallTable>
-
+        <MemberCallTable @sorting="getCalls" :options="options" :response="responseCalls" @edit="openDialog"></MemberCallTable>
+        <MemberCallDialog :memberCall="memberCall" v-if="MemberCallDialog" @close="MemberCallDialog = false" @save="saveMemberCall"></MemberCallDialog>
       </v-card-text>
       <v-btn @click="$router.push('/consolidate/calls')">
         <v-icon>mdi-arrow-left</v-icon>
@@ -72,17 +72,16 @@ export default {
     let { name } = this.member;
     this.$nuxt.$emit("setNavBar", { title: `Seguimiento ${name}`, icon: "phone" });
   },
-  async asyncData({ app, params }) {
+  async asyncData({ app, params, store }) {
     let options = {
       sortBy: ["created_at"],
       sortDesc: [true],
       itemsPerPage: 10
     };
     const responseCalls = await app.$repository.MemberCall.indexByMember(params.id, options);
-    const call_types = await app.$repository.MemberCall.getCallTypes();
+    const call_types = await store.dispatch("catalogs/fetchCallTypes");
     const member = await app.$repository.Member.show(params.id);
     return { member, call_types, responseCalls, id: params.id, options };
-    // return { ...initialCatalog, member, id: params.id };
   },
   computed: {
     call_types_filtered() {
@@ -93,6 +92,8 @@ export default {
     return {
       id: 0,
       member: {},
+      MemberCallDialog: false,
+      memberCall: {},
       was_contacted_items: [
         { value: 1, text: "SI" },
         { value: 0, text: "NO" },
@@ -107,6 +108,19 @@ export default {
     };
   },
   methods: {
+    async saveMemberCall(item) {
+      let me = this;
+      await this.$repository.MemberCall.update(item.id, item)
+        .then(res => {
+          me.MemberCallDialog = false;
+          me.getCalls(null);
+        })
+        .catch(e => { });
+    },
+    openDialog(item) {
+      this.memberCall = item;
+      this.MemberCallDialog = true;
+    },
     openCall() {
       let phone = this.member.cellphone.replace("-", "");
       // window.open(`tel:${phone}`);

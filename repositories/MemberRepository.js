@@ -1,6 +1,9 @@
 export default $axios => resource => ({
-  initialCatalog(params = {}) {
-    return $axios.$get(`${resource}/initialCatalog`, { params: params });
+  getMaritalStatuses(params = {}) {
+    return $axios.$get(`${resource}/marital-statuses`, { params: params });
+  },
+  getMemberCategories(params = {}) {
+    return $axios.$get(`${resource}/member-categories`, { params: params });
   },
   indexMyNoAddress() {
     return $axios.$get(`${resource}/my-no-address`);

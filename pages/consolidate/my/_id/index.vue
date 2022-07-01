@@ -22,8 +22,6 @@ export default {
     this.$nuxt.$emit("setNavBar", { title: "Editar Miembro", icon: "account-plus" });
   },
   async asyncData({ $axios, app, params }) {
-    // const initialCatalog = await app.$repository.Consolidation.initialCatalog()
-    //   .catch(e => { });
     let callOptions = {
       sortBy: ["created_at"],
       sortDesc: [true],
@@ -65,7 +63,6 @@ export default {
     openDialog(item) {
       this.memberCall = item;
       this.MemberCallDialog = true;
-
     },
     async saveMemberCall(item) {
       let me = this;
