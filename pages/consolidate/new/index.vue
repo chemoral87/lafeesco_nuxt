@@ -29,6 +29,9 @@
         <v-col cols="6" md="3">
           <v-select outlined hide-details label="Grupo" v-model="member.category_id" :items="member_groups" item-value="id" item-text="name" :clearable="true"></v-select>
         </v-col>
+        <v-col cols="6" md="3">
+          <v-select outlined label="Horario" v-model="member.source_id" :items="member_sources" item-value="id" item-text="name" :clearable="true" hide-details />
+        </v-col>
       </v-row>
       <v-row dense>
         <v-col cols="12" md="6">
@@ -59,7 +62,9 @@ export default {
 
     var marital_statuses = await store.dispatch("catalogs/fetchMaritalStatuses");
     var member_groups = await store.dispatch("catalogs/fetchMemberCategories");
-    return { marital_statuses, member_groups };
+    var member_sources = await store.dispatch("catalogs/fetchMemberSources");
+
+    return { marital_statuses, member_groups, member_sources };
   },
   props: {
   },
@@ -67,20 +72,22 @@ export default {
     return {
       member: {},
       marital_statuses: [],
-      months: [
-        { id: "01", name: "Enero" },
-        { id: "02", name: "Febrero" },
-        { id: "03", name: "Marzo" },
-        { id: "04", name: "Abril" },
-        { id: "05", name: "Mayo" },
-        { id: "06", name: "Junio" },
-        { id: "07", name: "Julio" },
-        { id: "08", name: "Agosto" },
-        { id: "09", name: "Septiembre" },
-        { id: "10", name: "Octubre" },
-        { id: "11", name: "Noviembre" },
-        { id: "12", name: "Diciembre" },
-      ]
+      member_sources: [],
+      member_groups: [],
+      // months: [
+      //   { id: "01", name: "Enero" },
+      //   { id: "02", name: "Febrero" },
+      //   { id: "03", name: "Marzo" },
+      //   { id: "04", name: "Abril" },
+      //   { id: "05", name: "Mayo" },
+      //   { id: "06", name: "Junio" },
+      //   { id: "07", name: "Julio" },
+      //   { id: "08", name: "Agosto" },
+      //   { id: "09", name: "Septiembre" },
+      //   { id: "10", name: "Octubre" },
+      //   { id: "11", name: "Noviembre" },
+      //   { id: "12", name: "Diciembre" },
+      // ]
     };
   },
   methods: {

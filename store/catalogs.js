@@ -1,7 +1,8 @@
 export const state = () => ({
   call_types: [],
   marital_statuses: [],
-  member_categories: []
+  member_categories: [],
+  member_sources: []
 });
 
 export const getters = {
@@ -13,6 +14,9 @@ export const getters = {
   },
   getMemberCategories(state) {
     return state.member_categories;
+  },
+  getMemberSources(state) {
+    return state.member_sources;
   }
 };
 
@@ -25,6 +29,9 @@ export const mutations = {
   },
   SET_MEMBER_CATEGORIES(state, member_categories) {
     state.member_categories = member_categories;
+  },
+  SET_MEMBER_SOURCES(state, member_sources) {
+    state.member_sources = member_sources;
   }
 };
 
@@ -61,6 +68,14 @@ export const actions = {
       getters.getMemberCategories,
       this.$repository.Member.getMemberCategories,
       "SET_MEMBER_CATEGORIES"
+    );
+  },
+  async fetchMemberSources({ commit, getters }) {
+    return fetchManager(
+      commit,
+      getters.getMemberSources,
+      this.$repository.Member.getMemberSources,
+      "SET_MEMBER_SOURCES"
     );
   }
 };

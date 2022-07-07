@@ -24,6 +24,9 @@
       <v-col cols="6" md="3">
         <v-select outlined label="Grupo" v-model="item.category_id" :items="member_groups" item-value="id" item-text="name" :clearable="true" hide-details />
       </v-col>
+      <v-col cols="6" md="3">
+        <v-select outlined label="Horario" v-model="item.source_id" :items="member_sources" item-value="id" item-text="name" :clearable="true" hide-details />
+      </v-col>
     </v-row>
     <v-row dense>
       <v-col cols="12" md="6">
@@ -47,7 +50,8 @@ export default {
     return {
       item: {},
       marital_statuses: [],
-      member_groups: []
+      member_groups: [],
+      member_sources: []
     };
   },
   methods: {
@@ -60,6 +64,7 @@ export default {
 
     this.marital_statuses = await this.$store.dispatch("catalogs/fetchMaritalStatuses");
     this.member_groups = await this.$store.dispatch("catalogs/fetchMemberCategories");
+    this.member_sources = await this.$store.dispatch("catalogs/fetchMemberSources");
     me.item = this.member;
   },
   mounted() {

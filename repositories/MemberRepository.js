@@ -5,6 +5,9 @@ export default $axios => resource => ({
   getMemberCategories(params = {}) {
     return $axios.$get(`${resource}/member-categories`, { params: params });
   },
+  getMemberSources(params = {}) {
+    return $axios.$get(`${resource}/member-sources`, { params: params });
+  },
   indexMyNoAddress() {
     return $axios.$get(`${resource}/my-no-address`);
   },

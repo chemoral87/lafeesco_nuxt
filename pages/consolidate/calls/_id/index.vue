@@ -2,8 +2,10 @@
 <template>
   <div>
     <v-sheet color="lime lighten-5">
+
       <v-card-text class="text--primary ">
         <v-row dense>
+
           <v-col cols="auto" class="mr-2"><strong>Nombre</strong> {{member.name}} {{member.paternal_surname}} {{member.maternal_surname}}</v-col>
           <v-col cols="auto" class="mr-2">
             <strong>Celular</strong> {{member.cellphone}}
@@ -46,17 +48,18 @@
               <v-text-field label="Comentarios" v-model="call.comments" outlined></v-text-field>
             </v-col>
             <v-col cols="auto">
-              <v-btn type="submit" color="primary">Guardar</v-btn>
+              <v-btn type="submit" class="mr-4" color="primary">Guardar</v-btn>
+              <v-btn color="primary" outlined @click="$router.push('/consolidate/calls')">
+                <!-- <v-icon>mdi-arrow-left</v-icon> -->
+                Cancelar
+              </v-btn>
             </v-col>
           </v-row>
         </v-form>
         <MemberCallTable @sorting="getCalls" :options="options" :response="responseCalls" @edit="openDialog"></MemberCallTable>
         <MemberCallDialog :memberCall="memberCall" v-if="MemberCallDialog" @close="MemberCallDialog = false" @save="saveMemberCall"></MemberCallDialog>
       </v-card-text>
-      <v-btn @click="$router.push('/consolidate/calls')">
-        <v-icon>mdi-arrow-left</v-icon>
-        Regresar
-      </v-btn>
+
     </v-card>
   </div>
 </template>
