@@ -46,7 +46,7 @@ export default {
     return { callOptions, callResponse, member, id: params.id };
   },
   props: {
-    //     Vue.use(VueGoogleMaps, {
+    //     aVue.use(VueGoogleMaps, {
     //   load: {
     //     key: "AIzaSyCiaz4xwBNJLO81WM4E7871IZ3MSNeXC-E",
     //     libraries: "places"
