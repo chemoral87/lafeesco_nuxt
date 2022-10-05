@@ -23,7 +23,7 @@
         <v-spacer />
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" class="elevation-4" fixed app :color=" authenticated? '' : 'banner'">
+    <v-app-bar :clipped-left="clipped" class="elevation-2" fixed app :color=" authenticated? '' : 'banner'">
       <v-app-bar-nav-icon v-if="show_drawer" @click.stop=" drawer=!drawer" />
       <v-toolbar-title class="pl-0">
         <v-btn v-if="back" @click="$router.push(back)" class="mr-1" outlined fab small elevation="0">
@@ -52,25 +52,7 @@
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>
-          <!-- <v-list-item @click="roleDialog = true; menu = false" v-if="roles.length > 1">
-            <v-list-item-content>
-              <v-list-item-title>
-                <v-icon color="green" class="mr-1">{{role.icon_class}}</v-icon> {{ role.description }}
-                <template v-if="housing">
-                  - {{ housing.name }}
-                </template>
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item> -->
-          <!-- <v-list-item v-else>
-            <v-list-item-title>
-              <v-icon class="mr-1">mdi-layers</v-icon> {{ role.description }}
-              <template v-if="housing">
-                - {{ housing.name }}
-              </template>
-            </v-list-item-title>
-          </v-list-item>
-          <v-divider></v-divider> -->
+
           <v-list-item @click="logout()">
             <v-list-item-content>
               <v-list-item-title>
@@ -100,22 +82,6 @@
         </v-snackbar>
       </div>
     </v-main>
-
-    <!-- <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer> -->
-    <!-- <v-footer :absolute="!fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer> -->
   </v-app>
 
 </template>

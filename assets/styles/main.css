@@ -46,6 +46,19 @@
 
 }
 
+.v-application--is-ltr .v-text-field--outlined fieldset {
+  padding-left: 3px !important;
+}
+
+.v-text-field.v-text-field--enclosed:not(.v-text-field--rounded) > .v-input__control > .v-input__slot, .v-text-field.v-text-field--enclosed .v-text-field__details {
+  /* padding: 0 8px !important; */
+}
+
+.v-text-field--filled > .v-input__control > .v-input__slot, .v-text-field--full-width > .v-input__control > .v-input__slot, .v-text-field--outlined > .v-input__control > .v-input__slot {
+
+  /* min-height: 46px !important; */
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;

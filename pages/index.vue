@@ -3,7 +3,11 @@
   <v-row>
 
     <v-col cols="12">
-      REDES SOCIALES
+      HELLO WORLD
+      <!--
+      reverse("emilio") <strong> {{ reverse("emilio") }} </strong><br />
+      anagram("army", "mary") <strong>{{ anagram("army", "mary") }}</strong> <br />
+      anagram("aba", "bab") <strong>{{ anagram("aba", "bab") }}</strong> <br /> -->
     </v-col>
   </v-row>
 
@@ -49,6 +53,7 @@ export default {
     this.$nuxt.$emit("setNavBar", { title: process.env.APP_NAME, icon: null });
   },
   methods: {
+
     invest() {
       this.$router.push('/newinvest/1');
     }
