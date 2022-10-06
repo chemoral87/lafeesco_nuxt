@@ -4,8 +4,18 @@
     <v-row dense class="mt-2">
       <v-col cols="12">
         <v-subheader>Historial de llamadas</v-subheader>
-        <MemberCallTable @sorting="getCalls" :options="callOptions" :response="callResponse" @edit="openDialog"></MemberCallTable>
-        <MemberCallDialog :memberCall="memberCall" v-if="MemberCallDialog" @close="MemberCallDialog = false" @save="saveMemberCall"></MemberCallDialog>
+        <MemberCallTable
+          @sorting="getCalls"
+          :options="callOptions"
+          :response="callResponse"
+          @edit="openDialog"
+        ></MemberCallTable>
+        <MemberCallDialog
+          :memberCall="memberCall"
+          v-if="MemberCallDialog"
+          @close="MemberCallDialog = false"
+          @save="saveMemberCall"
+        ></MemberCallDialog>
       </v-col>
     </v-row>
   </v-container>
@@ -13,13 +23,14 @@
 <script>
 export default {
   validate({ store, error }) {
-    if (store.getters.permissions.includes('consolidador-update'))
-      return true;
-    else
-      throw error({ statusCode: 403 });
+    if (store.getters.permissions.includes("consolidador-update")) return true;
+    else throw error({ statusCode: 403 });
   },
   created() {
-    this.$nuxt.$emit("setNavBar", { title: "Editar Miembro", icon: "account-plus" });
+    this.$nuxt.$emit("setNavBar", {
+      title: "Editar Miembro",
+      icon: "account-plus"
+    });
   },
   async asyncData({ $axios, app, params }) {
     let callOptions = {
@@ -27,11 +38,20 @@ export default {
       sortDesc: [true],
       itemsPerPage: 10
     };
-    const callResponse = await app.$repository.MemberCall.indexByMember(params.id, callOptions);
+    const callResponse = await app.$repository.MemberCall.indexByMember(
+      params.id,
+      callOptions
+    );
     const member = await app.$repository.Member.show(params.id);
     return { callOptions, callResponse, member, id: params.id };
   },
   props: {
+    //     aVue.use(VueGoogleMaps, {
+    //   load: {
+    //     key: "AIzaSyCiaz4xwBNJLO81WM4E7871IZ3MSNeXC-E",
+    //     libraries: "places"
+    //   }
+    // });
   },
   data() {
     return {
@@ -55,7 +75,7 @@ export default {
         { id: "09", name: "Septiembre" },
         { id: "10", name: "Octubre" },
         { id: "11", name: "Noviembre" },
-        { id: "12", name: "Diciembre" },
+        { id: "12", name: "Diciembre" }
       ]
     };
   },
@@ -71,7 +91,7 @@ export default {
           me.MemberCallDialog = false;
           me.getCalls(null);
         })
-        .catch(e => { });
+        .catch(e => {});
     },
     cancel() {
       this.$router.push("/consolidate/my");
@@ -81,17 +101,19 @@ export default {
         .then(res => {
           this.$router.push("/consolidate/my");
         })
-        .catch(e => { });
+        .catch(e => {});
     },
     async getCalls(options) {
       this.callOptions = options ? options : this.callOptions;
 
-      this.callResponse = await this.$repository.MemberCall.indexByMember(this.id, this.callOptions);
+      this.callResponse = await this.$repository.MemberCall.indexByMember(
+        this.id,
+        this.callOptions
+      );
     }
   },
   mounted() {
     let me = this;
   }
-}
+};
 </script>
-
