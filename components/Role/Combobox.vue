@@ -48,6 +48,7 @@ export default {
   },
   watch: {
     async search(val, prev) {
+      this.$store.dispatch("hideNextLoading");
       if (!(val == null || val.trim() == "")) {
         let itemz = await this.$repository.Role.filter({ queryText: val, ids: this.roles_id });
         this.items = itemz;

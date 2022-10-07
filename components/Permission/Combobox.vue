@@ -1,13 +1,30 @@
 <template>
   <div>
-    <v-combobox v-model="model" :filter="filter" item-value="id" item-text="name" hide-selected :hide-no-data="!search" :items="items" :search-input.sync="search" v-bind="$attrs" multiple>
+    <v-combobox
+      v-model="model"
+      :filter="filter"
+      item-value="id"
+      item-text="name"
+      hide-selected
+      :hide-no-data="!search"
+      :items="items"
+      :search-input.sync="search"
+      v-bind="$attrs"
+      multiple
+    >
       <template v-slot:no-data>
         <v-list-item>
           Intente con otra búsqueda...
         </v-list-item>
       </template>
       <template v-slot:selection="{ attrs, item, parent, selected }">
-        <v-chip v-if="item === Object(item)" v-bind="attrs" color="info" :input-value="selected" label>
+        <v-chip
+          v-if="item === Object(item)"
+          v-bind="attrs"
+          color="info"
+          :input-value="selected"
+          label
+        >
           <span class="pr-2">
             {{ item.name }}
           </span>
@@ -21,7 +38,6 @@
           {{ item.name }}
         </v-chip>
         <v-spacer></v-spacer>
-
       </template>
     </v-combobox>
   </div>
@@ -34,7 +50,7 @@ export default {
     model: [],
     // x: 0,
     // y: 0,
-    search: null,
+    search: null
   }),
   computed: {
     permissions_id() {
@@ -47,8 +63,12 @@ export default {
   },
   watch: {
     async search(val, prev) {
+      this.$store.dispatch("hideNextLoading");
       if (!(val == null || val.trim() == "")) {
-        let itemz = await this.$repository.Permission.filter({ queryText: val, ids: this.permissions_id }, { loading: false });
+        let itemz = await this.$repository.Permission.filter(
+          { queryText: val, ids: this.permissions_id },
+          { loading: false }
+        );
         this.items = itemz;
       }
     },
@@ -56,26 +76,29 @@ export default {
       if (val.length === prev.length) return;
       var i = val.length;
       while (i--) {
-        if (typeof val[i] === 'string') {
+        if (typeof val[i] === "string") {
           val.splice(i, 1);
         }
       }
       this.model = val;
       this.$emit("modelChange", val);
-    },
+    }
   },
   mounted() {
     this.model = this.permissionsx || [];
   },
   methods: {
     filter(item, queryText, itemText) {
-      const hasValue = val => val != null ? val : '';
+      const hasValue = val => (val != null ? val : "");
       const text = hasValue(itemText);
       const query = hasValue(queryText);
-      return text.toString()
-        .toLowerCase()
-        .indexOf(query.toString().toLowerCase()) > -1;
-    },
-  },
-}
+      return (
+        text
+          .toString()
+          .toLowerCase()
+          .indexOf(query.toString().toLowerCase()) > -1
+      );
+    }
+  }
+};
 </script>
