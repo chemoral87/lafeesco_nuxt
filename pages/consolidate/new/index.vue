@@ -3,91 +3,138 @@
     <v-form ref="form" @submit.prevent="saveMember">
       <v-row dense>
         <v-col cols="6" md="3">
-          <v-text-field outlined label="Nombre" v-model="member.name" :rules="[v => !!v || 'Campo requerido']" />
+          <v-text-field
+            outlined
+            label="Nombre"
+            v-model="member.name"
+            :rules="[(v) => !!v || 'Campo requerido']"
+          />
         </v-col>
         <v-col cols="6" md="3">
-          <v-text-field outlined label="Ape. Paterno" v-model="member.paternal_surname" :rules="[v => !!v || 'Campo requerido']" />
+          <v-text-field
+            outlined
+            label="Ape. Paterno"
+            v-model="member.paternal_surname"
+            :rules="[(v) => !!v || 'Campo requerido']"
+          />
         </v-col>
         <v-col cols="6" md="3">
-          <v-text-field outlined label="Ape. Materno" v-model="member.maternal_surname" />
+          <v-text-field
+            outlined
+            label="Ape. Materno"
+            v-model="member.maternal_surname"
+          />
         </v-col>
         <v-col cols="6" md="3">
-
           <!-- <v-text-field type="date" outlined label="Fecha cumpleaños" v-model="member.birthday" :persistent-placeholder="true" /> -->
 
-          <v-text-field outlined label="Fecha cumpleaños" v-model="member.birthday" v-mask="'##-##-####'" :persistent-placeholder="true" placeholder="dd-mm-aaaa" />
-
+          <v-text-field
+            outlined
+            label="Fecha cumpleaños"
+            v-model="member.birthday"
+            v-mask="'##-##-####'"
+            :persistent-placeholder="true"
+            placeholder="dd-mm-aaaa"
+          />
         </v-col>
       </v-row>
       <v-row dense>
         <v-col cols="6" md="3">
-          <v-text-field outlined label="Celular" v-model="member.cellphone" v-mask="'##-####-####'" type="tel" />
+          <v-text-field
+            outlined
+            label="Celular"
+            v-model="member.cellphone"
+            v-mask="'##-####-####'"
+            type="tel"
+          />
         </v-col>
         <v-col cols="6" md="3">
-          <v-select outlined hide-details label="Estado Civil" v-model="member.marital_status_id" :items="marital_statuses" item-value="id" item-text="name" :clearable="true"></v-select>
+          <v-select
+            outlined
+            hide-details
+            label="Estado Civil"
+            v-model="member.marital_status_id"
+            :items="marital_statuses"
+            item-value="id"
+            item-text="name"
+            :clearable="true"
+          ></v-select>
         </v-col>
         <v-col cols="6" md="3">
-          <v-select outlined hide-details label="Grupo" v-model="member.category_id" :items="member_groups" item-value="id" item-text="name" :clearable="true"></v-select>
+          <v-select
+            outlined
+            hide-details
+            label="Grupo"
+            v-model="member.category_id"
+            :items="member_groups"
+            item-value="id"
+            item-text="name"
+            :clearable="true"
+          ></v-select>
         </v-col>
         <v-col cols="6" md="3">
-          <v-select outlined label="Horario" v-model="member.source_id" :items="member_sources" item-value="id" item-text="name" :clearable="true" hide-details />
+          <v-select
+            outlined
+            label="Horario"
+            v-model="member.source_id"
+            :items="member_sources"
+            item-value="id"
+            item-text="name"
+            :clearable="true"
+            hide-details
+          />
         </v-col>
       </v-row>
       <v-row dense>
         <v-col cols="12" md="6">
-          <v-textarea outlined label="Petición Oración" name="prayer_request" v-model="member.prayer_request" rows="1" auto-grow></v-textarea>
+          <v-textarea
+            outlined
+            label="Petición Oración"
+            name="prayer_request"
+            v-model="member.prayer_request"
+            rows="1"
+            auto-grow
+          ></v-textarea>
         </v-col>
       </v-row>
       <v-row dense>
         <v-spacer />
-        <v-btn @click="cancel" outlined color="primary" class="mr-3">Cancelar</v-btn>
+        <v-btn @click="cancel" outlined color="primary" class="mr-3"
+          >Cancelar</v-btn
+        >
         <v-btn type="submit" color="primary" class="mr-4">Guardar</v-btn>
       </v-row>
-
     </v-form>
   </v-container>
 </template>
 <script>
 export default {
   validate({ store, error }) {
-    if (store.getters.permissions.includes('consolidador-insert'))
-      return true;
-    else
-      throw error({ statusCode: 403 });
+    if (store.getters.permissions.includes("consolidador-insert")) return true;
+    else throw error({ statusCode: 403 });
   },
   created() {
-    this.$nuxt.$emit("setNavBar", { title: "Nuevo Miembro", icon: "account-plus" });
+    this.$nuxt.$emit("setNavBar", {
+      title: "Nuevo Miembro",
+      icon: "account-plus",
+    });
   },
   async asyncData({ $axios, app, store }) {
-
-    var marital_statuses = await store.dispatch("catalogs/fetchMaritalStatuses");
+    var marital_statuses = await store.dispatch(
+      "catalogs/fetchMaritalStatuses"
+    );
     var member_groups = await store.dispatch("catalogs/fetchMemberCategories");
     var member_sources = await store.dispatch("catalogs/fetchMemberSources");
 
     return { marital_statuses, member_groups, member_sources };
   },
-  props: {
-  },
+  props: {},
   data() {
     return {
       member: {},
       marital_statuses: [],
       member_sources: [],
       member_groups: [],
-      // months: [
-      //   { id: "01", name: "Enero" },
-      //   { id: "02", name: "Febrero" },
-      //   { id: "03", name: "Marzo" },
-      //   { id: "04", name: "Abril" },
-      //   { id: "05", name: "Mayo" },
-      //   { id: "06", name: "Junio" },
-      //   { id: "07", name: "Julio" },
-      //   { id: "08", name: "Agosto" },
-      //   { id: "09", name: "Septiembre" },
-      //   { id: "10", name: "Octubre" },
-      //   { id: "11", name: "Noviembre" },
-      //   { id: "12", name: "Diciembre" },
-      // ]
     };
   },
   methods: {
@@ -97,15 +144,14 @@ export default {
     async saveMember() {
       if (!this.$refs.form.validate()) return;
       await this.$repository.Member.create(this.member)
-        .then(res => {
+        .then((res) => {
           this.$router.push("/consolidate");
         })
-        .catch(e => { });
-    }
+        .catch((e) => {});
+    },
   },
   mounted() {
     let me = this;
-  }
-}
+  },
+};
 </script>
-

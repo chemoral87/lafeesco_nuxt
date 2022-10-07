@@ -11,7 +11,7 @@ if (process.env.NODE_ENV == "production") {
   title = process.env.APP_ENVIRONMENT;
 }
 console.log("NODE_ENV ", process.env.NODE_ENV);
-
+console.log("BASE_URL ", process.env.BASE_URL);
 // import VueI18n from "vue-i18n";
 
 // const i18n = new VueI18n({
@@ -26,7 +26,7 @@ export default {
   ssr: false,
   telemetry: false,
   router: {
-    trailingSlash: false
+    trailingSlash: false,
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -36,9 +36,9 @@ export default {
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { hid: "description", name: "description", content: "" },
-      { name: "format-detection", content: "telephone=no" }
+      { name: "format-detection", content: "telephone=no" },
     ],
-    link: [{ rel: "icon", type: "image/png", href: "/favicon.png" }]
+    link: [{ rel: "icon", type: "image/png", href: "/favicon.png" }],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -52,7 +52,7 @@ export default {
     "./plugins/filters.js",
     "./plugins/i18n.js",
     "./plugins/repository.js",
-    "./plugins/v-mask.js"
+    "./plugins/v-mask.js",
     // "./plugins/vue-mask.js"
     // { src: "./plugins/geolocation.js", ssr: false, mode: "client" }
   ],
@@ -64,20 +64,27 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     "@nuxtjs/vuetify",
-    "@nuxtjs/moment"
+    "@nuxtjs/moment",
   ],
   moment: {
     defaultLocale: "es",
-    locales: ["es"]
+    locales: ["es"],
   },
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
+
     "@nuxtjs/axios",
     "@nuxtjs/auth-next",
     // https://go.nuxtjs.dev/pwa
     "@nuxtjs/pwa",
-    ["@nuxtjs/dotenv", { filename: ".env." + process.env.NODE_ENV }]
+    ["@nuxtjs/dotenv", { filename: ".env." + process.env.NODE_ENV }],
+    [
+      "nuxt-gmaps",
+      {
+        key: "AIzaSyCiaz4xwBNJLO81WM4E7871IZ3MSNeXC-E",
+      },
+    ],
     // "@nuxtjs/i18n"
     // [
     //   "@nuxtjs/i18n",
@@ -101,7 +108,7 @@ export default {
   ],
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL: process.env.BASE_URL
+    baseURL: process.env.BASE_URL,
   },
   auth: {
     strategies: {
@@ -110,33 +117,33 @@ export default {
         endpoints: {
           login: {
             url: "auth/login",
-            method: "post"
+            method: "post",
           },
           refresh: {
             url: "auth/refresh",
-            method: "post"
+            method: "post",
           },
           logout: {
             url: "auth/logout",
-            method: "post"
+            method: "post",
           },
           user: {
             url: "auth/user",
-            method: "post"
-          }
-        }
-      }
-    }
+            method: "post",
+          },
+        },
+      },
+    },
   },
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
     manifest: {
-      lang: "en"
+      lang: "en",
     },
     // https://www.favicon-generator.org/
     icon: {
-      fileName: "favicon-96x96.png"
-    }
+      fileName: "favicon-96x96.png",
+    },
   },
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -148,11 +155,11 @@ export default {
     // lang: {
     //   t: (key, ...params) => app.i18n.t(key, params)
     // },
-    optionsPath: "./vuetify.options.js"
+    optionsPath: "./vuetify.options.js",
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    maxChunkSize: 900000
-  }
+    maxChunkSize: 900000,
+  },
 };

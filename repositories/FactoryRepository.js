@@ -5,8 +5,9 @@ import InvestorProfileRepository from "./InvestorProfileRepository";
 import CreditRepository from "./CreditRepository";
 import MemberRepository from "./MemberRepository";
 import MemberCallRepository from "./MemberCallRepository";
+import HouseFaithReposiotry from "./CommonRepository";
 
-export default $axios => ({
+export default ($axios) => ({
   Role: CommonRepository($axios)("/roles"),
   Permission: CommonRepository($axios)("/permissions"),
   User: CommonRepository($axios)("/users"),
@@ -17,5 +18,6 @@ export default $axios => ({
   Consolidation: CommonRepository($axios)("/consolidation"),
   Member: MemberRepository($axios)("/members"),
   MemberAddess: CommonRepository($axios)("/member-addresses"),
-  MemberCall: MemberCallRepository($axios)("/member-calls")
+  MemberCall: MemberCallRepository($axios)("/member-calls"),
+  FaithHouse: HouseFaithReposiotry($axios)("/faith-house"),
 });

@@ -15,7 +15,7 @@ export class MenuService {
       menu.push({
         icon: "mdi-view-dashboard",
         title: "Dashboard",
-        to: "/dashboard"
+        to: "/dashboard",
       });
       if (this.hasPermission("user-index"))
         menu.push({ icon: "mdi-account", title: "Usuarios", to: "/users" });
@@ -27,21 +27,21 @@ export class MenuService {
         menu.push({
           icon: "mdi-pencil-box",
           title: "Inversiones",
-          to: "/investment"
+          to: "/investment",
         });
 
       if (this.hasPermission("investment-my-profile")) {
         menu.push({
           icon: "mdi-account",
           title: "Perfil Inversor",
-          to: "/investment-my/profile"
+          to: "/investment-my/profile",
         });
       }
       if (this.hasPermission("investment-my-index")) {
         menu.push({
           icon: "mdi-pencil-box",
           title: "Inversiones",
-          to: "/investment-my"
+          to: "/investment-my",
         });
       }
       if (this.hasPermission("credit-index")) {
@@ -51,36 +51,44 @@ export class MenuService {
         menu.push({
           icon: "mdi-account-plus",
           title: "Consolidar",
-          to: "/consolidate"
+          to: "/consolidate",
         });
         menu.push({
           icon: "mdi-account-group",
           title: "Mis Consolidados",
-          to: "/consolidate/my"
+          to: "/consolidate/my",
         });
         menu.push({
           icon: "mdi-phone",
           title: "Seguimiento",
-          to: "/consolidate/calls"
+          to: "/consolidate/calls",
+        });
+      }
+
+      if (this.hasPermission("casas-fe-index")) {
+        menu.push({
+          icon: "mdi-home",
+          title: "Casa Fe",
+          to: "/faith-house",
         });
       }
 
       menu.push({
         icon: "mdi-chart-bar",
         title: "Reportes",
-        to: "/reports"
+        to: "/reports",
       });
     } else {
       menu.push(
         {
           icon: "mdi-home",
           title: "Inicio",
-          to: "/"
+          to: "/",
         },
         {
           icon: "mdi-lock",
           title: "Inicia Sesión ",
-          to: "/login"
+          to: "/login",
         }
       );
     }

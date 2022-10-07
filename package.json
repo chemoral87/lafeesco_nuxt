@@ -27,6 +27,7 @@
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "nuxt": "^2.15.8",
+    "nuxt-gmaps": "^1.2.10",
     "v-chartist": "^0.1.6",
     "v-mask": "^2.3.0",
     "v-money": "^0.8.1",
