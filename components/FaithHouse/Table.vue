@@ -42,7 +42,6 @@
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn
-          v-if="user.id == item.created_by"
           title="Editar"
           class="ma-1"
           color="primary"
@@ -53,37 +52,62 @@
         >
           <v-icon> mdi-pencil </v-icon>
         </v-btn>
+        <v-btn
+          title="Ver"
+          class="ma-1"
+          color="info"
+          outlined
+          fab
+          small
+          @click="emitAction('focus', item)"
+        >
+          <v-icon> mdi-eye </v-icon>
+        </v-btn>
+        <v-btn @click="confirmDelete(item)" fab small color="error">
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
       </template>
     </v-data-table>
+    <DialogDelete
+      v-if="dialogDelete"
+      :dialog="dialogDeleteProp"
+      @ok="
+        (item) => {
+          $emit('delete', item);
+        }
+      "
+      @close="$emit('update:dialogDelete', false)"
+    ></DialogDelete>
   </div>
 </template>
 <script>
 export default {
-  props: ["response", "options", "tableHeaders"],
+  props: ["dialogDelete", "response", "options", "tableHeaders"],
   data() {
     return {
       flagSetOption: true,
-
+      pageRule: 1,
       optionsTable: {},
       pageCountRule: 0,
       sortDesc: false,
       headers: [
         {
-          text: "Nombre Completo",
-          align: "start",
-          value: "full_name",
-          sortable: false,
+          text: "Nombre ",
+          value: "name",
         },
-        { text: "Celular", value: "cellphone", sortable: false },
-        { text: "Grupo", value: "category", sortable: false },
-        { text: "Edad", value: "years", sortable: false },
-        { text: "Fecha Creación", value: "created_at", firstSortDesc: true },
+        { text: "Anfitrión", value: "host", sortable: false },
+        { text: "Anfitrión Cel.", value: "host_phone", sortable: false },
+        { text: "Expositor", value: "exhibitor", sortable: false },
+        { text: "Expositor Cel.", value: "exhibitor_phone", sortable: false },
+
         {
-          text: "Siguiente Llamadas",
-          value: "next_call_date",
+          text: "Dirección",
+          value: "address",
         },
-        { text: "Última Llamada", value: "last_call_date" },
-        { text: "Acciones", value: "actions", width: "200px", sortable: false },
+        {
+          text: "Acción",
+          value: "actions",
+        },
       ],
     };
   },
@@ -98,6 +122,14 @@ export default {
     },
   },
   methods: {
+    confirmDelete(item) {
+      this.dialogDeleteProp = {
+        text: "Desea eliminar la Casa de Fe ",
+        strong: item.name,
+        payload: item,
+      };
+      this.$emit("update:dialogDelete", true);
+    },
     sortTable(columnName) {
       if (this.flagSetOption) {
         this.flagSetOption = false;
@@ -108,14 +140,6 @@ export default {
     },
     emitAction(action, payload) {
       this.$emit(action, payload);
-    },
-    getfullName(name, paternal_surname, maternal_surname) {
-      return [name, paternal_surname, maternal_surname]
-        .filter(Boolean)
-        .join(" ");
-    },
-    sort_desc: function (val, _prev) {
-      //do what you need to change sort and refresh
     },
   },
   mounted() {

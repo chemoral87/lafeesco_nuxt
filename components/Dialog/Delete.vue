@@ -10,17 +10,17 @@
 
       <v-card-text>
         <div class="text-body-1 text--primary">
-          {{item.text}}
-          <strong>{{item.strong}}</strong> ?
+          {{ item.text }}
+          <strong>{{ item.strong }}</strong> ?
         </div>
       </v-card-text>
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="grey" class="mr-1" outlined @click.native="close"> NO </v-btn>
-        <v-btn color="primary" @click.native="ok">
-          SI
+        <v-btn color="grey" class="mr-1" outlined @click.native="close">
+          NO
         </v-btn>
+        <v-btn color="primary" @click.native="ok"> SI </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -34,30 +34,32 @@ export default {
       item: {
         titel: "",
         text: "",
-        strong: ""
-      }
+        strong: "",
+      },
     };
   },
   computed: {
     formTitle() {
       return "Confirmación";
       // return `Esta seguro de elminar el Rol ${this.item.name} ?`;
-    }
+    },
   },
   methods: {
     close() {
       this.$emit("close");
     },
     ok() {
-      if (this.item.payload)
+      if (this.item.payload) {
+        console.log(this.item.payload);
         this.$emit("ok", this.item.payload);
-    }
+      }
+    },
   },
   mounted() {
     this.item.title = this.dialog.title ? this.dialog.title : "Confirmación";
     this.item.text = this.dialog.text ? this.dialog.text : "Confirmación";
     this.item.strong = this.dialog.strong ? this.dialog.strong : "Confirmación";
     this.item.payload = this.dialog.payload ? this.dialog.payload : null;
-  }
-}
+  },
+};
 </script>
