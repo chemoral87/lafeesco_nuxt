@@ -40,7 +40,15 @@
       map-type-id="roadmap"
       style="height: 610px"
     >
+      <gmap-info-window
+        :opened="infoWindow"
+        :options="infoOptions"
+        :position="infoPosition"
+        @closeclick="infoWindow = false"
+        >{{ infoContent }}</gmap-info-window
+      >
       <GmapMarker
+        @click="showInfo(item)"
         v-for="(item, ix) in markers"
         :key="ix"
         :clickable="true"
@@ -68,11 +76,16 @@ export default {
     markers() {
       let faith_houses = this.response.data;
       return faith_houses.map((x) => {
-        return { lat: parseFloat(x.lat), lng: parseFloat(x.lng) };
+        return { lat: parseFloat(x.lat), lng: parseFloat(x.lng), name: x.name };
       });
     },
   },
   methods: {
+    showInfo(item) {
+      this.infoWindow = true;
+      this.infoContent = item.name;
+      this.infoPosition = { lat: item.lat, lng: item.lng };
+    },
     async index(options) {
       if (options) {
         this.options = options;
@@ -108,6 +121,15 @@ export default {
   },
   data() {
     return {
+      infoWindow: false,
+      infoOptions: {
+        pixelOffset: {
+          width: 0,
+          height: -10,
+        },
+      },
+      infoContent: "",
+      infoPosition: { lat: null, lng: null },
       dialogDelete: false,
       center: { lat: 25.786, lng: -100.3044 },
 
