@@ -3,7 +3,7 @@
 let env;
 
 let title;
-let dateStamp = new Date().toISOString().slice(0, 10).replaceAll("-", "");
+let dateStamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 if (process.env.NODE_ENV == "production") {
   env = require("dotenv").config({ path: ".env.production" });
   title = process.env.APP_NAME;
