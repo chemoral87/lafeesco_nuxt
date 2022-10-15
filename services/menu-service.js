@@ -75,7 +75,7 @@ export class MenuService {
 
       menu.push({
         icon: "mdi-sprout",
-        title: "Agro Eventos",
+        title: "Agro Eventus",
         to: "/agro-event",
       });
 

@@ -3,6 +3,7 @@
 let env;
 
 let title;
+let dateStamp = new Date().toISOString().slice(0, 10).replaceAll("-", "");
 if (process.env.NODE_ENV == "production") {
   env = require("dotenv").config({ path: ".env.production" });
   title = process.env.APP_NAME;
@@ -172,5 +173,9 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     maxChunkSize: 900000,
+    filenames: {
+      chunk: ({ isDev }) =>
+        isDev ? "[name].js" : "[id]." + dateStamp + ".[contenthash].js",
+    },
   },
 };
