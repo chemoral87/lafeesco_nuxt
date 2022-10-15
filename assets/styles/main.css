@@ -1,26 +1,37 @@
-
 /* .v-btn:not(.v-btn--outlined).return {
   color: #ffffff;
 } */
 /* .v-data-table__wrapper {
   overflow-x: visible;
 } */
- /* .v-data-table__wrapper{
+/* .v-data-table__wrapper{
   overflow-x:auto;
   }
  */
- .xwidth900 .v-data-table__wrapper table  {      min-width: 900px !important;  }
- .xwidth1000 .v-data-table__wrapper table  {      min-width: 1000px !important;  }
- .xwidth1100 .v-data-table__wrapper table  {      min-width: 1100px !important;  }
-  .xwidth1200 .v-data-table__wrapper table  {      min-width: 1200px !important;  }
-  .xwidth1300 .v-data-table__wrapper table  {    min-width: 1300px !important;}
-.xwidth1400 .v-data-table__wrapper table  {  min-width: 1400px !important;}
+.xwidth900 .v-data-table__wrapper table {
+  min-width: 900px !important;
+}
+.xwidth1000 .v-data-table__wrapper table {
+  min-width: 1000px !important;
+}
+.xwidth1100 .v-data-table__wrapper table {
+  min-width: 1100px !important;
+}
+.xwidth1200 .v-data-table__wrapper table {
+  min-width: 1200px !important;
+}
+.xwidth1300 .v-data-table__wrapper table {
+  min-width: 1300px !important;
+}
+.xwidth1400 .v-data-table__wrapper table {
+  min-width: 1400px !important;
+}
 
-.v-data-table > .v-data-table__wrapper > table > tbody > tr > td{
+.v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
   padding: 0 7px !important;
 }
 
-.v-data-table > .v-data-table__wrapper > table > thead > tr > th{
+.v-data-table > .v-data-table__wrapper > table > thead > tr > th {
   padding: 0 7px !important;
 }
 
@@ -42,20 +53,23 @@
 }
 /* pagination end */
 
-.v-data-table > .v-data-table__wrapper > table > tbody{
-
+.v-data-table > .v-data-table__wrapper > table > tbody {
 }
 
 .v-application--is-ltr .v-text-field--outlined fieldset {
   padding-left: 3px !important;
 }
 
-.v-text-field.v-text-field--enclosed:not(.v-text-field--rounded) > .v-input__control > .v-input__slot, .v-text-field.v-text-field--enclosed .v-text-field__details {
+.v-text-field.v-text-field--enclosed:not(.v-text-field--rounded)
+  > .v-input__control
+  > .v-input__slot,
+.v-text-field.v-text-field--enclosed .v-text-field__details {
   /* padding: 0 8px !important; */
 }
 
-.v-text-field--filled > .v-input__control > .v-input__slot, .v-text-field--full-width > .v-input__control > .v-input__slot, .v-text-field--outlined > .v-input__control > .v-input__slot {
-
+.v-text-field--filled > .v-input__control > .v-input__slot,
+.v-text-field--full-width > .v-input__control > .v-input__slot,
+.v-text-field--outlined > .v-input__control > .v-input__slot {
   /* min-height: 46px !important; */
 }
 
@@ -63,4 +77,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+html,
+body {
+  overflow-x: hidden;
 }
