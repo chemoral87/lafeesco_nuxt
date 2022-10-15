@@ -74,6 +74,12 @@ export class MenuService {
       }
 
       menu.push({
+        icon: "mdi-sprout",
+        title: "Agro Eventos",
+        to: "/agro-event",
+      });
+
+      menu.push({
         icon: "mdi-chart-bar",
         title: "Reportes",
         to: "/reports",
