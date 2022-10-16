@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-layout align-center justify-center>
-      <v-flex xs12 sm10 md8 lg6>
+      <v-flex xs12 md4 lg3>
         <v-form @submit.prevent="submitLogin">
           <v-row dense>
             <v-col cols="12">
@@ -54,7 +54,7 @@ export default {
     this.$nuxt.$emit("setNavBar", {
       title: `Inicio Sesión`,
       icon: "lock",
-      show_login: false
+      show_login: false,
     });
   },
   data() {
@@ -62,7 +62,7 @@ export default {
       email: "",
       password: "",
       showned: false, // mostrar password
-      name_secret: ""
+      name_secret: "",
     };
   },
   methods: {
@@ -71,23 +71,23 @@ export default {
       try {
         let credentials = {
           email: this.email,
-          password: this.password
+          password: this.password,
         };
 
         await this.$auth.loginWith("laravelJWT", { data: credentials });
         this.$router.push({
-          path: this.$route.query.redirect || "/dashboard"
+          path: this.$route.query.redirect || "/dashboard",
         });
       } catch (e) {
         console.log(e);
       }
-    }
+    },
   },
   mounted() {
     let me = this;
 
     this.name_secret = process.env.BASE_URL;
     // this.name_secret = process.env.NAME_SECRET;
-  }
+  },
 };
 </script>

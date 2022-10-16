@@ -174,8 +174,7 @@ export default {
   build: {
     maxChunkSize: 900000,
     filenames: {
-      chunk: ({ isDev }) =>
-        isDev ? "[name].js" : "[id]." + dateStamp + ".[contenthash].js",
+      chunk: ({ isDev }) => (isDev ? "[name].js" : "[id].[contenthash].js"),
     },
   },
 };

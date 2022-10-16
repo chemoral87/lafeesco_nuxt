@@ -122,9 +122,7 @@ export default {
       infoPosition: { lat: null, lng: null },
       dialogDelete: false,
       center: { lat: 25.786, lng: -100.3044 },
-
       zoom: 14,
-
       response: {},
       options: {},
       currentLocation: {

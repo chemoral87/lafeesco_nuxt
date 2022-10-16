@@ -1,45 +1,50 @@
 <template>
   <v-container fluid>
-    <v-form ref="form" @submit.prevent="saveFaithHouse">
+    <v-form ref="form" @submit.prevent="saveAgroEvent">
       <v-row dense>
         <v-col cols="6" md="3">
           <v-text-field
             outlined
             label="Nombre"
-            v-model="item.name"
+            v-model="agroEvent.name"
             :rules="[(v) => !!v || 'Campo requerido']"
           />
         </v-col>
         <v-col cols="6" md="3">
-          <v-text-field outlined label="Anfitrión" v-model="item.host" />
+          <v-select
+            outlined
+            label="Tipo"
+            v-model="agroEvent.type_id"
+            :items="types"
+            item-value="id"
+            item-text="name"
+            :clearable="true"
+            hide-details
+          />
+        </v-col>
+        <v-col cols="6" md="3">
+          <v-textarea
+            rows="2"
+            outlined
+            label="Descripción"
+            v-model="agroEvent.description"
+          />
         </v-col>
         <v-col cols="6" md="3">
           <v-text-field
             outlined
-            label="Anfitrión Teléfono"
-            v-mask="'##-####-####'"
-            v-model="item.host_phone"
+            label="Latitud"
+            v-model="agroEvent.lat"
+            readonly
           />
-        </v-col>
-        <v-col cols="6" md="3">
-          <v-text-field outlined label="Expositor" v-model="item.exhibitor" />
         </v-col>
         <v-col cols="6" md="3">
           <v-text-field
             outlined
-            label="Expositor Teléfono"
-            v-mask="'##-####-####'"
-            v-model="item.exhibitor_phone"
+            label="Longitud"
+            v-model="agroEvent.lng"
+            readonly
           />
-        </v-col>
-        <v-col cols="6" md="3">
-          <v-text-field outlined label="Domicilio" v-model="item.address" />
-        </v-col>
-        <v-col cols="6" md="3">
-          <v-text-field outlined label="Latitud" v-model="item.lat" />
-        </v-col>
-        <v-col cols="6" md="3">
-          <v-text-field outlined label="Longitud" v-model="item.lng" />
         </v-col>
       </v-row>
 
@@ -50,36 +55,53 @@
         >
         <v-btn type="submit" color="primary" class="mr-4">Guardar</v-btn>
       </v-row>
+      <v-row>
+        <v-col cols="6">
+          <GmapMap
+            :center="center"
+            :options="{
+              zoomControl: true,
+              mapTypeControl: true,
+              scaleControl: true,
+              streetViewControl: false,
+              rotateControl: false,
+              fullscreenControl: false,
+              disableDefaultUi: false,
+            }"
+            :zoom="map.zoom"
+            @center_changed="updateCenter"
+            @zoom_changed="updateZoom"
+            map-type-id="roadmap"
+            style="height: 610px"
+          >
+            <GmapMarker
+              :clickable="true"
+              :draggable="false"
+              :position="marker"
+              @click="center = marker.position"
+            />
+          </GmapMap>
+        </v-col>
+        <v-col cols="6">
+          <v-col cols="6">
+            <my-uploadimage
+              :url.sync="agroEvent.image_url"
+              v-model="agroEvent.image_blob"
+              label="Imagenes"
+              placeholder="Seleccione imagen"
+              @change="uploaded"
+            ></my-uploadimage>
+          </v-col>
+          <v-row>
+            <v-col cols="3" v-for="(image, ix) in agroEvent.images" :key="ix">
+              {{ image.id }}
+              <v-img :src="image.url" alt="imagen"></v-img>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
     </v-form>
-    <gmap-autocomplete
-      size="40"
-      @place_changed="setPlace"
-      v-on:keydown.enter.prevent
-    ></gmap-autocomplete>
-    <GmapMap
-      :center="center"
-      :options="{
-        zoomControl: true,
-        mapTypeControl: true,
-        scaleControl: true,
-        streetViewControl: false,
-        rotateControl: false,
-        fullscreenControl: false,
-        disableDefaultUi: false,
-      }"
-      :zoom="map.zoom"
-      @center_changed="updateCenter"
-      @zoom_changed="updateZoom"
-      map-type-id="roadmap"
-      style="height: 610px"
-    >
-      <GmapMarker
-        :clickable="true"
-        :draggable="false"
-        :position="marker"
-        @click="center = marker.position"
-      />
-    </GmapMap>
+
     {{ marker }}
   </v-container>
 </template>
@@ -107,7 +129,15 @@ export default {
   props: {},
   data() {
     return {
-      item: {},
+      agroEvent: {
+        images: [],
+      },
+      types: [
+        { id: 1, name: "Reporte" },
+        { id: 2, name: "Alarma" },
+        { id: 3, name: "Defecto" },
+        { id: 4, name: "Reparación" },
+      ],
       center: { lat: 25.7, lng: -100.3 },
       marker: {},
       map: {
@@ -116,7 +146,7 @@ export default {
         state_id: null,
         city_id: null,
         postal_code: "",
-        zoom: 12,
+        zoom: 17,
         locati: "",
         bound_lat: 300,
         bound_lng: 300,
@@ -124,6 +154,22 @@ export default {
     };
   },
   methods: {
+    uploaded() {
+      let agro = this.agroEvent;
+      if (agro.image_url) {
+        let id = Math.max(...agro.images.map((o) => o.id), 0) + 1;
+        this.agroEvent.images.push({
+          id,
+          url: agro.image_url,
+          blob: agro.image_blob,
+        });
+      }
+
+      this.$nextTick(() => {
+        agro.image_url = null;
+        agro.image_blob = null;
+      });
+    },
     updateCenter(center) {
       // this.marker = { lat: center.lat(), lng: center.lng() };
       // this.item.lat = center.lat();
@@ -148,13 +194,23 @@ export default {
     cancel() {
       this.$router.push("/agro-event");
     },
-    async saveFaithHouse() {
-      // if (!this.$refs.form.validate()) return;
-      // await this.$repository.FaithHouse.create(this.item)
-      //   .then((res) => {
-      //     this.$router.push("/faith-house");
-      //   })
-      //   .catch((e) => {});
+    async saveAgroEvent() {
+      let { name, type_id, description, lat, lng, images } = this.agroEvent;
+      let formData = new FormData();
+      formData.append("name", name);
+      formData.append("type_id", type_id);
+      formData.append("description", description);
+      formData.append("lat", lat);
+      formData.append("lng", lng);
+      // formData.append("images", images);
+      for (let image of images) {
+        formData.append("images[]", image.blob);
+      }
+      await this.$repository.AgroEvent.create(formData)
+        .then((res) => {
+          // this.$router.push("/agro-event");
+        })
+        .catch((e) => {});
     },
   },
   mounted() {
@@ -164,6 +220,8 @@ export default {
       let { latitude, longitude } = position.coords;
       me.center = { lat: latitude, lng: longitude };
       me.marker = me.center;
+      me.agroEvent.lat = latitude;
+      me.agroEvent.lng = longitude;
       // doSomething(position.coords.latitude, position.coords.longitude);
     });
   },
