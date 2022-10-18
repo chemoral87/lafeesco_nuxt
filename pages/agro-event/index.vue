@@ -10,7 +10,9 @@
           <v-icon class="mr-1">mdi-account-plus</v-icon> Nuevo Agro Evento
         </v-btn>
       </v-col>
-      <v-col cols="12"> </v-col>
+      <v-col cols="12">
+        {{ agroEvents }}
+      </v-col>
     </v-row>
 
     <GmapMap
@@ -57,10 +59,10 @@ export default {
       sortDesc: [true],
       itemsPerPage: 20,
     };
-    const response = await app.$repository.FaithHouse.index(options).catch(
+    const agroEvents = await app.$repository.AgroEvent.index(options).catch(
       (e) => {}
     );
-    return { response, options };
+    return { agroEvents };
   },
   computed: {
     markers() {
@@ -111,6 +113,7 @@ export default {
   },
   data() {
     return {
+      agroEvents: [],
       infoWindow: false,
       infoOptions: {
         pixelOffset: {

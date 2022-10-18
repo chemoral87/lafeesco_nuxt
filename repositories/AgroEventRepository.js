@@ -4,4 +4,11 @@ export default ($axios) => (resource) => ({
       headers: { "content-type": "multipart/form-data" },
     });
   },
+  index(params) {
+    if (params) {
+      return $axios.$get(`${resource}`, { params: params });
+    } else {
+      return $axios.$get(`${resource}`);
+    }
+  },
 });

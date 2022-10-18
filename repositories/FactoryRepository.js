@@ -6,7 +6,7 @@ import CreditRepository from "./CreditRepository";
 import MemberRepository from "./MemberRepository";
 import MemberCallRepository from "./MemberCallRepository";
 import HouseFaithReposiotry from "./CommonRepository";
-import AgroEventReposiotry from "./AgroEventReposiotry";
+import AgroEventRepository from "./AgroEventRepository";
 
 export default ($axios) => ({
   Role: CommonRepository($axios)("/roles"),
@@ -21,5 +21,5 @@ export default ($axios) => ({
   MemberAddess: CommonRepository($axios)("/member-addresses"),
   MemberCall: MemberCallRepository($axios)("/member-calls"),
   FaithHouse: HouseFaithReposiotry($axios)("/faith-house"),
-  AgroEvent: AgroEventReposiotry($axios)("/agro-event"),
+  AgroEvent: AgroEventRepository($axios)("/agro-event"),
 });

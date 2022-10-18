@@ -208,7 +208,7 @@ export default {
       }
       await this.$repository.AgroEvent.create(formData)
         .then((res) => {
-          // this.$router.push("/agro-event");
+          this.$router.push("/agro-event");
         })
         .catch((e) => {});
     },
