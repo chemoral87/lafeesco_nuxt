@@ -94,6 +94,7 @@
             <v-col cols="3" v-for="(image, ix) in agroEvent.images" :key="ix">
               {{ image.id }}
               <v-img
+                lazy-src="https://media3.giphy.com/media/3oEjI6SIIHBdRxXI40/200w.gif?cid=82a1493bqs7zu7isoeb2bepktf6psvafnob9xcyhwc1d11dt&rid=200w.gif&ct=g"
                 :src="image.path ? image.path : image.url"
                 alt="imagen"
               ></v-img>
@@ -126,7 +127,26 @@ export default {
     };
   },
   methods: {
-    saveAgroEvent() {},
+    async saveAgroEvent() {
+      let { name, type_id, description, lat, lng, images } = this.agroEvent;
+      let formData = new FormData();
+      formData.append("_method", "PUT");
+      formData.append("name", name);
+      formData.append("type_id", type_id);
+      formData.append("description", description);
+      formData.append("lat", lat);
+      formData.append("lng", lng);
+      // formData.append("images", images);
+      for (let image of images) {
+        if (image.blob) formData.append("images[]", image.blob);
+        else if (image.id) formData.append("image_ids[]", image.id);
+      }
+      await this.$repository.AgroEvent.update(this.agroEvent.id, formData)
+        .then((res) => {
+          // this.$router.push("/agro-event");
+        })
+        .catch((e) => {});
+    },
     uploaded() {
       let agro = this.agroEvent;
       if (agro.image_url) {
