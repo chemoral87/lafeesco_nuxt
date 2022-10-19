@@ -1,12 +1,12 @@
-import CommonRepository from "./CommonRepository";
-import InvestmentRepository from "./InvestmentRepository";
-import InvestorRepository from "./InvestorRepository";
-import InvestorProfileRepository from "./InvestorProfileRepository";
-import CreditRepository from "./CreditRepository";
-import MemberRepository from "./MemberRepository";
-import MemberCallRepository from "./MemberCallRepository";
-import HouseFaithReposiotry from "./CommonRepository";
-import AgroEventRepository from "./AgroEventRepository";
+import CommonRepository from "../CommonRepository";
+import InvestmentRepository from "../InvestmentRepository";
+import InvestorRepository from "../InvestorRepository";
+import InvestorProfileRepository from "../InvestorProfileRepository";
+import CreditRepository from "../CreditRepository";
+import MemberRepository from "../MemberRepository";
+import MemberCallRepository from "../MemberCallRepository";
+import HouseFaithReposiotry from "../CommonRepository";
+import AgroEventRepository from "../AgroEventRepository";
 
 export default ($axios) => ({
   Role: CommonRepository($axios)("/roles"),

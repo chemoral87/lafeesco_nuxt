@@ -56,7 +56,7 @@
         <v-btn type="submit" color="primary" class="mr-4">Guardar</v-btn>
       </v-row>
       <v-row>
-        <v-col cols="6">
+        <v-col cols="6" md="4" v-if="center">
           <GmapMap
             :center="center"
             :options="{
@@ -69,8 +69,6 @@
               disableDefaultUi: false,
             }"
             :zoom="map.zoom"
-            @center_changed="updateCenter"
-            @zoom_changed="updateZoom"
             map-type-id="roadmap"
             style="height: 610px"
           >
@@ -82,7 +80,7 @@
             />
           </GmapMap>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="6" md="8">
           <v-col cols="6">
             <my-uploadimage
               :url.sync="agroEvent.image_url"
@@ -95,7 +93,10 @@
           <v-row>
             <v-col cols="3" v-for="(image, ix) in agroEvent.images" :key="ix">
               {{ image.id }}
-              <v-img :src="image.url" alt="imagen"></v-img>
+              <v-img
+                :src="image.path ? image.path : image.url"
+                alt="imagen"
+              ></v-img>
             </v-col>
           </v-row>
         </v-col>
@@ -106,40 +107,11 @@
 <script>
 import { types } from "../misc";
 export default {
-  validate({ store, error }) {
-    return true;
-    // if (store.getters.permissions.includes("casas-fe-insert"))
-    // else throw error({ statusCode: 403 });
-  },
-  created() {
-    this.$nuxt.$emit("setNavBar", {
-      title: "Nueva Agro Evento",
-      icon: "sprout",
-    });
-  },
-  async asyncData({ $axios, app, store }) {
-    // var marital_statuses = await store.dispatch(
-    //   "catalogs/fetchMaritalStatuses"
-    // );
-    // var member_groups = await store.dispatch("catalogs/fetchMemberCategories");
-    // var member_sources = await store.dispatch("catalogs/fetchMemberSources");
-    // return { marital_statuses, member_groups, member_sources };
-  },
   props: {},
   data() {
     return {
-      agroEvent: {
-        images: [],
-      },
+      center: null,
       types: types,
-      // types: [
-      //   { id: 1, name: "Reporte" },
-      //   { id: 2, name: "Alarma" },
-      //   { id: 3, name: "Defecto" },
-      //   { id: 4, name: "Reparación" },
-      // ],
-      center: { lat: 25.7, lng: -100.3 },
-      marker: {},
       map: {
         name: "",
         country_id: null,
@@ -154,6 +126,7 @@ export default {
     };
   },
   methods: {
+    saveAgroEvent() {},
     uploaded() {
       let agro = this.agroEvent;
       if (agro.image_url) {
@@ -170,61 +143,25 @@ export default {
         agro.image_blob = null;
       });
     },
-    updateCenter(center) {
-      // this.marker = { lat: center.lat(), lng: center.lng() };
-      // this.item.lat = center.lat();
-      // this.item.lng = center.lng();
-      // this.map.locati = center.lat().toFixed(9) + " " + center.lng().toFixed(9); //this.marker.position;
-    },
-    updateZoom(zoom) {
-      this.map.zoom = zoom;
-    },
-    setPlace(place) {
-      if (!place) return;
-      this.map.zoom = 17;
-
-      let lat = place.geometry.location.lat();
-      let lng = place.geometry.location.lng();
-      this.center = { lat, lng };
-      this.marker = { lat, lng };
-      this.item.lat = lat;
-      this.item.lng = lng;
-      // this.map.locati = this.center.lat + " " + this.center.lng;
-    },
     cancel() {
       this.$router.push("/agro-event");
     },
-    async saveAgroEvent() {
-      let { name, type_id, description, lat, lng, images } = this.agroEvent;
-      let formData = new FormData();
-      formData.append("name", name);
-      formData.append("type_id", type_id);
-      formData.append("description", description);
-      formData.append("lat", lat);
-      formData.append("lng", lng);
-      // formData.append("images", images);
-      for (let image of images) {
-        formData.append("images[]", image.blob);
-      }
-      await this.$repository.AgroEvent.create(formData)
-        .then((res) => {
-          this.$router.push("/agro-event");
-        })
-        .catch((e) => {});
-    },
+  },
+  created() {
+    this.$nuxt.$emit("setNavBar", {
+      title: "Agro Evento",
+      icon: "sprout",
+    });
+  },
+  async asyncData({ $axios, app, params }) {
+    const agroEvent = await app.$repository.AgroEvent.show(params.id).catch(
+      (e) => {}
+    );
+    return { agroEvent, id: params.id };
   },
   mounted() {
-    let me = this;
-
-    this.marker = this.center;
-    navigator.geolocation.getCurrentPosition((position) => {
-      let { latitude, longitude } = position.coords;
-      me.center = { lat: latitude, lng: longitude };
-      me.marker = me.center;
-      me.agroEvent.lat = latitude;
-      me.agroEvent.lng = longitude;
-      // doSomething(position.coords.latitude, position.coords.longitude);
-    });
+    let { lat, lng } = this.agroEvent;
+    this.marker = this.center = { lat: parseFloat(lat), lng: parseFloat(lng) };
   },
 };
 </script>

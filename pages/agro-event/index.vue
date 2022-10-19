@@ -10,11 +10,9 @@
           <v-icon class="mr-1">mdi-account-plus</v-icon> Nuevo Agro Evento
         </v-btn>
       </v-col>
-      <v-col cols="12">
-        {{ agroEvents }}
-      </v-col>
+      <v-col cols="12"> </v-col>
     </v-row>
-
+    <AgroEventTable @edit="editAgroEvent" :agroEvents="agroEvents" />
     <GmapMap
       :center="center"
       :options="{
@@ -32,21 +30,21 @@
       map-type-id="roadmap"
       style="height: 610px"
     >
-      <gmap-info-window
+      <!-- <gmap-info-window
         :opened="infoWindow"
         :options="infoOptions"
         :position="infoPosition"
-        @closeclick="infoWindow = false"
+
         >{{ infoContent }}</gmap-info-window
-      >
-      <GmapMarker
+      > -->
+      <!-- <GmapMarker
         @click="showInfo(item)"
         v-for="(item, ix) in markers"
         :key="ix"
         :clickable="true"
         :draggable="false"
         :position="item"
-      />
+      /> -->
     </GmapMap>
   </div>
 </template>
@@ -73,6 +71,9 @@ export default {
     },
   },
   methods: {
+    editAgroEvent(item) {
+      this.$router.push(`/agro-event/${item.id}`);
+    },
     showInfo(item) {
       this.infoWindow = true;
       this.infoContent = item.name;
@@ -99,13 +100,12 @@ export default {
       //   .catch((e) => {});
     },
     focusItem(item) {
-      console.log(item);
       this.center = { lat: parseFloat(item.lat), lng: parseFloat(item.lng) };
       this.zoom = 17;
     },
 
     updateCenter(center) {
-      this.marker = { lat: center.lat(), lng: center.lng() };
+      // this.marker = { lat: center.lat(), lng: center.lng() };
     },
     updateZoom(zoom) {
       this.zoom = zoom;
@@ -114,6 +114,7 @@ export default {
   data() {
     return {
       agroEvents: [],
+
       infoWindow: false,
       infoOptions: {
         pixelOffset: {
@@ -124,16 +125,11 @@ export default {
       infoContent: "",
       infoPosition: { lat: null, lng: null },
       dialogDelete: false,
-      center: { lat: 25.786, lng: -100.3044 },
+      center: { lat: parseFloat(25.786), lng: parseFloat(-100.3044) },
       zoom: 14,
       response: {},
       options: {},
-      currentLocation: {
-        lat: 25.788294135889345,
-        lng: -100.30426405190066,
-      },
-      circleOptions: {},
-      mapStyle: [],
+
       clusterStyle: [
         {
           url: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m1.png",

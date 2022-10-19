@@ -11,4 +11,7 @@ export default ($axios) => (resource) => ({
       return $axios.$get(`${resource}`);
     }
   },
+  show(id) {
+    return $axios.$get(`${resource}/${id}`);
+  },
 });
