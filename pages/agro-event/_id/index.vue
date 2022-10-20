@@ -92,12 +92,16 @@
           </v-col>
           <v-row>
             <v-col cols="3" v-for="(image, ix) in agroEvent.images" :key="ix">
-              {{ image.id }}
-              <v-img
+              <my-image-wrap
+                @deleteImage="deleteImage(image)"
+                :src="image.path ? image.path : image.url"
+                alt="imagen"
+              />
+              <!-- <v-img
                 lazy-src="https://media3.giphy.com/media/3oEjI6SIIHBdRxXI40/200w.gif?cid=82a1493bqs7zu7isoeb2bepktf6psvafnob9xcyhwc1d11dt&rid=200w.gif&ct=g"
                 :src="image.path ? image.path : image.url"
                 alt="imagen"
-              ></v-img>
+              ></v-img> -->
             </v-col>
           </v-row>
         </v-col>
@@ -107,10 +111,12 @@
 </template>
 <script>
 import { types } from "../misc";
+import My from "~/pages/consolidate/my/index.vue";
 export default {
   props: {},
   data() {
     return {
+      agroEvent: {},
       center: null,
       types: types,
       map: {
@@ -127,23 +133,27 @@ export default {
     };
   },
   methods: {
+    deleteImage(item) {
+      let { images } = this.agroEvent;
+      let imgs = images.filter((x) => x.id != item.id);
+      this.$set(this.agroEvent, "images", imgs);
+    },
     async saveAgroEvent() {
       let { name, type_id, description, lat, lng, images } = this.agroEvent;
       let formData = new FormData();
       formData.append("_method", "PUT");
       formData.append("name", name);
-      formData.append("type_id", type_id);
-      formData.append("description", description);
+      type_id && formData.append("type_id", type_id);
+      description && formData.append("description", description);
       formData.append("lat", lat);
       formData.append("lng", lng);
-      // formData.append("images", images);
       for (let image of images) {
         if (image.blob) formData.append("images[]", image.blob);
         else if (image.id) formData.append("image_ids[]", image.id);
       }
       await this.$repository.AgroEvent.update(this.agroEvent.id, formData)
         .then((res) => {
-          // this.$router.push("/agro-event");
+          this.$router.push("/agro-event");
         })
         .catch((e) => {});
     },
@@ -157,7 +167,6 @@ export default {
           blob: agro.image_blob,
         });
       }
-
       this.$nextTick(() => {
         agro.image_url = null;
         agro.image_blob = null;
@@ -183,5 +192,6 @@ export default {
     let { lat, lng } = this.agroEvent;
     this.marker = this.center = { lat: parseFloat(lat), lng: parseFloat(lng) };
   },
+  components: { My },
 };
 </script>

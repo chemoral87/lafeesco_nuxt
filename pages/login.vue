@@ -67,7 +67,6 @@ export default {
   },
   methods: {
     async submitLogin() {
-      console.log("submitLogin");
       try {
         let credentials = {
           email: this.email,

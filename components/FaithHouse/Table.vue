@@ -85,6 +85,7 @@ export default {
   props: ["dialogDelete", "response", "options", "tableHeaders"],
   data() {
     return {
+      dialogDeleteProp: {},
       flagSetOption: true,
       pageRule: 1,
       optionsTable: {},

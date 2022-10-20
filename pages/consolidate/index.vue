@@ -1,35 +1,59 @@
 <template>
   <div>
-    <v-btn color="success" @click="$router.push('consolidate/new')" class=" mb-1 mr-1">
+    <v-btn
+      color="success"
+      @click="$router.push('consolidate/new')"
+      class="mb-1 mr-1"
+    >
       <v-icon class="mr-1">mdi-account-plus</v-icon> Nuevo Miembro
     </v-btn>
-    <v-btn :disabled="!canAddAddress" color="primary" class="" @click="openMemberAddressDialog">
+    <v-btn
+      :disabled="!canAddAddress"
+      color="primary"
+      class=""
+      @click="openMemberAddressDialog"
+    >
       <v-icon class="mr-1">mdi-home-city</v-icon> Añadir Domicilio
     </v-btn>
 
-    <MemberSimpleTable :members="members" @editItem="editItem" @deleteItem="beforeDeleteMember" @toogleChecks="toogleChecks"></MemberSimpleTable>
-    <DialogDelete v-if="showDialogDelete" :dialog="dialogDelete" @ok="deleteMember" @close="showDialogDelete = false"></DialogDelete>
-    <MemberAddressDialog v-if="showMemberAddressDialog" @save="saveMemberAddress" @close="showMemberAddressDialog = false"></MemberAddressDialog>
+    <MemberSimpleTable
+      :members="members"
+      @editItem="editItem"
+      @deleteItem="beforeDeleteMember"
+      @toogleChecks="toogleChecks"
+    ></MemberSimpleTable>
+    <DialogDelete
+      v-if="showDialogDelete"
+      :dialog="dialogDelete"
+      @ok="deleteMember"
+      @close="showDialogDelete = false"
+    ></DialogDelete>
+    <MemberAddressDialog
+      v-if="showMemberAddressDialog"
+      @save="saveMemberAddress"
+      @close="showMemberAddressDialog = false"
+    ></MemberAddressDialog>
   </div>
 </template>
 <script>
 export default {
   validate({ store, error }) {
-    if (store.getters.permissions.includes('consolidador-index'))
-      return true;
-    else
-      throw error({ statusCode: 403 });
+    if (store.getters.permissions.includes("consolidador-index")) return true;
+    else throw error({ statusCode: 403 });
   },
   created() {
-    this.$nuxt.$emit("setNavBar", { title: "Consolidar", icon: "account-plus" });
+    this.$nuxt.$emit("setNavBar", {
+      title: "Consolidar",
+      icon: "account-plus",
+    });
   },
   async asyncData({ $axios, app }) {
-    const res = await app.$repository.Member.indexMyNoAddress()
-      .catch(e => { });
+    const res = await app.$repository.Member.indexMyNoAddress().catch(
+      (e) => {}
+    );
     return { ...res };
   },
-  props: {
-  },
+  props: {},
   data() {
     return {
       member: {},
@@ -51,23 +75,22 @@ export default {
       ],
       showDialogDelete: false,
       showMemberAddressDialog: false,
-      dialogDelete: {}
+      dialogDelete: {},
     };
   },
   computed: {
     canAddAddress() {
-      console.log(this.members, "this.members");
-      let match = this.members.find(m => (m.check == true));
+      let match = this.members.find((m) => m.check == true);
       if (match) return true;
       return false;
-    }
+    },
   },
   methods: {
     toogleChecks({ check, item }) {
       if (item) {
-        this.members.map(m => (m.id == item.id) ? { ...m, check: check } : m);
+        this.members.map((m) => (m.id == item.id ? { ...m, check: check } : m));
       } else {
-        this.members.forEach((m) => m.check = check);
+        this.members.forEach((m) => (m.check = check));
       }
       this.members = [...this.members];
     },
@@ -75,28 +98,28 @@ export default {
       this.showMemberAddressDialog = true;
     },
     async saveMemberAddress(address) {
-
-      let member_ids = this.members.filter(m => (m.check == true)).map(m => m.id);
+      let member_ids = this.members
+        .filter((m) => m.check == true)
+        .map((m) => m.id);
       let me = this;
-      console.log("saveMemberAddress", member_ids);
+
       await this.$repository.MemberAddess.create({ ...address, member_ids })
-        .then(res => {
+        .then((res) => {
           this.showMemberAddressDialog = false;
           me.getMembersNoAddress();
         })
-        .catch(e => { });
+        .catch((e) => {});
     },
     async getMembersNoAddress() {
       let { members } = await this.$repository.Member.indexMyNoAddress();
       this.members = members;
     },
     beforeDeleteMember(item) {
-
       this.showDialogDelete = true;
       this.dialogDelete = {
         text: "Desea eliminar el Miembro ",
         strong: `${item.name} ${item.paternal_surname}`,
-        payload: item
+        payload: item,
       };
       // this.userx = Object.assign({}, item);
     },
@@ -105,17 +128,15 @@ export default {
     },
     async deleteMember(item) {
       await this.$repository.Member.delete(item.id)
-        .then(res => {
+        .then((res) => {
           this.showDialogDelete = false;
           this.getMembersNoAddress();
         })
-        .catch(e => { });
+        .catch((e) => {});
     },
-
   },
   mounted() {
     let me = this;
-  }
-}
+  },
+};
 </script>
-

@@ -168,7 +168,6 @@ export default {
           blob: agro.image_blob,
         });
       }
-
       this.$nextTick(() => {
         agro.image_url = null;
         agro.image_blob = null;
@@ -186,7 +185,6 @@ export default {
     setPlace(place) {
       if (!place) return;
       this.map.zoom = 17;
-
       let lat = place.geometry.location.lat();
       let lng = place.geometry.location.lng();
       this.center = { lat, lng };
@@ -202,8 +200,8 @@ export default {
       let { name, type_id, description, lat, lng, images } = this.agroEvent;
       let formData = new FormData();
       formData.append("name", name);
-      formData.append("type_id", type_id);
-      formData.append("description", description);
+      type_id && formData.append("type_id", type_id);
+      description && formData.append("description", description);
       formData.append("lat", lat);
       formData.append("lng", lng);
       // formData.append("images", images);

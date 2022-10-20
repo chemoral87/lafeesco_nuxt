@@ -50,15 +50,16 @@ export default {
     },
     ok() {
       if (this.item.payload) {
-        console.log(this.item.payload);
         this.$emit("ok", this.item.payload);
+      } else {
+        this.$emit("ok");
       }
     },
   },
   mounted() {
     this.item.title = this.dialog.title ? this.dialog.title : "Confirmación";
     this.item.text = this.dialog.text ? this.dialog.text : "Confirmación";
-    this.item.strong = this.dialog.strong ? this.dialog.strong : "Confirmación";
+    this.item.strong = this.dialog.strong ? this.dialog.strong : "";
     this.item.payload = this.dialog.payload ? this.dialog.payload : null;
   },
 };

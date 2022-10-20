@@ -98,7 +98,6 @@ export default {
     },
 
     async deleteItem(item) {
-      console.log("deleteItem", item);
       await this.$repository.FaithHouse.delete(item.id)
         .then((res) => {
           this.dialogDelete = false;
@@ -107,7 +106,6 @@ export default {
         .catch((e) => {});
     },
     focusItem(item) {
-      console.log(item);
       this.center = { lat: parseFloat(item.lat), lng: parseFloat(item.lng) };
       this.zoom = 17;
     },

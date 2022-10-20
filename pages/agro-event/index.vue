@@ -12,7 +12,12 @@
       </v-col>
       <v-col cols="12"> </v-col>
     </v-row>
-    <AgroEventTable @edit="editAgroEvent" :agroEvents="agroEvents" />
+    <AgroEventTable
+      :dialog-delete.sync="dialogDeleteAgroEvent"
+      @edit="editAgroEvent"
+      @delete="deleteAgroEvent"
+      :agroEvents="agroEvents"
+    />
     <GmapMap
       :center="center"
       :options="{
@@ -79,7 +84,16 @@ export default {
       this.infoContent = item.name;
       this.infoPosition = { lat: item.lat, lng: item.lng };
     },
+    async deleteAgroEvent(item) {
+      await this.$repository.AgroEvent.delete(item.id)
+        .then((res) => {
+          this.dialogDeleteAgroEvent = false;
+          this.index();
+        })
+        .catch((e) => {});
+    },
     async index(options) {
+      this.agroEvents = await this.$repository.AgroEvent.index();
       // if (options) {
       //   this.options = options;
       // }
@@ -91,7 +105,6 @@ export default {
     },
 
     async deleteItem(item) {
-      // console.log("deleteItem", item);
       // await this.$repository.FaithHouse.delete(item.id)
       //   .then((res) => {
       //     this.dialogDelete = false;
@@ -113,6 +126,7 @@ export default {
   },
   data() {
     return {
+      dialogDeleteAgroEvent: false,
       agroEvents: [],
 
       infoWindow: false,
@@ -138,7 +152,6 @@ export default {
           textColor: "#fff",
         },
       ],
-      dialogDeleteProp: {},
       dialogDelete: false,
     };
   },
