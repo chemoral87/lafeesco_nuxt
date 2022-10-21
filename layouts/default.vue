@@ -5,7 +5,7 @@
       v-model="drawer"
       :mini-variant="miniVariant"
       :clipped="clipped"
-      fixed
+      temporary
       app
     >
       <v-list>

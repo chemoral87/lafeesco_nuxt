@@ -84,6 +84,16 @@ export class MenuService {
         title: "Reportes",
         to: "/reports",
       });
+      menu.push({
+        icon: "mdi-chart-bar",
+        title: "ReportesA",
+        to: "/reports",
+      });
+      menu.push({
+        icon: "mdi-chart-bar",
+        title: "ReportesB",
+        to: "/reports",
+      });
     } else {
       menu.push(
         {

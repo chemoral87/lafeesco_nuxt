@@ -79,8 +79,7 @@
   align-items: center;
 }
 
-/* html,
+html,
 body {
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
-} */
+  overflow: auto;
+}
