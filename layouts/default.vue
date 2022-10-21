@@ -112,9 +112,8 @@
         </v-menu>
       </v-app-bar>
       <v-main>
-        <v-container>
-          <Nuxt />
-        </v-container>
+        <Nuxt />
+
         <!-- <MyLoading :value="loading_display"></MyLoading>
         <div class="snackbar-wrapper">
           <v-snackbar
