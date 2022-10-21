@@ -175,7 +175,7 @@ export default {
   },
   created() {
     this.$nuxt.$emit("setNavBar", {
-      title: "Agro EventoZ",
+      title: "Agro Evento",
       icon: "sprout",
     });
   },
