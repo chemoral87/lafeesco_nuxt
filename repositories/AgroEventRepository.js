@@ -1,4 +1,5 @@
 let multipart = {
+  accept: "application/json",
   headers: { "content-type": "multipart/form-data" },
 };
 export default ($axios) => (resource) => ({
