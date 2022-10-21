@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container fluid>
     <v-row>
       <v-col cols="12">
         <v-btn
@@ -10,16 +10,17 @@
           <v-icon class="mr-1">mdi-account-plus</v-icon> Nuevo Agro Evento
         </v-btn>
       </v-col>
-      <v-col cols="12"> </v-col>
+      <v-col cols="12">
+        <AgroEventTable
+          :dialog-delete.sync="dialogDeleteAgroEvent"
+          @edit="editAgroEvent"
+          @delete="deleteAgroEvent"
+          :agroEvents="agroEvents"
+      /></v-col>
     </v-row>
-    <AgroEventTable
-      :dialog-delete.sync="dialogDeleteAgroEvent"
-      @edit="editAgroEvent"
-      @delete="deleteAgroEvent"
-      :agroEvents="agroEvents"
-    />
+
     <v-row>
-      <v-col cols="10" sm="12"
+      <!-- <v-col cols="10" sm="12"
         ><GmapMap
           :center="center"
           :options="{
@@ -37,25 +38,11 @@
           map-type-id="roadmap"
           style="height: 610px"
         >
-          <!-- <gmap-info-window
-        :opened="infoWindow"
-        :options="infoOptions"
-        :position="infoPosition"
 
-        >{{ infoContent }}</gmap-info-window
-      > -->
-          <!-- <GmapMarker
-        @click="showInfo(item)"
-        v-for="(item, ix) in markers"
-        :key="ix"
-        :clickable="true"
-        :draggable="false"
-        :position="item"
-      /> -->
         </GmapMap>
-      </v-col>
+      </v-col> -->
     </v-row>
-  </div>
+  </v-container>
 </template>
 
 <script>

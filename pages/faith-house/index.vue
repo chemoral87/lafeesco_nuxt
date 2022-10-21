@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container fluid>
     <v-row>
       <v-col cols="12">
         <v-btn
@@ -56,7 +56,7 @@
         :position="item"
       />
     </GmapMap>
-  </div>
+  </v-container>
 </template>
 
 <script>
