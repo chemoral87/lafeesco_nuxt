@@ -1,6 +1,13 @@
 <template>
   <div>
-    <v-data-table :headers="headers" :items-per-page="5" :items="agroEvents">
+    <v-data-table
+      class="elevation-1 xwidth1000"
+      mobile-breakpoint="0"
+      dense
+      :headers="headers"
+      :items-per-page="5"
+      :items="agroEvents"
+    >
       <template v-slot:[`item.images`]="{ item }">
         {{ item.images.length }}
       </template>

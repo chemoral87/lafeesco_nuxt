@@ -18,31 +18,33 @@
       @delete="deleteAgroEvent"
       :agroEvents="agroEvents"
     />
-    <GmapMap
-      :center="center"
-      :options="{
-        zoomControl: true,
-        mapTypeControl: true,
-        scaleControl: true,
-        streetViewControl: false,
-        rotateControl: false,
-        fullscreenControl: false,
-        disableDefaultUi: false,
-      }"
-      :zoom="zoom"
-      @center_changed="updateCenter"
-      @zoom_changed="updateZoom"
-      map-type-id="roadmap"
-      style="height: 610px"
-    >
-      <!-- <gmap-info-window
+    <v-row>
+      <v-col cols="10" sm="12"
+        ><GmapMap
+          :center="center"
+          :options="{
+            zoomControl: true,
+            mapTypeControl: true,
+            scaleControl: true,
+            streetViewControl: false,
+            rotateControl: false,
+            fullscreenControl: false,
+            disableDefaultUi: false,
+          }"
+          :zoom="zoom"
+          @center_changed="updateCenter"
+          @zoom_changed="updateZoom"
+          map-type-id="roadmap"
+          style="height: 610px"
+        >
+          <!-- <gmap-info-window
         :opened="infoWindow"
         :options="infoOptions"
         :position="infoPosition"
 
         >{{ infoContent }}</gmap-info-window
       > -->
-      <!-- <GmapMarker
+          <!-- <GmapMarker
         @click="showInfo(item)"
         v-for="(item, ix) in markers"
         :key="ix"
@@ -50,7 +52,9 @@
         :draggable="false"
         :position="item"
       /> -->
-    </GmapMap>
+        </GmapMap>
+      </v-col>
+    </v-row>
   </div>
 </template>
 

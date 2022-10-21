@@ -56,7 +56,7 @@
         <v-btn type="submit" color="primary" class="mr-4">Guardar</v-btn>
       </v-row>
       <v-row>
-        <v-col cols="6" md="4" v-if="center">
+        <v-col cols="10" md="4" v-if="center">
           <GmapMap
             :center="center"
             :options="{
@@ -80,8 +80,8 @@
             />
           </GmapMap>
         </v-col>
-        <v-col cols="6" md="8">
-          <v-col cols="6">
+        <v-col cols="12" md="8">
+          <v-col cols="12">
             <my-uploadimage
               :url.sync="agroEvent.image_url"
               v-model="agroEvent.image_blob"
@@ -91,17 +91,12 @@
             ></my-uploadimage>
           </v-col>
           <v-row>
-            <v-col cols="3" v-for="(image, ix) in agroEvent.images" :key="ix">
+            <v-col cols="6" v-for="(image, ix) in agroEvent.images" :key="ix">
               <my-image-wrap
                 @deleteImage="deleteImage(image)"
                 :src="image.path ? image.path : image.url"
                 alt="imagen"
               />
-              <!-- <v-img
-                lazy-src="https://media3.giphy.com/media/3oEjI6SIIHBdRxXI40/200w.gif?cid=82a1493bqs7zu7isoeb2bepktf6psvafnob9xcyhwc1d11dt&rid=200w.gif&ct=g"
-                :src="image.path ? image.path : image.url"
-                alt="imagen"
-              ></v-img> -->
             </v-col>
           </v-row>
         </v-col>
@@ -155,7 +150,9 @@ export default {
         .then((res) => {
           this.$router.push("/agro-event");
         })
-        .catch((e) => {});
+        .catch((e) => {
+          alert(e);
+        });
     },
     uploaded() {
       let agro = this.agroEvent;
