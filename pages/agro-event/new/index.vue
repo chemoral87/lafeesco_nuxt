@@ -95,11 +95,7 @@
           <v-row>
             <v-col cols="3" v-for="(image, ix) in agroEvent.images" :key="ix">
               {{ image.id }}
-              <v-img
-                lazy-src="https://media3.giphy.com/media/3oEjI6SIIHBdRxXI40/200w.gif?cid=82a1493bqs7zu7isoeb2bepktf6psvafnob9xcyhwc1d11dt&rid=200w.gif&ct=g"
-                :src="image.url"
-                alt="imagen"
-              ></v-img>
+              <v-img :src="image.url" alt="imagen"></v-img>
             </v-col>
           </v-row>
         </v-col>
