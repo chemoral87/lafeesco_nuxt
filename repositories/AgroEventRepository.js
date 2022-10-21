@@ -1,7 +1,8 @@
 let multipart = {
   accept: "application/json",
-  headers: { "content-type": "multipart/form-data" },
+  headers: { "Content-Type": "multipart/form-data" },
 };
+// https://www.appsloveworld.com/react-native/100/7/request-formdata-to-api-gets-network-error-in-axios-while-uploading-image
 export default ($axios) => (resource) => ({
   create(payload) {
     return $axios.$post(`${resource}`, payload, multipart);
