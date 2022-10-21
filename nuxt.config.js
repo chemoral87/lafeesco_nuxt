@@ -43,7 +43,7 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ["@/assets/styles/main.css"],
+  css: ["~/assets/styles/main.css"],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
@@ -173,6 +173,7 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     // maxChunkSize: 900000,
+    extractCSS: true,
     filenames: {
       chunk: ({ isDev }) => (isDev ? "[name].js" : "[id].[contenthash].js"),
     },
