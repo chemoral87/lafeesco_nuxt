@@ -172,11 +172,6 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    optimization: {
-      splitChunks: {
-        maxSize: 300000,
-      },
-    },
     // maxChunkSize: 900000,
     filenames: {
       chunk: ({ isDev }) => (isDev ? "[name].js" : "[id].[contenthash].js"),
