@@ -2,11 +2,11 @@ export const state = () => ({
   snackbar: {
     text: "",
     color: "",
-    display: false
+    display: false,
   },
   block_loading: false,
   hide_next_loading: false,
-  locale: "es"
+  locale: "es",
 });
 
 export const getters = {
@@ -32,7 +32,7 @@ export const getters = {
   },
   hideNextLoading(state) {
     return state.hide_next_loading;
-  }
+  },
 };
 
 export const mutations = {
@@ -59,7 +59,7 @@ export const mutations = {
   },
   SHOW_NEXT_LOADING(state) {
     state.hide_next_loading = false;
-  }
+  },
   // SET_STATE(state, payload) {
   //   state.persistedState = payload;
   // }
@@ -92,5 +92,5 @@ export const actions = {
   },
   showNextLoading({ commit }) {
     commit("SHOW_NEXT_LOADING");
-  }
+  },
 };
