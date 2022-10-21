@@ -115,7 +115,7 @@
         <v-container>
           <Nuxt />
         </v-container>
-        <MyLoading :value="loading_display"></MyLoading>
+        <!-- <MyLoading :value="loading_display"></MyLoading>
         <div class="snackbar-wrapper">
           <v-snackbar
             absolute
@@ -142,7 +142,7 @@
               </v-btn>
             </template>
           </v-snackbar>
-        </div>
+        </div> -->
       </v-main>
     </v-app>
   </div>

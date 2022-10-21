@@ -78,14 +78,3 @@
   flex-direction: column;
   align-items: center;
 }
-
-html {
-  overflow-x: hidden !important;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-html::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-}
