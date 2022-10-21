@@ -110,7 +110,7 @@
         </v-list>
       </v-menu>
     </v-app-bar>
-    <v-main>
+    <v-main class="overflow-hidden">
       <v-container>
         <Nuxt />
       </v-container>
