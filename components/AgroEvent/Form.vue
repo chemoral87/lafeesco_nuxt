@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container fluid>
     <v-form ref="form" @submit.prevent="$emit('save')">
       <v-row dense>
         <v-col cols="6" md="3">
@@ -51,7 +51,7 @@
       </v-row>
 
       <v-row dense> </v-row>
-      <v-row>
+      <v-row dense class="mb-1">
         <v-col cols="10" md="4" v-if="center">
           <GmapMap
             :center="center"
@@ -102,8 +102,7 @@
           </v-row>
         </v-col>
       </v-row>
-
-      <v-bottom-navigation fixed :value="1" color="primary" grow>
+      <v-bottom-navigation app fixed :value="1" color="primary" grow>
         <v-spacer />
         <v-btn @click.native="$emit('cancel')" color="error" text class="mr-1">
           <span>Cancelar</span>
@@ -114,27 +113,9 @@
           <span>Guardar</span>
           <v-icon>mdi-check</v-icon>
         </v-btn>
-
-        <!-- <v-btn color="deep-purple accent-4" text>
-          <span>Recents</span>
-
-          <v-icon>mdi-history</v-icon>
-        </v-btn> -->
-        <!--
-      <v-btn color="deep-purple accent-4" text>
-        <span>Favorites</span>
-
-        <v-icon>mdi-heart</v-icon>
-      </v-btn>
-
-      <v-btn color="deep-purple accent-4" text>
-        <span>Nearby</span>
-
-        <v-icon>mdi-map-marker</v-icon>
-      </v-btn> -->
       </v-bottom-navigation>
     </v-form>
-  </div>
+  </v-container>
 </template>
 <script>
 import { types } from "@/pages/agro-event/misc";

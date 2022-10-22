@@ -7,6 +7,7 @@
       :headers="headers"
       :items-per-page="5"
       :items="agroEvents"
+      @dblclick:row="(ev, { item }) => $emit('edit', item)"
     >
       <template v-slot:[`item.images`]="{ item }">
         {{ item.images.length }}
