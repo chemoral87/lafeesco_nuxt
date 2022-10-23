@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container fluid>
     <v-btn
       color="success"
       @click="$router.push('consolidate/new')"
@@ -33,7 +33,7 @@
       @save="saveMemberAddress"
       @close="showMemberAddressDialog = false"
     ></MemberAddressDialog>
-  </div>
+  </v-container>
 </template>
 <script>
 export default {
