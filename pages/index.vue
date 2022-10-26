@@ -1,16 +1,15 @@
 <template>
-
-  <v-row>
-
-    <v-col cols="12">
-      HELLO WORLD
-      <!--
+  <v-container fluid>
+    <v-row>
+      <v-col cols="12">
+        HELLO WORLD
+        <!--
       reverse("emilio") <strong> {{ reverse("emilio") }} </strong><br />
       anagram("army", "mary") <strong>{{ anagram("army", "mary") }}</strong> <br />
       anagram("aba", "bab") <strong>{{ anagram("aba", "bab") }}</strong> <br /> -->
-    </v-col>
-  </v-row>
-
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <script>
 export default {
@@ -23,41 +22,41 @@ export default {
       //   }]
       // }
       chartData: {
-        labels: ['January', 'February'],
+        labels: ["January", "February"],
         datasets: [
           {
-            label: 'Data One',
-            backgroundColor: '#f87979',
+            label: "Data One",
+            backgroundColor: "#f87979",
             data: [40, 20],
-            minBarLength: 10
-          }
-        ]
+            minBarLength: 10,
+          },
+        ],
       },
       options: {
         scales: {
           y: {
-            beginAtZero: true
+            beginAtZero: true,
           },
-          yAxes: [{
-            ticks: {
-              beginAtZero: true
-            }
-          }]
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          ],
         },
         responsive: true,
-        maintainAspectRatio: false
-      }
+        maintainAspectRatio: false,
+      },
     };
   },
   created() {
     this.$nuxt.$emit("setNavBar", { title: process.env.APP_NAME, icon: null });
   },
   methods: {
-
     invest() {
-      this.$router.push('/newinvest/1');
-    }
-  }
-}
+      this.$router.push("/newinvest/1");
+    },
+  },
+};
 </script>
-
