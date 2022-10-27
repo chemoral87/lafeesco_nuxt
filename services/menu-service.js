@@ -80,20 +80,26 @@ export class MenuService {
       });
 
       menu.push({
+        icon: "mdi-human-greeting-variant",
+        title: "Servidores",
+        to: "/attendant",
+      });
+
+      menu.push({
         icon: "mdi-chart-bar",
         title: "Reportes",
         to: "/reports",
       });
-      menu.push({
-        icon: "mdi-chart-bar",
-        title: "ReportesA",
-        to: "/reports",
-      });
-      menu.push({
-        icon: "mdi-chart-bar",
-        title: "ReportesB",
-        to: "/reports",
-      });
+      // menu.push({
+      //   icon: "mdi-chart-bar",
+      //   title: "ReportesA",
+      //   to: "/reports",
+      // });
+      // menu.push({
+      //   icon: "mdi-chart-bar",
+      //   title: "ReportesB",
+      //   to: "/reports",
+      // });
     } else {
       menu.push(
         {
