@@ -63,6 +63,7 @@ export default {
       };
       await this.$repository.User.children(this.mUser.id, params).then(
         (res) => {
+          // this.$auth.fetchUser(); // refresh permissions
           this.$router.push("/users");
         }
       );

@@ -1,4 +1,8 @@
-export default $axios => resource => ({
+let multipart = {
+  accept: "application/json",
+  headers: { "Content-Type": "multipart/form-data" },
+};
+export default ($axios) => (resource) => ({
   index(params) {
     if (params) {
       return $axios.$get(`${resource}`, { params: params });
@@ -18,7 +22,7 @@ export default $axios => resource => ({
   filter(params, headers) {
     return $axios.$get(`${resource}/filter`, {
       params: params,
-      headers
+      headers,
     });
   },
 
@@ -26,8 +30,16 @@ export default $axios => resource => ({
     return $axios.$post(`${resource}`, payload);
   },
 
+  createForm(payload) {
+    return $axios.$post(`${resource}`, payload, multipart);
+  },
+
   update(id, payload) {
     return $axios.$put(`${resource}/${id}`, payload);
+  },
+
+  updateForm(id, payload) {
+    return $axios.$put(`${resource}/${id}`, payload, multipart);
   },
 
   // belongsToMany
@@ -37,5 +49,5 @@ export default $axios => resource => ({
 
   delete(id) {
     return $axios.$delete(`${resource}/${id}`);
-  }
+  },
 });

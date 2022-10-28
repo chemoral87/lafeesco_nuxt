@@ -22,4 +22,5 @@ export default ($axios) => ({
   MemberCall: MemberCallRepository($axios)("/member-calls"),
   FaithHouse: HouseFaithReposiotry($axios)("/faith-house"),
   AgroEvent: AgroEventRepository($axios)("/agro-event"),
+  Attendant: CommonRepository($axios)("/attendant"),
 });
