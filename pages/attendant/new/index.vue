@@ -41,13 +41,13 @@
           <my-uploadimage
             :url.sync="attendant.image_url"
             v-model="attendant.image_blob"
-            label="Imagenes"
+            label="Foto"
             placeholder="Seleccione imagen"
             @change="uploaded"
           ></my-uploadimage>
           <my-image-wrap
             @deleteImage="deleteImage()"
-            :src="image_url ? image.path : image.url"
+            :src="attendant.image_url"
             alt="imagen"
           />
         </v-col>
@@ -95,8 +95,33 @@ export default {
     };
   },
   methods: {
+    deleteImage() {
+      let _attendant = this.attendant;
+      _attendant.image_blob = null;
+      _attendant.image_url = null;
+    },
+    uploaded() {},
     async saveAttendant() {
-      await this.$repository.Attendant.createForm(this.attendant)
+      let formData = new FormData();
+      let {
+        name,
+        paternal_surname,
+        maternal_surname,
+        cellphone,
+        email,
+        birthdate,
+        image_blob,
+      } = this.attendant;
+
+      formData.append("name", name);
+      formData.append("paternal_surname", paternal_surname);
+      maternal_surname && formData.append("maternal_surname", maternal_surname);
+      cellphone && formData.append("cellphone", cellphone);
+      email && formData.append("email", email);
+      birthdate && formData.append("birthdate", birthdate);
+      image_blob && formData.append("image", image_blob);
+
+      await this.$repository.Attendant.createForm(formData)
         .then((res) => {
           this.$router.push("/attendant");
         })

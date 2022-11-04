@@ -10,7 +10,15 @@
           <v-icon class="mr-1">mdi-account-plus</v-icon> Nuevo Servidor
         </v-btn>
       </v-col>
-      <v-col cols="12"> </v-col>
+      <v-col cols="12">
+        <AttendantTable
+          @sorting="indexAttendant"
+          :options="options"
+          :response="response"
+          @edit="editAttendant"
+          @delete=""
+        />
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -18,20 +26,27 @@
 <script>
 export default {
   async asyncData({ $axios, app }) {
-    // let options = {
-    //   sortBy: ["name"],
-    //   sortDesc: [true],
-    //   itemsPerPage: 20,
-    // };
-    // const response = await app.$repository.FaithHouse.index(options).catch(
-    //   (e) => {}
-    // );
-    // return { response, options };
+    let options = {
+      sortBy: ["name"],
+      sortDesc: [true],
+      itemsPerPage: 20,
+    };
+    const response = await app.$repository.Attendant.index(options).catch(
+      (e) => {}
+    );
+    return { response, options };
   },
 
-  methods: {},
+  methods: {
+    indexAttendant() {},
+    editAttendant() {},
+  },
   data() {
-    return {};
+    return {
+      dialogDeleteAttendant: false,
+      options: {},
+      response: {},
+    };
   },
   validate({ store, error }) {
     return true;
