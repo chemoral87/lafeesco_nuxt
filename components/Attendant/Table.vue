@@ -57,9 +57,8 @@
       <template v-slot:[`item.photo`]="{ item }">
         <!-- auto square  -->
         <!-- <img :src="item.photo" /> -->
-        <div class="image-cropper">
-          <img class="profile-pic" :src="item.photo" />
-        </div>
+
+        <img class="image-cropper" :src="item.photo" />
       </template>
     </v-data-table>
   </div>
@@ -143,17 +142,7 @@ export default {
 </script>
 <style>
 .image-cropper {
-  width: 40px;
-  height: 40px;
-  position: relative;
-  overflow: hidden;
   border-radius: 50%;
-}
-.profile-pic {
-  display: inline;
-  margin: 0 auto;
-  margin-left: -25%;
-  height: 100%;
-  width: auto;
+  height: 50px;
 }
 </style>

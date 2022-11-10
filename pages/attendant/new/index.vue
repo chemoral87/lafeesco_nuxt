@@ -45,11 +45,18 @@
             placeholder="Seleccione imagen"
             @change="uploaded"
           ></my-uploadimage>
-          <my-image-wrap
+          <!-- <my-image-wrap
             @deleteImage="deleteImage()"
             :src="attendant.image_url"
             alt="imagen"
+          /> -->
+
+          <cropper
+            stencil-component="circle-stencil"
+            :src="attendant.image_url"
+            @change="change"
           />
+          <img style="max-height: 90px" :src="imga" />
         </v-col>
 
         <v-col cols="6" md="3">
@@ -67,12 +74,7 @@
       <v-row>
         <v-spacer />
         <v-col cols="auto">
-          <v-btn
-            @click.native="$emit('cancel')"
-            color="primary"
-            outlined
-            class="mr-1"
-          >
+          <v-btn @click.native="cancel" color="primary" outlined class="mr-1">
             <span>Cancelar</span>
             <v-icon>mdi-cancel</v-icon>
           </v-btn>
@@ -91,10 +93,20 @@ export default {
   props: {},
   data() {
     return {
+      img: "https://images.pexels.com/photos/4323307/pexels-photo-4323307.jpeg",
       attendant: {},
+      imga: "",
     };
   },
   methods: {
+    change({ coordinates, canvas }) {
+      console.log(coordinates, canvas);
+      // this.imga = canvas.toBlob();
+      this.imga = canvas.toDataURL();
+      canvas.toBlob((blob) => {
+        this.attendant.image_blobu = blob;
+      });
+    },
     deleteImage() {
       let _attendant = this.attendant;
       _attendant.image_blob = null;
@@ -110,7 +122,7 @@ export default {
         cellphone,
         email,
         birthdate,
-        image_blob,
+        image_blobu,
       } = this.attendant;
 
       formData.append("name", name);
@@ -119,7 +131,7 @@ export default {
       cellphone && formData.append("cellphone", cellphone);
       email && formData.append("email", email);
       birthdate && formData.append("birthdate", birthdate);
-      image_blob && formData.append("image", image_blob);
+      image_blobu && formData.append("image", image_blobu);
 
       await this.$repository.Attendant.createForm(formData)
         .then((res) => {

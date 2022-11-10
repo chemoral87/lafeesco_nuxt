@@ -55,6 +55,8 @@ export default {
     "./plugins/repository.js",
     "./plugins/v-mask.js",
     "./plugins/vue2-google-maps.js",
+    "./plugins/vue-advanced-cropper.js",
+    // "./plugins/vue-image-crop-upload.js",
     // "./plugins/vue-mask.js"
     // { src: "./plugins/geolocation.js", ssr: false, mode: "client" }
   ],
