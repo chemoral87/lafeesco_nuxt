@@ -140,7 +140,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .image-cropper {
   border-radius: 50%;
   height: 50px;

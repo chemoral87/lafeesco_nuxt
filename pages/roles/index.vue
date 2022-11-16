@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container fluid>
     <v-row dense>
       <v-col cols="12" md="2">
         <v-text-field
@@ -42,7 +42,7 @@
       @close="roleDialogDelete = false"
     ></DialogDelete>
     <!-- <RoleDialogDelete :role="role" v-if="roleDialogDelete" @close="roleDialogDelete = false" @ok="deleteRole" /> -->
-  </div>
+  </v-container>
 </template>
 <script>
 export default {
@@ -55,12 +55,12 @@ export default {
       filterRole: "",
       role: {},
       response: {
-        data: []
+        data: [],
       },
       options: {},
       roleDialog: false,
       roleDialogDelete: false,
-      dialogDelete: {}
+      dialogDelete: {},
     };
   },
   watch: {
@@ -70,10 +70,10 @@ export default {
       let op = Object.assign(me.options, {
         filter: value,
         page: 1,
-        itemsPerPage: 10
+        itemsPerPage: 10,
       });
       me.response = await me.$repository.Role.index(op);
-    }
+    },
   },
   methods: {
     async getRoles(options) {
@@ -103,54 +103,54 @@ export default {
       this.dialogDelete = {
         text: "Desea eliminar el Rol ",
         strong: item.name,
-        payload: item
+        payload: item,
       };
       this.roleDialogDelete = true;
     },
     async deleteRole(item) {
       await this.$repository.Role.delete(item.id, item)
-        .then(res => {
+        .then((res) => {
           this.getRoles();
           this.roleDialogDelete = false;
         })
-        .catch(e => {});
+        .catch((e) => {});
     },
     async saveRole(item) {
       let me = this;
       if (item.id) {
         await this.$repository.Role.update(item.id, item)
-          .then(res => {
+          .then((res) => {
             me.getRoles();
             me.roleDialog = false;
           })
-          .catch(e => {});
+          .catch((e) => {});
       } else {
         await this.$repository.Role.create(item)
-          .then(res => {
+          .then((res) => {
             me.getRoles();
             me.roleDialog = false;
           })
-          .catch(e => {});
+          .catch((e) => {});
       }
     },
     closeDialog() {
       this.roleDialog = false;
       this.clearErrors();
       // this.$store.dispatch("validation/clearErrors");
-    }
+    },
   },
   async asyncData({ app }) {
     let op = {
       sortBy: ["name"],
       sortDesc: [false],
-      itemsPerPage: 10
+      itemsPerPage: 10,
     };
     //NOTE Repository https://medium.com/js-dojo/consuming-apis-in-nuxt-using-the-repository-pattern-8a13ea57d520
-    const res = await app.$repository.Role.index(op).catch(e => {});
+    const res = await app.$repository.Role.index(op).catch((e) => {});
     return { response: res, options: op };
   },
   created() {
     this.$nuxt.$emit("setNavBar", { title: "Roles", icon: "redhat" });
-  }
+  },
 };
 </script>

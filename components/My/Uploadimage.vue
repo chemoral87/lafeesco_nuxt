@@ -11,7 +11,7 @@
 <script>
 let loadImage = require("blueimp-load-image");
 export default {
-  props: ["value", "img", "url", "encoded"],
+  props: ["value", "img", "url", "encoded", "size"],
   data() {
     return {
       uri: null,
@@ -57,18 +57,17 @@ export default {
       var blob = new Blob([ab], { type: mimeString });
       return blob;
     },
-    Preview_image() {
+    Preview_image(e) {
       let me = this;
+
       if (this.image == null) {
         this.uri = null;
         this.blob = null;
         this.filename = "";
       } else {
-        this.uri = URL.createObjectURL(this.image);
-        this.filename = this.image.name;
-        let image = this.image; //e.target.files[0];
-        let imgu = new Image();
-        imgu.onload = function () {
+        let _URL = window.URL || window.webkitURL;
+        let imgLoader = new Image();
+        imgLoader.onload = function () {
           let ration = Math.sqrt(
             (this.width * this.height) / (me.maxSize * me.maxSize)
           );
@@ -77,8 +76,9 @@ export default {
               ? this.width / ration
               : this.height / ration;
           _maxSize = Math.round(_maxSize);
+
           loadImage(
-            image,
+            me.image,
             function (img, data) {
               if (me.encoded == null || me.encoded == "blob") {
                 me.blob = me.dataURItoBlob(img.toDataURL());
@@ -86,22 +86,26 @@ export default {
               if (me.encoded == "base_64") {
                 me.blob = img.toDataURL();
               }
+
+              me.uri = img.toDataURL();
+              me.$emit("update:url", me.uri);
             },
             {
               maxWidth: _maxSize,
               maxHeight: _maxSize,
               orientation: true,
               canvas: true,
-            }
+            } // Options
           );
         };
-        let _URL = window.URL || window.webkitURL;
-        imgu.src = _URL.createObjectURL(image);
+        var objectUrl = _URL.createObjectURL(this.image);
+        imgLoader.src = objectUrl;
       }
     },
   },
   mounted() {
     let me = this;
+    this.maxSize = this.size ? this.size : this.maxSize;
   },
 };
 </script>

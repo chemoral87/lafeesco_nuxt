@@ -9,6 +9,9 @@
       :items="items"
       :options.sync="optionsTable"
       :server-items-length="total"
+      :footer-props="{
+        'items-per-page-options': [10, 20, 30, 40, 50],
+      }"
       class="elevation-1 xwidth1400"
     >
       <!-- https://stackoverflow.com/questions/61344980/v-slot-directive-doesnt-support-any-modifier -->
@@ -100,14 +103,15 @@ export default {
           text: "Nombre ",
           value: "name",
         },
-        { text: "Anfitrión", value: "host", sortable: false },
+        { text: "Anfitrión", value: "host", sortable: true },
         { text: "Anfitrión Cel.", value: "host_phone", sortable: false },
-        { text: "Expositor", value: "exhibitor", sortable: false },
+        { text: "Expositor", value: "exhibitor", sortable: true },
         { text: "Expositor Cel.", value: "exhibitor_phone", sortable: false },
 
         {
           text: "Dirección",
           value: "address",
+          sortable: true,
         },
       ],
     };

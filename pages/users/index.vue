@@ -1,8 +1,14 @@
 <template>
-  <div>
+  <v-container fluid>
     <v-row dense>
       <v-col cols="12" md="3">
-        <v-text-field append-icon="mdi-magnify" clearable hide-details v-model="filterUser" placeholder="Filtro"></v-text-field>
+        <v-text-field
+          append-icon="mdi-magnify"
+          clearable
+          hide-details
+          v-model="filterUser"
+          placeholder="Filtro"
+        ></v-text-field>
       </v-col>
       <v-col cols="12" md="4">
         <v-btn @click="newUser()" color="primary" class="mr-1">
@@ -13,23 +19,36 @@
         </v-btn>
       </v-col>
       <v-col cols="12">
-
-        <UserTable @sorting="getUsers" :options="options" :response="response" @edit="editUser" @editRoles="editUserRoles" @delete="beforeDeleteUser"></UserTable>
-
+        <UserTable
+          @sorting="getUsers"
+          :options="options"
+          :response="response"
+          @edit="editUser"
+          @editRoles="editUserRoles"
+          @delete="beforeDeleteUser"
+        ></UserTable>
       </v-col>
     </v-row>
-    <UserDialog :userx="userx" v-if="userDialog" @close="closeDialog" @save="saveUser" />
-    <DialogDelete v-if="userDialogDelete" :dialog="dialogDelete" @ok="deleteUser" @close="userDialogDelete = false"></DialogDelete>
+    <UserDialog
+      :userx="userx"
+      v-if="userDialog"
+      @close="closeDialog"
+      @save="saveUser"
+    />
+    <DialogDelete
+      v-if="userDialogDelete"
+      :dialog="dialogDelete"
+      @ok="deleteUser"
+      @close="userDialogDelete = false"
+    ></DialogDelete>
     <!-- <UserDialogDelete :userx="userx" v-if="userDialogDelete" @close="userDialogDelete = false" @ok="deleteUser" /> -->
-  </div>
+  </v-container>
 </template>
 <script>
 export default {
   validate({ store, error }) {
-    if (store.getters.permissions.includes('user-index'))
-      return true;
-    else
-      throw error({ statusCode: 403 });
+    if (store.getters.permissions.includes("user-index")) return true;
+    else throw error({ statusCode: 403 });
   },
 
   data() {
@@ -48,8 +67,7 @@ export default {
       let op = Object.assign(me.options, { filter: value, page: 1 });
       // me.response = await me.$repository.User.index(op);
       me.getUsers(op);
-    }
-
+    },
   },
   methods: {
     newUser() {
@@ -58,7 +76,7 @@ export default {
     },
     editUser(item) {
       this.userDialog = true;
-      this.userx = Object.assign({}, item);;
+      this.userx = Object.assign({}, item);
     },
     editUserRoles(item) {
       this.$router.push(`/users/${item.id}`);
@@ -67,21 +85,25 @@ export default {
       this.userDialogDelete = true;
       this.dialogDelete = {
         text: "Desea eliminar el Usuario ",
-        strong: `${item.name} ${item.last_name}  ${item.second_last_name ? item.second_last_name : ""}`,
-        payload: item
+        strong: `${item.name} ${item.last_name}  ${
+          item.second_last_name ? item.second_last_name : ""
+        }`,
+        payload: item,
       };
       // this.userx = Object.assign({}, item);
     },
     async deleteUser(item) {
       await this.$repository.User.delete(item.id, item)
-        .then(res => {
+        .then((res) => {
           this.getUsers();
           this.userDialogDelete = false;
         })
-        .catch(e => { });
+        .catch((e) => {});
     },
     async getUsers(options) {
-      if (options) { this.options = options; }
+      if (options) {
+        this.options = options;
+      }
       let op = Object.assign({ filter: this.filterUser }, this.options);
       this.response = await this.$repository.User.index(op);
     },
@@ -89,40 +111,38 @@ export default {
       let me = this;
       if (item.id) {
         await this.$repository.User.update(item.id, item)
-          .then(res => {
+          .then((res) => {
             me.getUsers();
             me.userDialog = false;
           })
-          .catch(e => { });
+          .catch((e) => {});
       } else {
         await this.$repository.User.create(item)
-          .then(res => {
+          .then((res) => {
             me.getUsers();
             me.userDialog = false;
           })
-          .catch(e => { });
+          .catch((e) => {});
       }
     },
     closeDialog() {
       this.userDialog = false;
       this.clearErrors();
-    }
-
+    },
   },
 
   async asyncData({ $axios, app }) {
     let op = {
       sortBy: ["name"],
       sortDesc: [false],
-      itemsPerPage: 10
+      itemsPerPage: 10,
     };
 
-    const res = await app.$repository.User.index(op)
-      .catch(e => { });
+    const res = await app.$repository.User.index(op).catch((e) => {});
     return { response: res, options: op };
   },
   created() {
     this.$nuxt.$emit("setNavBar", { title: "Usuarios", icon: "account" });
-  }
-}
+  },
+};
 </script>

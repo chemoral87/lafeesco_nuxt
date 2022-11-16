@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container fluid>
     <v-row dense>
       <v-col cols="12" md="2">
         <v-text-field
@@ -44,7 +44,7 @@
     ></DialogDelete>
 
     <!-- <PermissionDialogDelete :permission="permission" v-if="permissionDialogDelete" @close="permissionDialogDelete = false" @ok="deletePermission" /> -->
-  </div>
+  </v-container>
 </template>
 <script>
 export default {
@@ -60,7 +60,7 @@ export default {
       filterPermission: "",
       permissionDialog: false,
       permissionDialogDelete: false,
-      dialogDelete: {}
+      dialogDelete: {},
     };
   },
   watch: {
@@ -69,7 +69,7 @@ export default {
       this.$store.dispatch("hideNextLoading");
       let op = Object.assign(me.options, { filter: value, page: 1, l: false });
       me.response = await me.$repository.Permission.index(op);
-    }
+    },
   },
   methods: {
     newPermission() {
@@ -84,17 +84,17 @@ export default {
       this.dialogDelete = {
         text: "Desea eliminar el Permiso ",
         strong: item.name,
-        payload: item
+        payload: item,
       };
       this.permissionDialogDelete = true;
     },
     async deletePermission(item) {
       await this.$repository.Permission.delete(item.id, item)
-        .then(res => {
+        .then((res) => {
           this.getPermissions();
           this.permissionDialogDelete = false;
         })
-        .catch(e => {});
+        .catch((e) => {});
     },
     async getPermissions(options) {
       if (options) {
@@ -107,38 +107,38 @@ export default {
       let me = this;
       if (item.id) {
         await this.$repository.Permission.update(item.id, item)
-          .then(res => {
+          .then((res) => {
             me.getPermissions();
             me.permissionDialog = false;
           })
-          .catch(e => {});
+          .catch((e) => {});
       } else {
         await this.$repository.Permission.create(item)
-          .then(res => {
+          .then((res) => {
             me.getPermissions();
             me.permissionDialog = false;
           })
-          .catch(e => {});
+          .catch((e) => {});
       }
     },
     closeDialog() {
       this.permissionDialog = false;
       this.clearErrors();
-    }
+    },
   },
 
   async asyncData({ $axios, app }) {
     let op = {
       sortBy: ["name"],
       sortDesc: [false],
-      itemsPerPage: 10
+      itemsPerPage: 10,
     };
     //NOTE Repository https://medium.com/js-dojo/consuming-apis-in-nuxt-using-the-repository-pattern-8a13ea57d520
-    const res = await app.$repository.Permission.index(op).catch(e => {});
+    const res = await app.$repository.Permission.index(op).catch((e) => {});
     return { response: res, options: op };
   },
   created() {
     this.$nuxt.$emit("setNavBar", { title: "Permisos", icon: "key" });
-  }
+  },
 };
 </script>

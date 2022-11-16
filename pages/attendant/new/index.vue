@@ -34,6 +34,7 @@
             label="Celular"
             v-model="attendant.cellphone"
             v-mask="'##-####-####'"
+            :rules="[(v) => !!v || 'Campo requerido']"
           />
         </v-col>
 
@@ -42,21 +43,18 @@
             :url.sync="attendant.image_url"
             v-model="attendant.image_blob"
             label="Foto"
+            :size="850"
             placeholder="Seleccione imagen"
             @change="uploaded"
           ></my-uploadimage>
-          <!-- <my-image-wrap
-            @deleteImage="deleteImage()"
-            :src="attendant.image_url"
-            alt="imagen"
-          /> -->
 
           <cropper
             stencil-component="circle-stencil"
             :src="attendant.image_url"
             @change="change"
           />
-          <img style="max-height: 90px" :src="imga" />
+          <img class="image-cropper" style="max-width: 100%" :src="imga" />
+          <!-- <img style="height: 90px" :src="attendant.image_url" /> -->
         </v-col>
 
         <v-col cols="6" md="3">
@@ -100,7 +98,7 @@ export default {
   },
   methods: {
     change({ coordinates, canvas }) {
-      console.log(coordinates, canvas);
+      // console.log(coordinates, canvas);
       // this.imga = canvas.toBlob();
       this.imga = canvas.toDataURL();
       canvas.toBlob((blob) => {
@@ -114,6 +112,7 @@ export default {
     },
     uploaded() {},
     async saveAttendant() {
+      if (!this.$refs.form.validate()) return;
       let formData = new FormData();
       let {
         name,
@@ -167,3 +166,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.image-cropper {
+  border-radius: 50%;
+}
+</style>
