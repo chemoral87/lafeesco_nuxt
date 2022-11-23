@@ -55,17 +55,40 @@
         </v-btn>
       </template>
       <template v-slot:[`item.photo`]="{ item }">
-        <!-- auto square  -->
-        <!-- <img :src="item.photo" /> -->
-
         <img class="image-cropper" :src="item.photo" />
       </template>
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-btn
+          title="Editar"
+          class="ma-1"
+          color="primary"
+          outlined
+          fab
+          small
+          @click="emitAction('edit', item)"
+        >
+          <v-icon> mdi-pencil </v-icon>
+        </v-btn>
+        <v-btn @click="confirmDelete(item)" fab small color="error">
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
+      </template>
     </v-data-table>
+    <DialogDelete
+      v-if="dialogDelete"
+      :dialog="dialogDeleteProp"
+      @ok="
+        (item) => {
+          $emit('delete', item);
+        }
+      "
+      @close="$emit('update:dialogDelete', false)"
+    ></DialogDelete>
   </div>
 </template>
 <script>
 export default {
-  props: ["response", "options", "tableHeaders"],
+  props: ["dialogDelete", "response", "options", "tableHeaders"],
   data() {
     return {
       flagSetOption: true,
@@ -89,6 +112,7 @@ export default {
         },
         { text: "Acciones", value: "actions", width: "200px", sortable: false },
       ],
+      dialogDeleteProp: {},
     };
   },
   computed: {
@@ -102,6 +126,15 @@ export default {
     },
   },
   methods: {
+    confirmDelete(item) {
+      console.log("confirmDelete");
+      this.dialogDeleteProp = {
+        text: "Desea eliminar la Casa de Fe ",
+        strong: item.name,
+        payload: item,
+      };
+      this.$emit("update:dialogDelete", true);
+    },
     sortTable(columnName) {
       if (this.flagSetOption) {
         this.flagSetOption = false;

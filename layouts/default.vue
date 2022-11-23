@@ -145,7 +145,7 @@ import { MenuService } from "../services/menu-service";
 export default {
   data() {
     return {
-      clipped: true,
+      clipped: false,
       drawer: false,
       fixed: false, // footer
       miniVariant: false,

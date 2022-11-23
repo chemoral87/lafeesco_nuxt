@@ -7,6 +7,7 @@ import MemberRepository from "../MemberRepository";
 import MemberCallRepository from "../MemberCallRepository";
 import HouseFaithReposiotry from "../CommonRepository";
 import AgroEventRepository from "../AgroEventRepository";
+import TemplateGeneratorRepository from "../TemplateGeneratorRepository";
 
 export default ($axios) => ({
   Role: CommonRepository($axios)("/roles"),
@@ -23,4 +24,5 @@ export default ($axios) => ({
   FaithHouse: HouseFaithReposiotry($axios)("/faith-house"),
   AgroEvent: AgroEventRepository($axios)("/agro-event"),
   Attendant: CommonRepository($axios)("/attendant"),
+  TemplateGenerator: TemplateGeneratorRepository($axios)("/template-generator"),
 });

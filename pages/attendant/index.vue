@@ -16,7 +16,8 @@
           :options="options"
           :response="response"
           @edit="editAttendant"
-          @delete=""
+          @delete="deleteAttendant"
+          :dialogDelete.sync="dialogDeleteAttendant"
         />
       </v-col>
     </v-row>
@@ -39,7 +40,24 @@ export default {
 
   methods: {
     indexAttendant() {},
-    editAttendant() {},
+    editAttendant(item) {
+      this.$router.push(`/attendant/${item.id}`);
+    },
+    async deleteAttendant(item) {
+      await this.$repository.Attendant.delete(item.id)
+        .then((res) => {
+          this.dialogDeleteAttendant = false;
+          this.index();
+        })
+        .catch((e) => {});
+    },
+    async index(options) {
+      if (options) {
+        this.options = options;
+      }
+      let op = Object.assign({ filter: this.filter }, this.options);
+      this.response = await this.$repository.Attendant.index(op);
+    },
   },
   data() {
     return {

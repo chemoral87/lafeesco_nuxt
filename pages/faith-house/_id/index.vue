@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-form ref="form" @submit.prevent="saveFaithHouse">
       <v-row dense>
-        <v-col cols="6" md="3">
+        <v-col cols="12" md="3" lg="2">
           <v-text-field
             outlined
             label="Nombre"
@@ -10,10 +10,10 @@
             :rules="[(v) => !!v || 'Campo requerido']"
           />
         </v-col>
-        <v-col cols="6" md="3">
+        <v-col cols="6" md="3" lg="2">
           <v-text-field outlined label="Anfitrión" v-model="item.host" />
         </v-col>
-        <v-col cols="6" md="3">
+        <v-col cols="6" md="3" lg="2">
           <v-text-field
             outlined
             label="Anfitrión Teléfono"
@@ -21,10 +21,10 @@
             v-model="item.host_phone"
           />
         </v-col>
-        <v-col cols="6" md="3">
+        <v-col cols="6" md="3" lg="2">
           <v-text-field outlined label="Expositor" v-model="item.exhibitor" />
         </v-col>
-        <v-col cols="6" md="3">
+        <v-col cols="6" md="3" lg="2">
           <v-text-field
             outlined
             label="Expositor Teléfono"
@@ -32,13 +32,16 @@
             v-model="item.exhibitor_phone"
           />
         </v-col>
-        <v-col cols="6" md="3">
+        <v-col cols="6" md="3" lg="2">
+          <v-text-field outlined label="Horario" v-model="item.schedule" />
+        </v-col>
+        <v-col cols="12" md="3" lg="4">
           <v-text-field outlined label="Domicilio" v-model="item.address" />
         </v-col>
-        <v-col cols="6" md="3">
+        <v-col cols="6" md="3" lg="2">
           <v-text-field outlined label="Latitud" v-model="item.lat" />
         </v-col>
-        <v-col cols="6" md="3">
+        <v-col cols="6" md="3" lg="2">
           <v-text-field outlined label="Longitud" v-model="item.lng" />
         </v-col>
       </v-row>
@@ -91,7 +94,7 @@ export default {
   },
   created() {
     this.$nuxt.$emit("setNavBar", {
-      title: "Nueva Casa de Fe",
+      title: "Editar Casa de Fe",
       icon: "home",
     });
   },
