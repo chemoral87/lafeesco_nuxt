@@ -90,6 +90,12 @@ export class MenuService {
         title: "Reportes",
         to: "/reports",
       });
+
+      menu.push({
+        icon: "mdi-engine",
+        title: "Template G",
+        to: "/template-generator",
+      });
       // menu.push({
       //   icon: "mdi-chart-bar",
       //   title: "ReportesA",

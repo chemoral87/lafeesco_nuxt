@@ -36,7 +36,7 @@
       </v-col>
       <v-col cols="6"> tablas aqui </v-col>
     </v-row>
-
+    {{ mark_tables }}
     <v-row dense>
       <v-col cols="6"> </v-col>
     </v-row>
