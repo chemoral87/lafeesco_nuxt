@@ -84,6 +84,24 @@ export default {
     "@nuxtjs/pwa",
     ["@nuxtjs/dotenv", { filename: ".env." + process.env.NODE_ENV }],
     // [
+    //   "@nuxtjs/i18n",
+    //   {
+    //     locales: ["en", "es"],
+    //     defaultLocale: "en",
+    //     vueI18n: {
+    //       fallbackLocale: "en",
+    //       messages: {
+    //         en: {
+    //           greeting: "Hello world!",
+    //         },
+    //         es: {
+    //           greeting: "¡Hola mundo!",
+    //         },
+    //       },
+    //     },
+    //   },
+    // ],
+    // [
     //   "nuxt-gmaps",
     //   {
     //     key: process.env.GOOGLE_MAPS_KEY

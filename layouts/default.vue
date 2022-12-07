@@ -115,22 +115,29 @@
         <Nuxt />
       </v-container>
       <MyLoading :value="loading_display"></MyLoading>
+
       <div class="snackbar-wrapper">
         <v-snackbar
-          absolute
-          :color="snackbar.color"
-          v-model="snackbar_display"
+          v-for="(snack, i) in snacks.filter((s) => s.display == true)"
+          :key="i + 'snackbars'"
+          :color="snack.color"
+          v-model="snack.showing"
           shaped
           multi-line
           right
           bottom
-          :timeout="3800"
+          :timeout="snack.timeout"
+          :style="`bottom: ${i * 69 + 0}px`"
         >
-          <span class="text-subtitle-1 font-weight-bold">{{
-            snackbar.text
-          }}</span>
+          <span class="text-subtitle-1 font-weight-bold">{{ snack.text }}</span>
           <template v-slot:action="{ attrs }">
-            <v-btn color="grey" v-bind="attrs" fab small @click="closeSnackbar">
+            <v-btn
+              color="grey"
+              v-bind="attrs"
+              fab
+              small
+              @click="snack.showing = false"
+            >
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </template>
@@ -161,20 +168,23 @@ export default {
     };
   },
   computed: {
-    snackbar_display: {
-      get() {
-        return this.snackbar.display;
-      },
-      set() {
-        this.$store.dispatch("closeNotify");
-      },
-    },
+    // snackbar_display: {
+    //   get() {
+    //     return this.snackbar.display;
+    //   },
+    //   set() {
+    //     this.$store.dispatch("closeNotify");
+    //   },
+    // },
     loading_display() {
       return this.showLoading;
     },
     items() {
       const menu_ = new MenuService(this.authenticated, this.permissions);
       return menu_.getMenu();
+    },
+    snacks() {
+      return this.$store.getters.getSnackbars;
     },
   },
   methods: {
@@ -203,9 +213,6 @@ export default {
     logout() {
       this.menu = false;
       this.$auth.logout();
-    },
-    closeSnackbar() {
-      this.$store.dispatch("closeNotify");
     },
   },
   created() {

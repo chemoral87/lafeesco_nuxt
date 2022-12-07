@@ -8,6 +8,9 @@
         <v-btn @click="getTables()" color="primary">
           <v-icon class="mr-1">mdi-magnify</v-icon> Buscar
         </v-btn>
+        <v-btn @click="sendNotify()" color="primary">
+          <v-icon class="mr-1">mdi-bell</v-icon> Notificacion
+        </v-btn>
       </v-col>
     </v-row>
     <v-row dense>
@@ -36,7 +39,7 @@
       </v-col>
       <v-col cols="6"> tablas aqui </v-col>
     </v-row>
-    {{ mark_tables }}
+    <!-- {{ mark_tables }} -->
     <v-row dense>
       <v-col cols="6"> </v-col>
     </v-row>
@@ -49,6 +52,7 @@ export default {
     return {
       filter: "",
       tablez: [],
+      a: 1,
     };
   },
   computed: {
@@ -68,6 +72,12 @@ export default {
       this.$set(item, "check", ev);
       // item.check = ev;
       // item = Object.assign({}, item);
+    },
+    sendNotify() {
+      this.$store.dispatch("notify", {
+        success: "tomasin " + this.a,
+      });
+      this.a++;
     },
     async getTables(options) {
       let { filter } = this;
