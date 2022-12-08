@@ -126,6 +126,7 @@
           multi-line
           right
           bottom
+          absolute
           :timeout="snack.timeout"
           :style="`bottom: ${i * 69 + 0}px`"
         >
@@ -136,7 +137,7 @@
               v-bind="attrs"
               fab
               small
-              @click="snack.showing = false"
+              @click="snack.display = false"
             >
               <v-icon>mdi-close</v-icon>
             </v-btn>

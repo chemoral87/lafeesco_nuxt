@@ -1,15 +1,27 @@
 <template>
   <v-container fluid>
     <v-row dense>
-      <v-col cols="12" md="3">
-        <v-text-field v-model="filter" label="Filtro"></v-text-field>
+      <v-col cols="12" md="2">
+        <v-text-field
+          v-model="table_filter"
+          label="Filtro Tabla"
+        ></v-text-field>
       </v-col>
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="2">
+        <v-text-field
+          v-model="schema_filter"
+          label="Filtro Schema"
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6">
         <v-btn @click="getTables()" color="primary">
           <v-icon class="mr-1">mdi-magnify</v-icon> Buscar
         </v-btn>
         <v-btn @click="sendNotify()" color="primary">
           <v-icon class="mr-1">mdi-bell</v-icon> Notificacion
+        </v-btn>
+        <v-btn @click="getDefinitions()" color="danger">
+          <v-icon class="mr-1">mdi-engine</v-icon> Generar
         </v-btn>
       </v-col>
     </v-row>
@@ -21,6 +33,7 @@
               <tr>
                 <th class="text-left">Mark</th>
                 <th class="text-left">TABLE_NAME</th>
+                <th class="text-left">SCHEMA_NAME</th>
               </tr>
             </thead>
             <tbody>
@@ -32,6 +45,7 @@
                   />
                 </td>
                 <td>{{ item.TABLE_NAME }}</td>
+                <td>{{ item.TABLE_SCHEMA }}</td>
               </tr>
             </tbody>
           </template>
@@ -50,8 +64,10 @@ export default {
   props: {},
   data() {
     return {
-      filter: "",
+      table_filter: "",
+      schema_filter: "lafeescobedo_db",
       tablez: [],
+      definitions: [],
       a: 1,
     };
   },
@@ -62,7 +78,7 @@ export default {
     },
   },
   watch: {
-    async filter(value) {
+    async table_filter(value) {
       this.$store.dispatch("hideNextLoading");
       this.getTables();
     },
@@ -80,10 +96,22 @@ export default {
       this.a++;
     },
     async getTables(options) {
-      let { filter } = this;
+      let { table_filter, schema_filter } = this;
       this.tablez = await this.$repository.TemplateGenerator.getTables({
-        filter,
+        table_filter,
+        schema_filter,
       });
+    },
+    async getDefinitions() {
+      let { mark_tables } = this;
+      let payload = mark_tables.map((tab) => {
+        return { table_name: tab.TABLE_NAME, table_schema: tab.TABLE_SCHEMA };
+      });
+      console.log(payload);
+      this.definitions =
+        await this.$repository.TemplateGenerator.getDefinitions({
+          payload,
+        });
     },
   },
   mounted() {
