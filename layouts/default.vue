@@ -111,7 +111,7 @@
       </v-menu>
     </v-app-bar>
     <v-main>
-      <v-container class="pa-0">
+      <v-container fluid class="pa-0">
         <Nuxt />
       </v-container>
       <MyLoading :value="loading_display"></MyLoading>

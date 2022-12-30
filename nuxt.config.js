@@ -1,5 +1,6 @@
 // require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
 // const env = require("dotenv").config({ path: ".env." + process.env.NODE_ENV });
+
 let env;
 
 let title;
@@ -48,14 +49,16 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     "./plugins/mixins/user.js",
+    "./plugins/mixins/utils.js",
     "./plugins/mixins/validation.js",
     "./plugins/axios.js",
     "./plugins/filters.js",
     "./plugins/i18n.js",
     "./plugins/repository.js",
-    "./plugins/v-mask.js",
+
     "./plugins/vue2-google-maps.js",
     "./plugins/vue-advanced-cropper.js",
+
     // "./plugins/vue-image-crop-upload.js",
     // "./plugins/vue-mask.js"
     // { src: "./plugins/geolocation.js", ssr: false, mode: "client" }
@@ -83,6 +86,7 @@ export default {
     // https://go.nuxtjs.dev/pwa
     "@nuxtjs/pwa",
     ["@nuxtjs/dotenv", { filename: ".env." + process.env.NODE_ENV }],
+
     // [
     //   "@nuxtjs/i18n",
     //   {
@@ -193,6 +197,7 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     // maxChunkSize: 900000,
+
     extractCSS: true,
     filenames: {
       chunk: ({ isDev }) => (isDev ? "[name].js" : "[id].[contenthash].js"),
