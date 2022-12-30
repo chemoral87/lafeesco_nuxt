@@ -26,6 +26,7 @@
       </v-col>
       <v-col cols="auto">
         <v-btn @click="play()" color="primary"> Jugar </v-btn>
+        {{ marcator }}
       </v-col>
       <v-col cols="12">
         <EarTrainerGameList
@@ -48,12 +49,21 @@ export default {
       games: [],
     };
   },
+  computed: {
+    marcator() {
+      let goods = this.games.filter((x) => x.resolve === true).length;
+      let total_games = this.games.length - 1;
+      if (total_games < 0) return "";
+      return `Marcador ${goods}/${total_games}`;
+    },
+  },
   methods: {
     verify(payload) {
       let game = this.games.find((x) => x.id == payload.id);
-      console.log("verify", payload, game);
+
       this.$set(game, "resolve", payload.result);
-      // this.$set(item, "value", ev)
+      // create new game
+      this.play();
     },
     removeNoteList(note) {
       this.playNotesList = this.playNotesList.filter((x) => x != note);
@@ -67,7 +77,18 @@ export default {
     },
     play() {
       let game = { notes: [], resolve: 0, id: this.uuidv4() };
+
+      let notes = this.getRandomNotes();
+      if (this.games[0] && this.games[0].notes == notes) {
+        notes = this.getRandomNotes();
+      }
+      game.notes = notes;
+
+      this.games.unshift(game);
+    },
+    getRandomNotes() {
       let NoteList = Object.assign([], this.playNotesList);
+      let notes = [];
       let n = 0;
       while (n < this.max_tones) {
         let note = NoteList.splice(
@@ -75,10 +96,10 @@ export default {
           1
         );
         n++;
-        game.notes.push(note[0]);
+        notes.push(note[0]);
       }
-
-      this.games.unshift(game);
+      console.log(notes);
+      return notes;
     },
     addPlayNoteList() {
       this.tone = this.tone.trim();

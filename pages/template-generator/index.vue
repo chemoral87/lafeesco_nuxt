@@ -98,13 +98,11 @@ export default {
   computed: {
     configMask() {
       let precision = 2;
-      // console.log(this.priceVuetify);
       // if (
       //   this.priceVuetify.toString().indexOf(".") == -1 ||
       //   this.priceVuetify == 0
       // ) {
       //   precision = 0;
-      //   console.log("configMask");
       // }
       // if ((this.priceVuetify * 100) % 100 == 0) precision = 0;
       return {

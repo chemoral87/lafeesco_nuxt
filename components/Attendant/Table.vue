@@ -127,7 +127,6 @@ export default {
   },
   methods: {
     confirmDelete(item) {
-      console.log("confirmDelete");
       this.dialogDeleteProp = {
         text: "Desea eliminar la Casa de Fe ",
         strong: item.name,

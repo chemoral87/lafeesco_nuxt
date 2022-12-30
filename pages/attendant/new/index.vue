@@ -99,8 +99,6 @@ export default {
   },
   methods: {
     change({ coordinates, canvas }) {
-      // console.log(coordinates, canvas);
-      // this.imga = canvas.toBlob();
       this.imga = canvas.toDataURL();
       canvas.toBlob((blob) => {
         this.attendant.image_blobu = blob;
@@ -147,8 +145,6 @@ export default {
   },
   mounted() {
     let me = this;
-    // console.log(this.$auth);
-    // console.log(this.$auth.user);
   },
   validate({ store, error }) {
     let permission = "attendant-index";

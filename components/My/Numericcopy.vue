@@ -23,7 +23,6 @@ export default {
       set(value) {
         // Parse the formatted value and store the raw value
         if (value == null || value === "") {
-          console.log(value);
           this.rawValue = null;
         } else {
           // const regex = /^\$\s(\d+(\.\d{0,2})?)$/; // Original regular expression

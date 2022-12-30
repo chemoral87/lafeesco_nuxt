@@ -55,7 +55,7 @@ export default {
       let {
         game: { notes },
       } = this;
-      console.log(notes);
+
       if (response.length != notes.length) {
         alert("Ingrese " + notes.length + " nota(s)");
         return;
@@ -64,16 +64,13 @@ export default {
         let a = response[i];
 
         let b = notes[i][0];
-        console.log(a, b, i, notes.length);
+
         if (a.toUpperCase() != b.toUpperCase()) {
-          // console.log("fallo");
           this.$emit("verify", { id: this.game.id, result: false });
           return false;
         }
       }
       this.$emit("verify", { id: this.game.id, result: true });
-      // console.log("correcto");
-      // return true;
     },
     play() {
       this.notes.forEach((note, index) => {
@@ -86,7 +83,6 @@ export default {
     },
   },
   mounted() {
-    console.log("mounted");
     let me = this;
     me.notes = me.game.notes;
     this.play();

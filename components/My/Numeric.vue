@@ -27,7 +27,6 @@ export default {
   computed: {},
   watch: {
     formatted(neww, oldd) {
-      // console.log("@watch2", val, oldd, this.formatted);
       let index = -1; // índice por defecto en caso de que las cadenas seans
       let reverse_index = -1;
 
@@ -52,17 +51,6 @@ export default {
       let bodyTextArea = this.$refs.myInput.$el.querySelector("input");
       let current_selectionStart = bodyTextArea.selectionStart;
       let current_selectionEnd = bodyTextArea.selectionEnd;
-      // console.log("@watch2", index, neww, oldd);
-      console.log(
-        "len:",
-        len,
-        "current_selectionStart:",
-        current_selectionStart,
-        "index:",
-        index,
-        "reverse_index:",
-        reverse_index
-      );
 
       this.$nextTick(() => {
         bodyTextArea.selectionStart = index + 1;
@@ -80,15 +68,8 @@ export default {
   },
   methods: {
     formatNumber(e) {
-      console.log("@input1", e);
-
-      // console.log("formatNumber", e);
-      // e = e.toString().replace(/\d{4}/g, "$& ").trim();
-
-      // console.log(e);
       let stg = e.replace(/\s/g, "");
       let new_formatted = stg.toString().replace(/\d{4}/g, "$& ").trim();
-      console.log(new_formatted);
       this.$nextTick(() => {
         this.formatted = new_formatted;
       });

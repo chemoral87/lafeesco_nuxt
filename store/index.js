@@ -95,7 +95,6 @@ export const actions = {
   },
   closeSnackbar({ commit }, snackbar) {
     commit("DELETE_SNACK", snackbar);
-    // console.log(snackbar, "closeSnackbar");
   },
   // closeNotify({ commit }) {
   //   commit("CLOSE_SNACKBAR");
