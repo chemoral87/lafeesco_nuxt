@@ -1,9 +1,9 @@
 <template>
-  <v-row>
+  <v-row dense>
     <v-col cols="auto" v-for="(note, ix) in notes" :key="ix">
       <v-chip @click="play(note)">
         {{ note }}
-        <v-icon class="ml-4" color="red" @click="$emit('remove', note)"
+        <v-icon class="ml-5" color="red" @click="$emit('remove', note)"
           >mdi-close-box</v-icon
         >
       </v-chip>

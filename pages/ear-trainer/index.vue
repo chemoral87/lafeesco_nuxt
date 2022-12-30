@@ -7,7 +7,7 @@
           :notes="playNotesList"
         ></EarTrainerNotes>
       </v-col>
-      <v-col cols="1">
+      <v-col cols="2" sm="1">
         <v-text-field v-model="tone" label="Nota" hide-details></v-text-field>
       </v-col>
       <v-col cols="auto">
@@ -17,7 +17,7 @@
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="1">
+      <v-col cols="2" sm="1">
         <v-text-field
           v-model="max_tones"
           label="#Notas"
