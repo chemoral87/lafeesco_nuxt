@@ -54,7 +54,7 @@ export default {
         game: { notes },
       } = this;
 
-      if (response.length != notes.length) {
+      if (this.response.trim() == "" || response.length != notes.length) {
         alert("Ingrese " + notes.length + " nota(s)");
         return;
       }

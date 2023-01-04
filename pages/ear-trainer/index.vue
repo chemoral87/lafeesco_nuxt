@@ -79,9 +79,26 @@ export default {
       let game = { notes: [], resolve: 0, id: this.uuidv4() };
 
       let notes = this.getRandomNotes();
-      if (this.games[0] && this.games[0].notes == notes) {
+      let max_tries = 2;
+      let n = 0;
+      while (
+        n < max_tries &&
+        this.games[0] &&
+        JSON.stringify(this.games[0].notes) == JSON.stringify(notes)
+      ) {
         notes = this.getRandomNotes();
+        n++;
       }
+
+      if (this.games[0]) {
+        console.log(JSON.parse(JSON.stringify(this.games[0].notes)), notes);
+      }
+      // if (this.games[0] && this.games[0].notes == notes) {
+      //   notes = this.getRandomNotes();
+      // }
+      // if (this.games[0] && this.games[0].notes == notes) {
+      //   notes = this.getRandomNotes();
+      // }
       game.notes = notes;
 
       this.games.unshift(game);
