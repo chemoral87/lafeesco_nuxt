@@ -197,7 +197,7 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     // maxChunkSize: 900000,
-
+    maxChunkSize: 900000,
     extractCSS: true,
     filenames: {
       chunk: ({ isDev }) => (isDev ? "[name].js" : "[id].[contenthash].js"),

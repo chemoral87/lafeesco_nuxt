@@ -13,7 +13,7 @@
       <v-col cols="auto">
         <v-btn @click="addPlayNoteList()" color="primary"> Agregar </v-btn>
 
-        <v-btn @click="playNote()" color="info"> Test Note </v-btn>
+        <!-- <v-btn @click="playNote()" color="info"> Test Note </v-btn> -->
       </v-col>
     </v-row>
     <v-row dense>
