@@ -43,7 +43,7 @@ import { notes_map } from "/static/notes-map";
 export default {
   data() {
     return {
-      playNotesList: ["G2", "A2", "B2", "C3"],
+      playNotesList: ["G3", "A3", "B3", "C4"],
       tone: "",
       max_tones: 2,
       games: [],
