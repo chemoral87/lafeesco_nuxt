@@ -67,7 +67,7 @@
         color="banner_item elevation-2"
         class="mr-2"
       >
-        <v-icon>mdi-lock</v-icon> Login
+        <v-icon>mdi-lock</v-icon>
       </v-btn>
 
       <!-- Usuario -->

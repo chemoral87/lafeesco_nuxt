@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-layout align-center justify-center>
-      <v-flex xs12 md4 lg3>
+      <v-flex xs12 md4 lg6>
         <v-form @submit.prevent="submitLogin">
           <v-row dense>
             <v-col cols="12">
