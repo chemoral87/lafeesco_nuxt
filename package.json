@@ -30,6 +30,7 @@
     "nuxt": "^2.15.8",
     "nuxt-gmaps": "^1.2.10",
     "three": "^0.147.0",
+    "trading-vue-js": "^1.0.2",
     "v-chartist": "^0.1.6",
     "v-lazy-image": "^2.1.1",
     "vue-advanced-cropper": "^1.11.5",

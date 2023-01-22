@@ -1,8 +1,10 @@
 <template>
-  <trading-vue :data="this.$data"></trading-vue>
+  <div class="trading">
+    <trading-vue :data="this.$data"></trading-vue>
+  </div>
 </template>
 <script>
-import TradingVue from "trading-vue-js";
+// import TradingVue from "trading-vue-js";
 export default {
   props: {},
   data() {
@@ -22,3 +24,10 @@ export default {
   },
 };
 </script>
+<style scoped>
+.trading {
+  width: 100%;
+
+  background-color: green;
+}
+</style>
