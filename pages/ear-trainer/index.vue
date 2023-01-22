@@ -18,11 +18,7 @@
     </v-row>
     <v-row dense>
       <v-col cols="2" sm="1">
-        <v-text-field
-          v-model="max_tones"
-          label="#Notas"
-          hide-details
-        ></v-text-field>
+        <v-text-field v-model="max_tones" label="#Notas" hide-details />
       </v-col>
       <v-col cols="auto">
         <v-btn @click="play()" color="primary"> Jugar </v-btn>
