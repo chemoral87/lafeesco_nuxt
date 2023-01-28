@@ -3,12 +3,12 @@ import en from "vuetify/es5/locale/en";
 import fr from "vuetify/es5/locale/fr";
 import colors from "vuetify/es5/util/colors";
 
-export default function({ app, store }) {
+export default function ({ app, store }) {
   return {
     // locale: app.i18n.locale,
     lang: {
       locales: { en, es, fr },
-      current: store.state.locale
+      current: store.state.locale,
       // current: app.i18n.getLocale(),
       // t: (key, ...params) => app.i18n.t(key, params)
     },
@@ -22,24 +22,24 @@ export default function({ app, store }) {
           banner_item: colors.blue.lighten4,
           primary: colors.blue.darken2,
           accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
+          //secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green,
-          return: colors.red
+          return: colors.red,
         },
         dark: {
           // banner: colors.blue.darken2,
           primary: colors.blue.darken2,
           accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
+          // secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
-          success: colors.green.accent3
-        }
-      }
-    }
+          success: colors.green.accent3,
+        },
+      },
+    },
   };
 }
