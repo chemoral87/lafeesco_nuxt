@@ -17,11 +17,13 @@
               />
             </v-col>
             <v-col cols="12" sm="8" class="white--text text-left">
-              <h1 class="font-weight-light display-2 mb-2">Contacto</h1>
-              <h1 class="font-weight-light">
+              <span class="font-weight-light text-h3 mb-2">Contacto</span>
+              <br />
+              <span class="font-weight-light text-sm-h4">
                 Ayuntamiento 108, Col. Joyas de Anahuac<br />
                 66057 Cd Gral Escobedo, N.L., México
-              </h1>
+              </span>
+              <br />
               <v-btn
                 rounded
                 outlined

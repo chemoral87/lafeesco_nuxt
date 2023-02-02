@@ -26,9 +26,7 @@
           v-for="([icon, text, link, route], i) in items"
           :key="i"
           link
-          @click="
-            (link && $vuetify.goTo(link)) || (route && $router.push(route))
-          "
+          @click="fireItem(link, route)"
         >
           <v-list-item-icon class="justify-center">
             <v-icon>{{ icon }}</v-icon>
@@ -110,6 +108,11 @@ export default {
   methods: {
     onResize() {
       this.isXs = window.innerWidth < 850;
+    },
+    fireItem(link, route) {
+      if (link) this.$vuetify.goTo(link);
+      if (route) this$router.push(route);
+      this.drawer = false;
     },
   },
 
