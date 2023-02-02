@@ -65,7 +65,9 @@
                     />
                   </svg>
                 </a>
-                <p class="subheading ml-2 mb-0">Hablando con caFé</p>
+                <p @click.stop="dialog = true" class="subheading ml-2 mb-0">
+                  Hablando con caFé
+                </p>
               </div>
             </v-col>
             <v-col cols="12" md="6" xl="4" class="hidden-sm-and-down"> </v-col>
@@ -126,6 +128,7 @@
             :video-id="videoId"
             @ready="ready"
             @playing="playing"
+            :player-width="'auto'"
           ></youtube>
         </no-ssr>
       </v-card>
