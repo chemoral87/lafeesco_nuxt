@@ -4,6 +4,7 @@
     <v-main class="pt-0">
       <LandingHome />
       <LandingSchedule />
+      <LandingContact />
     </v-main>
     <v-scale-transition>
       <v-btn
@@ -20,6 +21,7 @@
         <v-icon>mdi-arrow-up</v-icon>
       </v-btn>
     </v-scale-transition>
+    <LandingFooter />
   </v-app>
 </template>
 <script>

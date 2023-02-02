@@ -77,12 +77,14 @@
       </div>
     </v-parallax>
     <v-container fluid id="activities" class="mt-2">
-      <v-row align="center" justify="center">
-        <v-col cols="10">
+      <v-row dense align="center" justify="center">
+        <v-col cols="11">
           <v-row align="center" justify="space-around">
             <v-col
               cols="12"
-              sm="4"
+              sm="6"
+              md="4"
+              lg="3"
               class="text-center"
               v-for="(activity, i) in activities"
               :key="i"
@@ -104,6 +106,12 @@
                   <h4 class="font-weight-regular subtitle-1">
                     {{ activity.text }}
                   </h4>
+                  <h5
+                    class="font-weight-regular subtitle-2"
+                    v-if="activity.schedule"
+                  >
+                    {{ activity.schedule }}
+                  </h5>
                 </v-card>
               </v-hover>
             </v-col>
@@ -140,22 +148,36 @@ export default {
           img: "/img/ede.png",
           title: "Escuela de Discípulado y Entrenamiento (EDE) ",
           text: "Entrenamiento para formar líderes.",
+          schedule: "Lunes 8pm",
         },
         {
           img: "/img/casa_fe.png",
           title: "Casas de Fe",
           text: "Hogares cumpliendo la visión celular.",
+          schedule: "Martes 8pm*",
         },
 
-        {
-          img: "/img/jovenes.png",
-          title: "Jóvenes Nuevo Horizonte",
-          text: "Reunión de jovenes y actividades evangelísticas.",
-        },
         {
           img: "/img/reto_valientes.png",
           title: "Reto de Valientes",
           text: "Formación para las familias en Cristo.",
+          schedule: "Sábado 4pm",
+        },
+        {
+          img: "/img/reconfortados.png",
+          title: "Reconfortados",
+          text: "Personas en situación de viudez, separación o padres solteros.",
+        },
+        {
+          img: "/img/oracion.png",
+          title: "Oración",
+          text: "Interseción por peticiones y necesidades.",
+          schedule: "Lunes a Viernes 8am",
+        },
+        {
+          img: "/img/jovenes.png",
+          title: "Jóvenes Nuevo Horizonte",
+          text: "Reunión de jovenes y actividades evangelísticas.",
         },
         {
           img: "/img/icon3.png",
@@ -279,18 +301,18 @@ export default {
 }
 
 .card {
-  min-height: 300px;
-  padding: 10px;
+  min-height: 250px;
+  padding: 5px;
   transition: 0.5s ease-out;
 }
 
 .card .v-image {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   transition: 0.75s;
 }
 
 .card h1 {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .zoom-efect {

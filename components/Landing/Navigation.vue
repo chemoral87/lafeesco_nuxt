@@ -23,10 +23,12 @@
 
       <v-list dense>
         <v-list-item
-          v-for="([icon, text, link], i) in items"
+          v-for="([icon, text, link, route], i) in items"
           :key="i"
           link
-          @click="$vuetify.goTo(link)"
+          @click="
+            (link && $vuetify.goTo(link)) || (route && $router.push(route))
+          "
         >
           <v-list-item-icon class="justify-center">
             <v-icon>{{ icon }}</v-icon>
@@ -58,7 +60,7 @@
         v-if="isXs"
       />
       <div v-else>
-        <v-btn text @click="$vuetify.goTo('#home')">
+        <v-btn text @click="$vuetify.goTo('#hero')">
           <span class="mr-2">Inicio</span>
         </v-btn>
         <v-btn text @click="$vuetify.goTo('#schedule')">
@@ -68,7 +70,7 @@
           <span class="mr-2">Contacto</span>
         </v-btn>
 
-        <v-btn rounded outlined text>
+        <v-btn rounded outlined text @click="$router.push('/login')">
           <span class="mr-2">Login</span>
         </v-btn>
       </div>
@@ -93,11 +95,12 @@ export default {
     drawer: null,
     isXs: false,
     items: [
-      ["mdi-home-outline", "Inicio", "#start"],
-      ["mdi-information-outline", "Horarios", "#schedule"],
+      ["mdi-home-outline", "Inicio", "#hero"],
+      ["mdi-walk", "Actividades", "#activities"],
+      ["mdi-clock-time-five-outline", "Horarios", "#schedule"],
 
-      ["mdi-currency-usd", "Contacto", "#contact"],
-      ["mdi-email-outline", "Ministerios", "#ministries"],
+      ["mdi-phone", "Contacto", "#contact"],
+      ["mdi-lock", "Login", "", "/login"],
     ],
   }),
   props: {
