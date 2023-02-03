@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container fluid>
     <span class="text-h6 ml-2">Bienvenido {{ NAME_SECRET }}</span>
     <!-- {{permissions}} -->
     <!-- {{user}} -->
@@ -54,7 +54,7 @@
       </GMapMarker> -->
       <GMapCircle :options="circleOptions" />
     </GMap>
-  </div>
+  </v-container>
 </template>
 <script>
 export default {
