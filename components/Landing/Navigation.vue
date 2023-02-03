@@ -111,7 +111,7 @@ export default {
     },
     fireItem(link, route) {
       if (link) this.$vuetify.goTo(link);
-      if (route) this$router.push(route);
+      if (route) this.$router.push(route);
       this.drawer = false;
     },
   },

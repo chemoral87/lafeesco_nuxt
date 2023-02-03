@@ -11,7 +11,7 @@
                 max-width="350px"
               /> -->
               <v-img
-                src="/img/mapita.png"
+                src="/img/mapi.png"
                 class="d-block ml-auto mr-auto"
                 max-width="300px"
               />

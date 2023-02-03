@@ -65,7 +65,10 @@
                     />
                   </svg>
                 </a>
-                <p @click.stop="dialog = true" class="subheading ml-2 mb-0">
+                <p
+                  @click.stop="dialog = true"
+                  class="text-h5 ml-2 mb-0 text-decoration-underline"
+                >
                   Hablando con caFé
                 </p>
               </div>
@@ -128,7 +131,7 @@
             :video-id="videoId"
             @ready="ready"
             @playing="playing"
-            :player-width="'auto'"
+            :player-width="getMaxWindow()"
           ></youtube>
         </no-ssr>
       </v-card>
@@ -210,6 +213,10 @@ export default {
       // If `playerVars.autoplay` is 1, `loadVideoById` will be called.
       // If `playerVars.autoplay` is 0, `cueVideoById` will be called.
       this.videoId = "another video id";
+    },
+    getMaxWindow() {
+      if (window.innerWidth < 640) return window.innerWidth - 40;
+      else return 640;
     },
     stop() {
       this.player.stopVideo();
