@@ -66,6 +66,7 @@ export default {
       response: {},
     };
   },
+  middleware: ["authenticated"],
   validate({ store, error }) {
     return true;
     if (store.getters.permissions.includes("attendant-index")) return true;

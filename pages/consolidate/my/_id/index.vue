@@ -22,6 +22,7 @@
 </template>
 <script>
 export default {
+  middleware: ["authenticated"],
   validate({ store, error }) {
     if (store.getters.permissions.includes("consolidador-update")) return true;
     else throw error({ statusCode: 403 });
@@ -29,14 +30,14 @@ export default {
   created() {
     this.$nuxt.$emit("setNavBar", {
       title: "Editar Miembro",
-      icon: "account-plus"
+      icon: "account-plus",
     });
   },
   async asyncData({ $axios, app, params }) {
     let callOptions = {
       sortBy: ["created_at"],
       sortDesc: [true],
-      itemsPerPage: 10
+      itemsPerPage: 10,
     };
     const callResponse = await app.$repository.MemberCall.indexByMember(
       params.id,
@@ -75,8 +76,8 @@ export default {
         { id: "09", name: "Septiembre" },
         { id: "10", name: "Octubre" },
         { id: "11", name: "Noviembre" },
-        { id: "12", name: "Diciembre" }
-      ]
+        { id: "12", name: "Diciembre" },
+      ],
     };
   },
   methods: {
@@ -87,21 +88,21 @@ export default {
     async saveMemberCall(item) {
       let me = this;
       await this.$repository.MemberCall.update(item.id, item)
-        .then(res => {
+        .then((res) => {
           me.MemberCallDialog = false;
           me.getCalls(null);
         })
-        .catch(e => {});
+        .catch((e) => {});
     },
     cancel() {
       this.$router.push("/consolidate/my");
     },
     async saveMember(item) {
       await this.$repository.Member.update(this.id, item)
-        .then(res => {
+        .then((res) => {
           this.$router.push("/consolidate/my");
         })
-        .catch(e => {});
+        .catch((e) => {});
     },
     async getCalls(options) {
       this.callOptions = options ? options : this.callOptions;
@@ -110,10 +111,10 @@ export default {
         this.id,
         this.callOptions
       );
-    }
+    },
   },
   mounted() {
     let me = this;
-  }
+  },
 };
 </script>

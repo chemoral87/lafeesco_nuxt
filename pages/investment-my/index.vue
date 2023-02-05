@@ -10,8 +10,12 @@
         </v-btn>
       </v-col>
       <v-col cols="12">
-        {{ $t('welcome') }} a
-        <InvestmentMyTable @sorting="getInvestments()" :options="options" :response="response"></InvestmentMyTable>
+        {{ $t("welcome") }} a
+        <InvestmentMyTable
+          @sorting="getInvestments()"
+          :options="options"
+          :response="response"
+        ></InvestmentMyTable>
       </v-col>
     </v-row>
     CAPTURA, EN REVISION, AUTORIZADO, CANCELADO
@@ -19,11 +23,10 @@
 </template>
 <script>
 export default {
+  middleware: ["authenticated"],
   validate({ store, error }) {
-    if (store.getters.permissions.includes('investment-my-index'))
-      return true;
-    else
-      throw error({ statusCode: 403 });
+    if (store.getters.permissions.includes("investment-my-index")) return true;
+    else throw error({ statusCode: 403 });
   },
   created() {
     this.$nuxt.$emit("setNavBar", { title: "Inversiones", icon: "pencil-box" });
@@ -32,31 +35,27 @@ export default {
     let op = {
       sortBy: ["contract_date"],
       sortDesc: [true],
-      itemsPerPage: 10
+      itemsPerPage: 10,
     };
     //NOTE Repository https://medium.com/js-dojo/consuming-apis-in-nuxt-using-the-repository-pattern-8a13ea57d520
-    const res = await app.$repository.Investment.myIndex(op)
-      .catch(e => { });
+    const res = await app.$repository.Investment.myIndex(op).catch((e) => {});
     return { response: res, options: op };
   },
   data() {
     return {
       response: {
-        data: []
+        data: [],
       },
       options: {},
     };
   },
   methods: {
-    newInvestment() { },
-    getInvestments() {
-
-    },
+    newInvestment() {},
+    getInvestments() {},
   },
   mounted() {
     let me = this;
   },
-  props: {
-  },
-}
+  props: {},
+};
 </script>

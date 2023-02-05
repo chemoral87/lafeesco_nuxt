@@ -1,26 +1,28 @@
 <template>
   <v-container fluid>
     <MemberFormEdit :member="member" @cancel="cancel" @save="saveMember" />
-
   </v-container>
 </template>
 <script>
 export default {
+  middleware: ["authenticated"],
   validate({ store, error }) {
-    if (store.getters.permissions.includes('consolidador-update'))
-      return true;
-    else
-      throw error({ statusCode: 403 });
+    if (store.getters.permissions.includes("consolidador-update")) return true;
+    else throw error({ statusCode: 403 });
   },
   created() {
-    this.$nuxt.$emit("setNavBar", { title: "Editar Miembro", icon: "account-plus" });
+    this.$nuxt.$emit("setNavBar", {
+      title: "Editar Miembro",
+      icon: "account-plus",
+    });
   },
   async asyncData({ $axios, app, params }) {
-    const member = await app.$repository.Member.show(params.id).catch(e => { });;
+    const member = await app.$repository.Member.show(params.id).catch(
+      (e) => {}
+    );
     return { member, id: params.id };
   },
-  props: {
-  },
+  props: {},
   data() {
     return {
       coma: "",
@@ -40,7 +42,7 @@ export default {
         { id: "10", name: "Octubre" },
         { id: "11", name: "Noviembre" },
         { id: "12", name: "Diciembre" },
-      ]
+      ],
     };
   },
   methods: {
@@ -49,15 +51,14 @@ export default {
     },
     async saveMember() {
       await this.$repository.Member.update(this.id, this.member)
-        .then(res => {
+        .then((res) => {
           this.$router.push("/consolidate");
         })
-        .catch(e => { });
-    }
+        .catch((e) => {});
+    },
   },
   mounted() {
     let me = this;
-  }
-}
+  },
+};
 </script>
-

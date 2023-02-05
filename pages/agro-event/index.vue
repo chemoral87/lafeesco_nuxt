@@ -146,6 +146,7 @@ export default {
       dialogDelete: false,
     };
   },
+  middleware: ["authenticated"],
   validate({ store, error }) {
     // if (store.getters.permissions.includes("casas-fe-index")) return true;
     // else throw error({ statusCode: 403 });

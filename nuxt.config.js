@@ -139,6 +139,9 @@ export default {
     baseURL: process.env.BASE_URL,
   },
   auth: {
+    redirect: {
+      logout: "/login",
+    },
     strategies: {
       laravelJWT: {
         // optional //

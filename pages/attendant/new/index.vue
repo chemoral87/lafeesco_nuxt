@@ -146,6 +146,7 @@ export default {
   mounted() {
     let me = this;
   },
+  middleware: ["authenticated"],
   validate({ store, error }) {
     let permission = "attendant-index";
     if (store.getters.permissions.includes(permission)) return true;

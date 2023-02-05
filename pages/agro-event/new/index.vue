@@ -10,6 +10,7 @@
 <script>
 import { types } from "../misc";
 export default {
+  middleware: ["authenticated"],
   validate({ store, error }) {
     return true;
     // if (store.getters.permissions.includes("casas-fe-insert"))

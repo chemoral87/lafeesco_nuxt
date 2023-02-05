@@ -50,4 +50,7 @@ export default ($axios) => (resource) => ({
   delete(id) {
     return $axios.$delete(`${resource}/${id}`);
   },
+  change(payload) {
+    return $axios.$post(`${resource}/change`, payload);
+  },
 });

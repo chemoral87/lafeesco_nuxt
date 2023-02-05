@@ -14,7 +14,7 @@
         </div>
       </v-card-text>
       <v-card-actions>
-        <NuxtLink v-if="!authenticated" to="/">
+        <NuxtLink v-if="!authenticated" to="/login">
           <v-btn color="primary"> Ir al Inicio </v-btn>
         </NuxtLink>
         <NuxtLink v-if="authenticated" to="/dashboard">
@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  layout: "empty",
+  layout: "default",
   props: {
     error: {
       type: Object,
