@@ -43,6 +43,7 @@ export default {
         .then((res) => {
           // me.getUsers();
           // me.userDialog = false;
+          this.$auth.logout();
         })
         .catch((e) => {});
     },

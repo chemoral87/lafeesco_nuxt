@@ -15,6 +15,7 @@
               @keyup.enter="save"
               v-model="item.password"
               label="Contraseña"
+              type="password"
               hide-details
             ></v-text-field>
           </v-col>
@@ -24,6 +25,7 @@
               v-model="item.confirm_password"
               label="Confirme Contraseña"
               :error-messages="error.confirm_password"
+              type="password"
             ></v-text-field>
           </v-col>
         </v-row>
