@@ -39,7 +39,7 @@ export default ($axios) => (resource) => ({
   },
 
   updateForm(id, payload) {
-    return $axios.$put(`${resource}/${id}`, payload, multipart);
+    return $axios.$post(`${resource}/${id}`, payload, multipart);
   },
 
   // belongsToMany

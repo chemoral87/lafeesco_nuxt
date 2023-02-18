@@ -58,6 +58,7 @@ export default {
 
     "./plugins/vue2-google-maps.js",
     "./plugins/vue-advanced-cropper.js",
+    "./plugins/vue-the-mask.js",
     "./plugins/trading-vue.js",
     "./plugins/youtube",
 
