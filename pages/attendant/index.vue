@@ -1,6 +1,15 @@
 <template>
   <v-container fluid>
     <v-row>
+      <v-col cols="12" md="2">
+        <v-text-field
+          append-icon="mdi-magnify"
+          clearable
+          hide-details
+          v-model="filterAttendant"
+          placeholder="Filtro"
+        ></v-text-field>
+      </v-col>
       <v-col cols="12">
         <v-btn
           color="success"
@@ -37,7 +46,14 @@ export default {
     );
     return { response, options };
   },
-
+  watch: {
+    async filterAttendant(value) {
+      let me = this;
+      this.$store.dispatch("hideNextLoading");
+      let op = Object.assign(me.options, { filter: value, page: 1 });
+      me.response = await me.$repository.Attendant.index(op);
+    },
+  },
   methods: {
     indexAttendant() {},
     editAttendant(item) {
@@ -64,6 +80,7 @@ export default {
       dialogDeleteAttendant: false,
       options: {},
       response: {},
+      filterAttendant: "",
     };
   },
   middleware: ["authenticated"],

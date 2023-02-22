@@ -68,7 +68,7 @@ export default {
     async filterPermission(value) {
       let me = this;
       this.$store.dispatch("hideNextLoading");
-      let op = Object.assign(me.options, { filter: value, page: 1, l: false });
+      let op = Object.assign(me.options, { filter: value, page: 1 });
       me.response = await me.$repository.Permission.index(op);
     },
   },
