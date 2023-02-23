@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col cols="12" md="2">
+      <v-col cols="12" sm="6" md="2">
         <v-text-field
           append-icon="mdi-magnify"
           clearable
@@ -10,7 +10,8 @@
           placeholder="Filtro"
         ></v-text-field>
       </v-col>
-      <v-col cols="12">
+      <v-spacer />
+      <v-col cols="auto">
         <v-btn
           color="success"
           @click="$router.push('attendant/new')"
