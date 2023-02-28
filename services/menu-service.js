@@ -78,13 +78,16 @@ export class MenuService {
         title: "Agro Evento",
         to: "/agro-event",
       });
-
+      menu.push({
+        icon: "mdi-hand-heart",
+        title: "Ministerios",
+        to: "/ministry",
+      });
       menu.push({
         icon: "mdi-human-greeting-variant",
         title: "Servidores",
         to: "/attendant",
       });
-
       menu.push({
         icon: "mdi-chart-bar",
         title: "Reportes",
