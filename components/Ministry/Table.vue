@@ -1,47 +1,5 @@
 <template>
   <div>
-    <v-btn @click="toCopy()"><v-icon>mdi-content-copy</v-icon></v-btn>
-    <div v-text="templ" ref="message" class="templ"></div>
-  </div>
-</template>
-<script>
-export default {
-  props: ["component", "definitions", "table_name", "model_name"],
-  data() {
-    return {
-      // Modelname: "",
-    };
-  },
-  methods: {
-    async toCopy() {
-      let message = this.$refs.message.innerHTML
-        .replace(/&lt;/g, "<")
-        .replace(/&gt;/g, ">")
-        .replace(/&quot;/g, '"');
-      await navigator.clipboard.writeText(message);
-    },
-  },
-  computed: {
-    Modelname() {
-      let str = this.model_name.toLowerCase();
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    },
-    headers() {
-      let header = "";
-      for (let def of this.definitions) {
-        if (
-          def.column_key != "PRI" &&
-          !["created_at", "updated_at"].includes(def.column_name)
-        ) {
-          header += `{   text: "${def.column_name}", value: "${def.column_name}", sortable: true, firstSortDesc:true  },`;
-        }
-      }
-      return header;
-    },
-    templ() {
-      if (this.model_name == "") return "";
-      return `<template>
-  <div>
     <v-data-table
       dense
       mobile-breakpoint="0"
@@ -53,7 +11,7 @@ export default {
       :server-items-length="total"
       class="elevation-1 xwidth1200"
     >
-      <template v-slot:[\`item.actions\`]="{ item }">
+      <template v-slot:[`item.actions`]="{ item }">
         <v-btn
           title="Editar"
           class="ma-1"
@@ -95,11 +53,13 @@ export default {
   props: ["dialogDelete", "response", "options", "tableHeaders"],
   data() {
     return {
+      // flagSetOption: false,
       optionsTable: {},
       pageCountRule: 0,
-      sortDesc: false,
+      sortDesc: true,
       headers: [
-       ${this.headers}
+        { text: "name", value: "name", sortable: true, firstSortDesc: true },
+        { text: "order", value: "order", sortable: true },
         { text: "Acciones", value: "actions", width: "200px", sortable: false },
       ],
       dialogDeleteProp: {},
@@ -118,15 +78,21 @@ export default {
   methods: {
     confirmDelete(item) {
       this.dialogDeleteProp = {
-        text: "Desea eliminar ${this.model_name}",
+        text: "Desea eliminar el ministerio",
         strong: item.name,
         payload: item,
       };
       this.$emit("update:dialogDelete", true);
     },
     sortTable(columnName) {
-        let head = this.headers.find((x) => x.value == columnName);
-        if (head.firstSortDesc) this.optionsTable.sortDesc[0] = true;
+      let head = this.headers.find((x) => x.value == columnName);
+      if (head.firstSortDesc) this.optionsTable.sortDesc[0] = true;
+      // if (this.flagSetOption) {
+      //   this.flagSetOption = false;
+      //   console.log("Entra");
+      // } else {
+
+      // }
     },
     emitAction(action, payload) {
       this.$emit(action, payload);
@@ -149,19 +115,4 @@ export default {
       });
   },
 };
-<\/script>
-
-      `;
-    },
-  },
-
-  mounted() {
-    let me = this;
-  },
-};
 </script>
-<style scoped>
-.templ {
-  white-space: pre;
-}
-</style>

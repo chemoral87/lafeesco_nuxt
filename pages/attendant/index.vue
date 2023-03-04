@@ -56,7 +56,17 @@ export default {
     },
   },
   methods: {
-    indexAttendant() {},
+    async indexAttendant(options) {
+      // let me = this;
+      // let op = Object.assign(me.options, { page: 1 });
+      // me.response = me.$repository.Attendant.index(op);
+
+      if (options) {
+        this.options = options;
+      }
+      let op = Object.assign({ filter: this.filter }, this.options);
+      this.response = await this.$repository.Attendant.index(op);
+    },
     editAttendant(item) {
       this.$router.push(`/attendant/${item.id}`);
     },

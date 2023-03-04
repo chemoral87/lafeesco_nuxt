@@ -66,7 +66,7 @@
             @change="change"
           />
         </v-col>
-        <v-col cols="6" md="1">
+        <v-col cols="6" md="2">
           <img
             class="image-cropper"
             style="max-width: 100%"

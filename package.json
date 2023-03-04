@@ -50,6 +50,10 @@
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.12.3",
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "eslint": "^8.35.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.4"
   }
 }

@@ -89,7 +89,6 @@
 </template>
 <script>
 export default {
-  props: {},
   data() {
     return {
       img: "https://images.pexels.com/photos/4323307/pexels-photo-4323307.jpeg",
