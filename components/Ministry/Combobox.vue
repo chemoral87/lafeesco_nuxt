@@ -5,11 +5,12 @@
       :filter="filter"
       item-value="id"
       item-text="name"
+      label="Ministerios"
+      hide-selected
       :hide-no-data="!search"
       :items="items"
       :search-input.sync="search"
-      hide-selected
-      label="Roles"
+      v-bind="$attrs"
       multiple
     >
       <template v-slot:no-data>
@@ -25,7 +26,7 @@
         </v-chip>
       </template>
       <template v-slot:item="{ item }">
-        <v-chip color="primary" dark label small>
+        <v-chip color="info" dark label small>
           {{ item.name }}
         </v-chip>
         <v-spacer></v-spacer>
@@ -35,17 +36,15 @@
 </template>
 <script>
 export default {
-  props: ['roles'],
+  props: ['ministries'],
   data: () => ({
     items: [],
     model: [],
     search: null,
     searching: false
-    // x: 0,
-    // y: 0,
   }),
   computed: {
-    roles_id() {
+    ministry_ids() {
       let ids = []
       this.model.forEach((element) => {
         ids.push(element.id)
@@ -58,7 +57,7 @@ export default {
       this.$store.dispatch('hideNextLoading')
       this.searching = true
       if (!(val == null || val.trim() == '')) {
-        let itemz = await this.$repository.Role.filter({ queryText: val, ids: this.roles_id })
+        let itemz = await this.$repository.Ministry.filter({ queryText: val, ids: this.ministry_ids }, { loading: false })
         this.searching = false
         this.items = itemz
       }
@@ -76,7 +75,7 @@ export default {
     }
   },
   mounted() {
-    this.model = this.roles || []
+    this.model = this.ministries || []
   },
   methods: {
     filter(item, queryText, itemText) {

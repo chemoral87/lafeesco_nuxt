@@ -2,20 +2,12 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" sm="6" md="2">
-        <v-text-field
-          append-icon="mdi-magnify"
-          clearable
-          hide-details
-          v-model="filterMinistry"
-          placeholder="Filtro"
-        ></v-text-field>
+        <v-text-field append-icon="mdi-magnify" clearable hide-details v-model="filterMinistry" placeholder="Filtro"></v-text-field>
       </v-col>
       <v-spacer />
 
       <v-col cols="auto">
-        <v-btn color="success" @click="$router.push('ministry/new')" class="mb-1 mr-1">
-          <v-icon>mdi-plus</v-icon>Nuevo
-        </v-btn>
+        <v-btn color="success" @click="$router.push('ministry/new')" class="mb-1 mr-1"> <v-icon>mdi-plus</v-icon>Nuevo </v-btn>
       </v-col>
       <v-col cols="12">
         <MinistryTable
@@ -23,6 +15,7 @@
           :options="options"
           :response="response"
           @edit="editMinistry"
+          @editPermissions="editRolePermissions"
           @delete="deleteMinistry"
           :dialogDelete.sync="dialogDeleteMinistry"
         />
@@ -34,8 +27,8 @@
 export default {
   async asyncData({ $axios, app }) {
     let options = {
-      sortBy: ['name'],
-      sortDesc: [true],
+      sortBy: ['order'],
+      sortDesc: [false],
       itemsPerPage: 5
     }
     const response = await app.$repository.Ministry.index(options).catch((e) => {})

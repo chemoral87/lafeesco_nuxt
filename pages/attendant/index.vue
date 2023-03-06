@@ -2,21 +2,11 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" sm="6" md="2">
-        <v-text-field
-          append-icon="mdi-magnify"
-          clearable
-          hide-details
-          v-model="filterAttendant"
-          placeholder="Filtro"
-        ></v-text-field>
+        <v-text-field append-icon="mdi-magnify" clearable hide-details v-model="filterAttendant" placeholder="Filtro"></v-text-field>
       </v-col>
       <v-spacer />
       <v-col cols="auto">
-        <v-btn
-          color="success"
-          @click="$router.push('attendant/new')"
-          class="mb-1 mr-1"
-        >
+        <v-btn color="success" @click="$router.push('attendant/new')" class="mb-1 mr-1">
           <v-icon class="mr-1">mdi-account-plus</v-icon> Nuevo Servidor
         </v-btn>
       </v-col>
@@ -38,22 +28,20 @@
 export default {
   async asyncData({ $axios, app }) {
     let options = {
-      sortBy: ["name"],
+      sortBy: ['name'],
       sortDesc: [true],
-      itemsPerPage: 20,
-    };
-    const response = await app.$repository.Attendant.index(options).catch(
-      (e) => {}
-    );
-    return { response, options };
+      itemsPerPage: 20
+    }
+    const response = await app.$repository.Attendant.index(options).catch((e) => {})
+    return { response, options }
   },
   watch: {
     async filterAttendant(value) {
-      let me = this;
-      this.$store.dispatch("hideNextLoading");
-      let op = Object.assign(me.options, { filter: value, page: 1 });
-      me.response = await me.$repository.Attendant.index(op);
-    },
+      let me = this
+      this.$store.dispatch('hideNextLoading')
+      let op = Object.assign(me.options, { filter: value, page: 1 })
+      me.response = await me.$repository.Attendant.index(op)
+    }
   },
   methods: {
     async indexAttendant(options) {
@@ -62,49 +50,49 @@ export default {
       // me.response = me.$repository.Attendant.index(op);
 
       if (options) {
-        this.options = options;
+        this.options = options
       }
-      let op = Object.assign({ filter: this.filter }, this.options);
-      this.response = await this.$repository.Attendant.index(op);
+      let op = Object.assign({ filter: this.filter }, this.options)
+      this.response = await this.$repository.Attendant.index(op)
     },
     editAttendant(item) {
-      this.$router.push(`/attendant/${item.id}`);
+      this.$router.push(`/attendant/${item.id}`)
     },
     async deleteAttendant(item) {
       await this.$repository.Attendant.delete(item.id)
         .then((res) => {
-          this.dialogDeleteAttendant = false;
-          this.index();
+          this.dialogDeleteAttendant = false
+          this.index()
         })
-        .catch((e) => {});
+        .catch((e) => {})
     },
     async index(options) {
       if (options) {
-        this.options = options;
+        this.options = options
       }
-      let op = Object.assign({ filter: this.filter }, this.options);
-      this.response = await this.$repository.Attendant.index(op);
-    },
+      let op = Object.assign({ filter: this.filter }, this.options)
+      this.response = await this.$repository.Attendant.index(op)
+    }
   },
   data() {
     return {
       dialogDeleteAttendant: false,
       options: {},
       response: {},
-      filterAttendant: "",
-    };
+      filterAttendant: ''
+    }
   },
-  middleware: ["authenticated"],
+  middleware: ['authenticated'],
   validate({ store, error }) {
-    return true;
-    if (store.getters.permissions.includes("attendant-index")) return true;
-    else throw error({ statusCode: 403 });
+    return true
+    if (store.getters.permissions.includes('attendant-index')) return true
+    else throw error({ statusCode: 403 })
   },
   created() {
-    this.$nuxt.$emit("setNavBar", {
-      title: "Servidores",
-      icon: "human-greeting-variant",
-    });
-  },
-};
+    this.$nuxt.$emit('setNavBar', {
+      title: 'Servidores',
+      icon: 'human-greeting-variant'
+    })
+  }
+}
 </script>

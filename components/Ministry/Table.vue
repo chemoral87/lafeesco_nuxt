@@ -12,26 +12,10 @@
       class="elevation-1 xwidth1200"
     >
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn
-          title="Editar"
-          class="ma-1"
-          color="primary"
-          outlined
-          fab
-          small
-          @click="emitAction('edit', item)"
-        >
+        <v-btn title="Editar" class="ma-1" color="primary" outlined fab small @click="emitAction('edit', item)">
           <v-icon>mdi-pencil</v-icon>
         </v-btn>
-        <v-btn
-          title="Delete"
-          class="ma-1"
-          color="error"
-          outlined
-          fab
-          small
-          @click="confirmDelete(item)"
-        >
+        <v-btn title="Delete" class="ma-1" color="error" outlined fab small @click="confirmDelete(item)">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </template>
@@ -41,7 +25,7 @@
       :dialog="dialogDeleteProp"
       @ok="
         (item) => {
-          $emit('delete', item);
+          $emit('delete', item)
         }
       "
       @close="$emit('update:dialogDelete', false)"
@@ -50,69 +34,62 @@
 </template>
 <script>
 export default {
-  props: ["dialogDelete", "response", "options", "tableHeaders"],
+  props: ['dialogDelete', 'response', 'options', 'tableHeaders'],
   data() {
     return {
-      // flagSetOption: false,
       optionsTable: {},
       pageCountRule: 0,
       sortDesc: true,
       headers: [
-        { text: "name", value: "name", sortable: true, firstSortDesc: true },
-        { text: "order", value: "order", sortable: true },
-        { text: "Acciones", value: "actions", width: "200px", sortable: false },
+        { text: 'name', value: 'name', sortable: true },
+        { text: 'order', value: 'order', sortable: true },
+        { text: 'Acciones', value: 'actions', width: '200px', sortable: false }
       ],
-      dialogDeleteProp: {},
-    };
+      dialogDeleteProp: {}
+    }
   },
   computed: {
     total() {
-      if (this.response) return this.response.total;
-      else return 0;
+      if (this.response) return this.response.total
+      else return 0
     },
     items() {
-      if (this.response) return this.response.data;
-      else return [];
-    },
+      if (this.response) return this.response.data
+      else return []
+    }
   },
   methods: {
     confirmDelete(item) {
       this.dialogDeleteProp = {
-        text: "Desea eliminar el ministerio",
+        text: 'Desea eliminar el ministerio',
         strong: item.name,
-        payload: item,
-      };
-      this.$emit("update:dialogDelete", true);
+        payload: item
+      }
+      this.$emit('update:dialogDelete', true)
     },
     sortTable(columnName) {
-      let head = this.headers.find((x) => x.value == columnName);
-      if (head.firstSortDesc) this.optionsTable.sortDesc[0] = true;
-      // if (this.flagSetOption) {
-      //   this.flagSetOption = false;
-      //   console.log("Entra");
-      // } else {
-
-      // }
+      let head = this.headers.find((x) => x.value == columnName)
+      if (head.firstSortDesc) this.optionsTable.sortDesc[0] = true
     },
     emitAction(action, payload) {
-      this.$emit(action, payload);
-    },
+      this.$emit(action, payload)
+    }
   },
   mounted() {
-    let me = this;
-    this.optionsTable = this.options;
+    let me = this
+    this.optionsTable = this.options
     if (this)
       me.$nextTick(() => {
         me.options_watch = me.$watch(
-          "optionsTable",
+          'optionsTable',
           function () {
-            this.$emit("sorting", this.optionsTable);
+            this.$emit('sorting', this.optionsTable)
           },
           {
-            immediate: false,
+            immediate: false
           }
-        );
-      });
-  },
-};
+        )
+      })
+  }
+}
 </script>

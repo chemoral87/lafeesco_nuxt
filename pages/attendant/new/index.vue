@@ -3,29 +3,15 @@
     <v-form ref="form" @submit.prevent="saveAttendant">
       <v-row dense>
         <v-col cols="6" md="3">
-          <v-text-field
-            outlined
-            label="Nombre"
-            v-model="attendant.name"
-            :rules="[(v) => !!v || 'Campo requerido']"
-          />
+          <v-text-field outlined label="Nombre" v-model="attendant.name" :rules="[(v) => !!v || 'Campo requerido']" />
         </v-col>
 
         <v-col cols="6" md="3">
-          <v-text-field
-            outlined
-            label="Ap. Paterno"
-            v-model="attendant.paternal_surname"
-            :rules="[(v) => !!v || 'Campo requerido']"
-          />
+          <v-text-field outlined label="Ap. Paterno" v-model="attendant.paternal_surname" :rules="[(v) => !!v || 'Campo requerido']" />
         </v-col>
 
         <v-col cols="6" md="3">
-          <v-text-field
-            outlined
-            label="Ap. Materno"
-            v-model="attendant.maternal_surname"
-          />
+          <v-text-field outlined label="Ap. Materno" v-model="attendant.maternal_surname" />
         </v-col>
 
         <v-col cols="6" md="3">
@@ -37,15 +23,14 @@
             :rules="[(v) => !!v || 'Campo requerido']"
           />
         </v-col>
+        <v-col cols="12" md="3">
+          <MinistryCombobox :ministries="attendant.ministries" @modelChange="setMinistries"></MinistryCombobox>
+        </v-col>
         <v-col cols="6" md="3">
           <v-text-field outlined label="E-mail" v-model="attendant.email" />
         </v-col>
         <v-col cols="6" md="3">
-          <v-text-field
-            outlined
-            label="Fecha Cumpleaños"
-            v-model="attendant.birthdate"
-          />
+          <v-text-field outlined label="Fecha Cumpleaños" v-model="attendant.birthdate" />
         </v-col>
         <v-col cols="6" md="3">
           <my-uploadimage
@@ -60,11 +45,7 @@
           <!-- <img style="height: 90px" :src="attendant.image_url" /> -->
         </v-col>
         <v-col cols="6" md="2">
-          <cropper
-            stencil-component="circle-stencil"
-            :src="attendant.image_url"
-            @change="change"
-          />
+          <cropper stencil-component="circle-stencil" :src="attendant.image_url" @change="change" />
         </v-col>
         <v-col cols="6" md="1">
           <img class="image-cropper" style="max-width: 100%" :src="imga" />
@@ -91,77 +72,75 @@
 export default {
   data() {
     return {
-      img: "https://images.pexels.com/photos/4323307/pexels-photo-4323307.jpeg",
+      img: 'https://images.pexels.com/photos/4323307/pexels-photo-4323307.jpeg',
       attendant: {},
-      imga: "",
-    };
+      imga: ''
+    }
   },
   methods: {
+    setMinistries(ministries) {
+      this.attendant.ministries = ministries
+    },
     change({ coordinates, canvas }) {
-      this.imga = canvas.toDataURL();
+      this.imga = canvas.toDataURL()
       canvas.toBlob((blob) => {
-        this.attendant.image_blobu = blob;
-      });
+        this.attendant.image_blobu = blob
+      })
     },
     deleteImage() {
-      let _attendant = this.attendant;
-      _attendant.image_blob = null;
-      _attendant.image_url = null;
+      let _attendant = this.attendant
+      _attendant.image_blob = null
+      _attendant.image_url = null
     },
     uploaded() {},
     async saveAttendant() {
-      if (!this.$refs.form.validate()) return;
-      let formData = new FormData();
-      let {
-        name,
-        paternal_surname,
-        maternal_surname,
-        cellphone,
-        email,
-        birthdate,
-        image_blobu,
-      } = this.attendant;
+      if (!this.$refs.form.validate()) return
+      let formData = new FormData()
+      let { name, paternal_surname, maternal_surname, cellphone, email, birthdate, image_blobu, ministries } = this.attendant
 
-      formData.append("name", name);
-      formData.append("paternal_surname", paternal_surname);
-      maternal_surname && formData.append("maternal_surname", maternal_surname);
-      cellphone && formData.append("cellphone", cellphone);
-      email && formData.append("email", email);
-      birthdate && formData.append("birthdate", birthdate);
-      image_blobu && formData.append("image", image_blobu);
+      formData.append('name', name)
+      formData.append('paternal_surname', paternal_surname)
+      maternal_surname && formData.append('maternal_surname', maternal_surname)
+      cellphone && formData.append('cellphone', cellphone)
+      email && formData.append('email', email)
+      birthdate && formData.append('birthdate', birthdate)
+      image_blobu && formData.append('image', image_blobu)
+      ministries.forEach((x) => {
+        formData.append('ministry_ids[]', x.id)
+      })
 
       await this.$repository.Attendant.createForm(formData)
         .then((res) => {
-          this.$router.push("/attendant");
+          this.$router.push('/attendant')
         })
         .catch((e) => {
-          alert(e);
-        });
+          alert(e)
+        })
     },
     cancel() {
-      this.$router.push("/attendant");
-    },
+      this.$router.push('/attendant')
+    }
   },
   mounted() {
-    let me = this;
+    let me = this
   },
-  middleware: ["authenticated"],
+  middleware: ['authenticated'],
   validate({ store, error }) {
-    let permission = "attendant-index";
-    if (store.getters.permissions.includes(permission)) return true;
+    let permission = 'attendant-index'
+    if (store.getters.permissions.includes(permission)) return true
     else
       throw error({
         statusCode: 403,
-        message: `Permission required ${permission}`,
-      });
+        message: `Permission required ${permission}`
+      })
   },
   created() {
-    this.$nuxt.$emit("setNavBar", {
-      title: "Nuevo Servidor",
-      icon: "human-greeting-variant",
-    });
-  },
-};
+    this.$nuxt.$emit('setNavBar', {
+      title: 'Nuevo Servidor',
+      icon: 'human-greeting-variant'
+    })
+  }
+}
 </script>
 <style scoped>
 .image-cropper {
