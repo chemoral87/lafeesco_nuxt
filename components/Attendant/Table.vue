@@ -9,7 +9,7 @@
       :items="items"
       :options.sync="optionsTable"
       :server-items-length="total"
-      class="elevation-1 xwidth1200"
+      class="elevation-1 xwidth900"
     >
       <!-- https://stackoverflow.com/questions/61344980/v-slot-directive-doesnt-support-any-modifier -->
       <template v-slot:[`item.full_name`]="{ item }">

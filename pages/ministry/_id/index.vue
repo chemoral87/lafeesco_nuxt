@@ -8,6 +8,9 @@
         <v-col cols="6" md="3">
           <v-text-field outlined label="order" v-model="ministry.order" :rules="[(v) => !!v || 'Campo requerido']" />
         </v-col>
+        <v-col cols="12" md="6">
+          <UserCombobox :users="ministry.leaders" :label="'Lideres'" @modelChange="setLeaders"></UserCombobox>
+        </v-col>
       </v-row>
       <v-row>
         <v-spacer />
@@ -34,6 +37,9 @@ export default {
     }
   },
   methods: {
+    setLeaders(leaders) {
+      this.ministry.leaders = leaders
+    },
     async saveMinistry() {
       if (!this.$refs.form.validate()) return
 

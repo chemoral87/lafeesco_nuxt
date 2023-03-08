@@ -11,6 +11,9 @@
       :server-items-length="total"
       class="elevation-1 xwidth1200"
     >
+      <template v-slot:[`item.leaders`]="{ item }">
+        <v-chip v-for="it in item.leaders" :key="it.id" class="ma-2" color="primary"> {{ it.name }} {{ it.last_name }} </v-chip>
+      </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn title="Editar" class="ma-1" color="primary" outlined fab small @click="emitAction('edit', item)">
           <v-icon>mdi-pencil</v-icon>
@@ -41,8 +44,9 @@ export default {
       pageCountRule: 0,
       sortDesc: true,
       headers: [
-        { text: 'name', value: 'name', sortable: true },
-        { text: 'order', value: 'order', sortable: true },
+        { text: 'Nombre', value: 'name', sortable: true },
+        { text: 'Lideres', value: 'leaders', sortable: false },
+        { text: 'Orden', value: 'order', sortable: true },
         { text: 'Acciones', value: 'actions', width: '200px', sortable: false }
       ],
       dialogDeleteProp: {}

@@ -8,6 +8,9 @@
   overflow-x:auto;
   }
  */
+.xwidth800 .v-data-table__wrapper table {
+  min-width: 800px !important;
+}
 .xwidth900 .v-data-table__wrapper table {
   min-width: 900px !important;
 }
