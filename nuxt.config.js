@@ -207,6 +207,11 @@ export default {
     extractCSS: true,
     filenames: {
       chunk: ({ isDev }) => (isDev ? '[name].js' : '[id].[contenthash].js')
+    },
+    postcss: {
+      plugins: {
+        'postcss-custom-properties': false
+      }
     }
   }
 }

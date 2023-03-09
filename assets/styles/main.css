@@ -59,9 +59,6 @@
 }
 /* pagination end */
 
-.v-data-table > .v-data-table__wrapper > table > tbody {
-}
-
 .v-application--is-ltr .v-text-field--outlined fieldset {
   padding-left: 3px !important;
 }
