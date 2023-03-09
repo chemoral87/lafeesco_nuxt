@@ -2,12 +2,7 @@
   <div>
     hola country
 
-    <v-data-table
-      :headers="headers"
-      :items="countries"
-      :items-per-page="50"
-      class="elevation-1"
-    >
+    <v-data-table :headers="headers" :items="countries" :items-per-page="50" class="elevation-1">
       <template v-slot:[`item.popuarea`]="{ item }">
         {{ parseFloat(item.population) / parseFloat(item.area) }}
       </template>
@@ -15,23 +10,23 @@
   </div>
 </template>
 <script>
-import { countries } from "@/pages/country/country";
+import { countries } from '@/pages/country/country'
 export default {
   props: {},
   data() {
     return {
       countries: countries,
       headers: [
-        { text: "Name", value: "name" },
-        { text: "Area", value: "area" },
-        { text: "Population", value: "population" },
-        { text: "P / area", value: "popuarea" },
-      ],
-    };
+        { text: 'Name', value: 'name' },
+        { text: 'Area', value: 'area' },
+        { text: 'Population', value: 'population' },
+        { text: 'P / area', value: 'popuarea' }
+      ]
+    }
   },
   methods: {},
   mounted() {
-    let me = this;
-  },
-};
+    let me = this
+  }
+}
 </script>
