@@ -11,6 +11,9 @@
         <v-col cols="12" md="6">
           <UserCombobox :users="ministry.leaders" :label="'Lideres'" @modelChange="setLeaders"></UserCombobox>
         </v-col>
+        <v-col cols="6" md="3">
+          <v-color-picker show-swatches hide-canvas hide-inputs v-model="ministry.color"></v-color-picker>
+        </v-col>
       </v-row>
       <v-row>
         <v-spacer />
@@ -72,7 +75,7 @@ export default {
   },
   created() {
     this.$nuxt.$emit('setNavBar', {
-      title: 'Editar Ministry',
+      title: 'Editar Ministerio',
       icon: 'human-greeting-variant'
     })
   }

@@ -15,7 +15,6 @@
           :options="options"
           :response="response"
           @edit="editMinistry"
-          @editPermissions="editRolePermissions"
           @delete="deleteMinistry"
           :dialogDelete.sync="dialogDeleteMinistry"
         />

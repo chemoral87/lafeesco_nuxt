@@ -74,8 +74,12 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
-    '@nuxtjs/moment'
+    '@nuxtjs/moment',
+    '@nuxtjs/google-analytics'
   ],
+  googleAnalytics: {
+    id: 'G-8H2274BQF6'
+  },
   moment: {
     defaultLocale: 'es',
     locales: ['es']
