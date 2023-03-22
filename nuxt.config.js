@@ -60,6 +60,7 @@ export default {
     './plugins/vue-advanced-cropper.js',
     './plugins/vue-the-mask.js',
     './plugins/trading-vue.js',
+    './plugins/vue-gtag.js',
     './plugins/youtube'
 
     // "./plugins/vue-image-crop-upload.js",
