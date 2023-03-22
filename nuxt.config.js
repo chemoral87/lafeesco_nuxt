@@ -75,8 +75,7 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
-    '@nuxtjs/moment',
-    '@nuxtjs/google-analytics'
+    '@nuxtjs/moment'
   ],
   googleAnalytics: {
     id: 'G-8H2274BQF6'
@@ -91,6 +90,7 @@ export default {
 
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
+    '@nuxtjs/google-analytics',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     ['@nuxtjs/dotenv', { filename: '.env.' + process.env.NODE_ENV }]
