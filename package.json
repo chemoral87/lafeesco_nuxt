@@ -46,7 +46,6 @@
     "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
-    "@nuxtjs/google-analytics": "^2.4.0",
     "@nuxtjs/vuetify": "^1.12.3",
     "cross-env": "^7.0.3",
     "eslint": "^8.35.0",

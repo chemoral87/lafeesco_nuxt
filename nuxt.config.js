@@ -60,7 +60,7 @@ export default {
     './plugins/vue-advanced-cropper.js',
     './plugins/vue-the-mask.js',
     './plugins/trading-vue.js',
-    './plugins/vue-gtag.js',
+    { src: './plugins/vue-gtag.js', mode: 'client' },
     './plugins/youtube'
 
     // "./plugins/vue-image-crop-upload.js",
@@ -78,7 +78,8 @@ export default {
     '@nuxtjs/moment'
   ],
   googleAnalytics: {
-    id: 'G-8H2274BQF6'
+    id: 'G-8H2274BQF6',
+    checkDuplicatedScript: true
   },
   moment: {
     defaultLocale: 'es',
@@ -90,7 +91,7 @@ export default {
 
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
-    '@nuxtjs/google-analytics',
+    // '@nuxtjs/google-analytics',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     ['@nuxtjs/dotenv', { filename: '.env.' + process.env.NODE_ENV }]

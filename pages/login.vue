@@ -34,12 +34,8 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12">
-              <v-btn type="submit" color="primary" class="mr-2 mb-8"
-                >Iniciar Sesión</v-btn
-              >
-              <v-btn outlined color="primary" class="mr-2 mb-8"
-                >Olvidaste tu contraseña?</v-btn
-              >
+              <v-btn type="submit" color="primary" class="mr-2 mb-8">Iniciar Sesión</v-btn>
+              <v-btn outlined color="primary" class="mr-2 mb-8">Olvidaste tu contraseña?</v-btn>
             </v-col>
           </v-row>
         </v-form>
@@ -49,44 +45,45 @@
 </template>
 <script>
 export default {
-  middleware: ["guest"],
+  middleware: ['guest'],
   created() {
-    this.$nuxt.$emit("setNavBar", {
+    this.$nuxt.$emit('setNavBar', {
       title: `Inicio Sesión`,
-      icon: "lock",
-      show_login: false,
-    });
+      icon: 'lock',
+      show_login: false
+    })
   },
   data() {
     return {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
       showned: false, // mostrar password
-      name_secret: "",
-    };
+      name_secret: ''
+    }
   },
   methods: {
     async submitLogin() {
+      this.$gtag.event('login', { method: 'Google' })
       try {
         let credentials = {
           email: this.email,
-          password: this.password,
-        };
+          password: this.password
+        }
 
-        await this.$auth.loginWith("laravelJWT", { data: credentials });
+        await this.$auth.loginWith('laravelJWT', { data: credentials })
         this.$router.push({
-          path: this.$route.query.redirect || "/dashboard",
-        });
+          path: this.$route.query.redirect || '/dashboard'
+        })
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
-    },
+    }
   },
   mounted() {
-    let me = this;
+    let me = this
 
-    this.name_secret = process.env.BASE_URL;
+    this.name_secret = process.env.BASE_URL
     // this.name_secret = process.env.NAME_SECRET;
-  },
-};
+  }
+}
 </script>
