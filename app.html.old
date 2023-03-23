@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html {{HTML_ATTRS}}>
   <head {{HEAD_ATTRS}}>
     {{HEAD}}
@@ -16,4 +16,4 @@
   <body {{BODY_ATTRS}}>
     {{APP}}
   </body>
-</html>
+</html> -->
