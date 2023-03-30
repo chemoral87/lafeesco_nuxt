@@ -13,7 +13,7 @@
       ></v-col>
     </v-row>
     <v-row v-if="display_versicles == 'Card'">
-      <v-col cols="4" v-for="(versicle, ix) in versicles" :key="'x' + ix">
+      <v-col cols="12" sm="6" md="4" v-for="(versicle, ix) in versicles" :key="'x' + ix">
         <v-card>
           <v-card-title>
             {{ versicle.book.name }}
