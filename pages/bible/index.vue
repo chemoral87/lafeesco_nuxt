@@ -30,13 +30,18 @@
     <v-row v-if="display_versicles == 'Text'">
       <v-col cols="12">
         <div v-for="(versicle, ix) in versicles" :key="'w' + ix">
-          <strong>
-            {{ versicle.book.name }} {{ versicle.chapter }}.{{ versicle.verse
-            }}<template v-if="versicle.verseTo">-{{ versicle.verseTo }}</template></strong
-          >
-          <span v-for="(verse, iy) in versicle.versicles" :key="'y' + iy">
-            <sup v-if="see_sub">{{ verse.verse }}</sup> {{ verse.text }}
-          </span>
+          <template v-if="!versicle.prompt">
+            <strong>
+              {{ versicle.book.name }} {{ versicle.chapter }}.{{ versicle.verse
+              }}<template v-if="versicle.verseTo">-{{ versicle.verseTo }}</template></strong
+            >
+            <span v-for="(verse, iy) in versicle.versicles" :key="'y' + iy">
+              <sup v-if="see_sub">{{ verse.verse }}</sup> {{ verse.text }}
+            </span>
+          </template>
+          <template v-else>
+            <strong> {{ versicle.prompt }} </strong> <span class="red--text">no se encontró</span>
+          </template>
         </div>
       </v-col>
     </v-row>
@@ -55,14 +60,22 @@ export default {
   },
   methods: {
     getVersicles() {
+      // this.$route.query.s = this.prompt
+      this.$router.push({ path: this.$route.path, query: { s: this.prompt } })
       this.$repository.Bible.index({ prompt: this.prompt }).then((resp) => {
         this.versicles = resp
-        // console.log(resp)
       })
     }
   },
   mounted() {
     let me = this
+    if (this.$route.query.s) {
+      this.prompt = this.$route.query.s
+      this.$repository.Bible.index({ prompt: this.prompt }).then((resp) => {
+        this.versicles = resp
+        // console.log(resp)
+      })
+    }
   },
   created() {
     this.$nuxt.$emit('setNavBar', {
