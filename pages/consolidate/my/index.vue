@@ -4,20 +4,15 @@
       ref="filterForm"
       @submit.prevent="
         () => {
-          return indexMyMembers();
+          return indexMyMembers()
         }
       "
     >
       <v-row dense>
         <v-col cols="12" md="3">
-          <v-text-field
-            clearable
-            hide-details
-            v-model="filter"
-            placeholder="Filtro Nombre"
-          >
+          <v-text-field clearable hide-details v-model="filter" placeholder="Filtro Nombre">
             <template v-slot:append-outer>
-              <v-btn ref="modalButton" type="submit">
+              <v-btn type="submit">
                 <v-icon>mdi-magnify</v-icon>
               </v-btn>
             </template>
@@ -25,13 +20,7 @@
         </v-col>
 
         <v-col cols="12">
-          <MemberTable
-            @sorting="indexMyMembers"
-            :options="options"
-            :response="response"
-            @edit="editMember"
-            @delete=""
-          />
+          <MemberTable @sorting="indexMyMembers" :options="options" :response="response" @edit="editMember" @delete="" />
         </v-col>
       </v-row>
     </v-form>
@@ -39,57 +28,55 @@
 </template>
 <script>
 export default {
-  middleware: ["authenticated"],
+  middleware: ['authenticated'],
   validate({ store, error }) {
-    if (store.getters.permissions.includes("consolidador-index")) return true;
-    else throw error({ statusCode: 403 });
+    if (store.getters.permissions.includes('consolidador-index')) return true
+    else throw error({ statusCode: 403 })
   },
   created() {
-    this.$nuxt.$emit("setNavBar", {
-      title: "Mis Consolidados",
-      icon: "account-group",
-    });
+    this.$nuxt.$emit('setNavBar', {
+      title: 'Mis Consolidados',
+      icon: 'account-group'
+    })
   },
   async asyncData({ $axios, app }) {
     let options = {
-      sortBy: ["created_at"],
+      sortBy: ['created_at'],
       sortDesc: [true],
-      itemsPerPage: 10,
-    };
-    const response = await app.$repository.Member.indexMy(options).catch(
-      (e) => {}
-    );
-    return { response, options };
+      itemsPerPage: 10
+    }
+    const response = await app.$repository.Member.indexMy(options).catch((e) => {})
+    return { response, options }
   },
   watch: {
     async filter(value) {
       if (value == null) {
-        this.indexMyMembers();
+        this.indexMyMembers()
       }
-    },
+    }
   },
   props: {},
   data() {
     return {
       response: {},
       options: {},
-      filter: "",
-    };
+      filter: ''
+    }
   },
   methods: {
     async indexMyMembers(options) {
       if (options) {
-        this.options = options;
+        this.options = options
       }
-      let op = Object.assign({ filter: this.filter }, this.options);
-      this.response = await this.$repository.Member.indexMy(op);
+      let op = Object.assign({ filter: this.filter }, this.options)
+      this.response = await this.$repository.Member.indexMy(op)
     },
     editMember(item) {
-      this.$router.push(`/consolidate/my/${item.id}`);
-    },
+      this.$router.push(`/consolidate/my/${item.id}`)
+    }
   },
   mounted() {
-    let me = this;
-  },
-};
+    let me = this
+  }
+}
 </script>
