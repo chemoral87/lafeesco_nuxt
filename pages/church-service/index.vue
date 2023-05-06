@@ -14,6 +14,26 @@
               <v-col cols="12">
                 <v-date-picker width="auto" v-model="date" :allowed-dates="allowedDates" :show-current="current"></v-date-picker>
               </v-col>
+              <v-col cols="12">
+                <v-dialog ref="dialog" v-model="modal2" :return-value.sync="time" persistent width="290px">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="time"
+                      label="Picker in dialog"
+                      prepend-icon="mdi-clock-time-four-outline"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-time-picker v-if="modal2" v-model="time" :allowed-minutes="allowedStep" full-width>
+                    <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="modal2 = false"> Cancel </v-btn>
+                    <v-btn text color="primary" @click="$refs.dialog.save(time)"> OK </v-btn>
+                  </v-time-picker>
+                </v-dialog>
+                <!-- <v-text-field v-model="time" label="Hora"></v-text-field> -->
+              </v-col>
             </v-row>
           </v-card-text>
         </v-form>
@@ -33,10 +53,13 @@ export default {
   data() {
     return {
       dialogChurchService: false,
-      date: '2018-03-02'
+      date: '2018-03-02',
+      modal2: false,
+      time: null
     }
   },
   methods: {
+    allowedStep: (m) => m % 30 === 0,
     // allowedDates: (val) => parseInt(val.split('-')[2], 10) % 2 === 0,
     allowedDates(val) {
       let day = this.$moment(val).day()
