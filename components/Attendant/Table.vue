@@ -94,7 +94,7 @@ export default {
         },
         { text: 'Ministerios', value: 'ministries', sortable: false },
         { text: 'Celular', value: 'cellphone', sortable: false },
-        // { text: 'Fecha Creación', value: 'created_at', firstSortDesc: true },
+
 
         { text: 'Acciones', value: 'actions', width: '200px', sortable: false }
       ],
