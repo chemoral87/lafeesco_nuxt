@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" sm="6"> <v-text-field v-model="prompt" label="Versículos"></v-text-field></v-col>
+      <v-col cols="12" sm="6"> <v-textarea v-model="prompt" label="Versículos"></v-textarea></v-col>
       <v-col cols="auto">
         <v-btn @click="getVersicles()"> Buscar </v-btn>
       </v-col>

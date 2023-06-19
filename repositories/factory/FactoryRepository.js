@@ -26,5 +26,6 @@ export default ($axios) => ({
   Attendant: CommonRepository($axios)('/attendant'),
   TemplateGenerator: TemplateGeneratorRepository($axios)('/template-generator'),
   Ministry: CommonRepository($axios)('/ministry'),
-  Bible: CommonRepository($axios)('/bible')
+  Bible: CommonRepository($axios)('/bible'),
+  ChurchService: CommonRepository($axios)('/church-service')
 })

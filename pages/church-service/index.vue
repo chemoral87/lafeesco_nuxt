@@ -1,9 +1,24 @@
 <template>
   <v-container>
-    <v-btn color="success" @click="newChurchService()">
-      <v-icon class="mr-1">mdi-account-plus</v-icon>
-      Nuevo</v-btn
-    >
+    <v-row dense>
+      <v-col cols="auto"
+        ><v-btn color="success" @click="newChurchService()">
+          <v-icon class="mr-1">mdi-account-plus</v-icon>
+          Nuevo
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col cols="4" v-for="service in church_services" :key="service.id">
+        <v-card>
+          <v-card-title>
+            {{ service.event_date | moment('dddd DD MMMM YYYY H:mm a') }}
+          </v-card-title>
+          <v-card-actions> <v-spacer /> <v-btn color="primary" small>Asignar</v-btn> </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+
     servicios
     <v-dialog v-model="dialogChurchService" persistent width="400px">
       <v-card>
@@ -41,7 +56,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" class="mr-1" outlined @click.native="dialogChurchService = false"> Cancelar </v-btn>
-          <v-btn color="primary" @click.native=""> Guardar </v-btn>
+          <v-btn color="primary" @click="saveChurchService()"> Guardar </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -54,8 +69,10 @@ export default {
     return {
       dialogChurchService: false,
       date: '2018-03-02',
+      current: new Date(),
       modal2: false,
-      time: null
+      time: null,
+      church_services: []
     }
   },
   methods: {
@@ -69,12 +86,32 @@ export default {
     },
     newChurchService() {
       this.dialogChurchService = true
+    },
+    async saveChurchService() {
+      var churchService = { event_date: this.date + ' ' + this.time }
+      console.log(churchService)
+      await this.$repository.ChurchService.create(churchService)
+        .then((res) => {
+          // this.$router.push('/church-service')
+          this.dialogChurchService = false
+        })
+        .catch((e) => {})
     }
   },
   mounted() {
     let me = this
     this.date = this.$moment().format('YYYY-MM-DD')
     this.current = this.$moment().format('YYYY-MM-DD')
+  },
+  async asyncData({ $axios, app }) {
+    let op = {
+      sortBy: ['event_date'],
+      sortDesc: [false],
+      itemsPerPage: 30
+    }
+
+    const res = await app.$repository.ChurchService.index(op).catch((e) => {})
+    return { church_services: res.church_services, options: op }
   },
   created() {
     this.$nuxt.$emit('setNavBar', {
