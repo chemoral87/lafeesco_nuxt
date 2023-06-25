@@ -1,32 +1,49 @@
 <template>
   <v-container>
-    <v-row dense>
-      <v-col cols="12">
-        <!-- <MinistryCombobox :ministries="attendant.ministries" @modelChange="setMinistries"></MinistryCombobox> -->
-        <AttendantCombobox :attendants.sync="attendants" :ministry_id="ministry_id"></AttendantCombobox>
-      </v-col>
-      <v-col cols="12">
-        <v-list>
-          <template v-for="(item, index) in attendants">
-            <v-list-item :key="item.index">
-              <v-list-item-action class="ma-1">
-                <v-btn icon @click="swapItem(parseInt(index) - 1, parseInt(index))"><v-icon color="green">mdi-arrow-up</v-icon></v-btn>
-                <v-btn icon @click="swapItem(parseInt(index), parseInt(index) + 1)"><v-icon color="red">mdi-arrow-down</v-icon></v-btn>
-              </v-list-item-action>
-              <v-list-item-avatar class="mr-2" width="45px" height="45px">
-                <v-img :src="item.photo"></v-img>
-              </v-list-item-avatar>
+    Fecha: {{ church_service.event_date | moment('dddd DD MMMM YYYY - H:mm a') }}
 
-              <v-list-item-content>
-                <v-list-item-title>{{ item.name + ' ' + item.paternal_surname }} </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider v-if="index < attendants.length - 1" :key="index"></v-divider>
-          </template>
-        </v-list>
-      </v-col>
-    </v-row>
+    <v-form ref="form" @submit.prevent="saveChurchServiceAttendant()">
+      <v-row dense>
+        <v-col cols="12">
+          <!-- <MinistryCombobox :ministries="attendant.ministries" @modelChange="setMinistries"></MinistryCombobox> -->
+          <AttendantCombobox :attendants.sync="attendants" :ministry_id="ministry_id"></AttendantCombobox>
+        </v-col>
+        <v-col cols="12">
+          <v-list>
+            <template v-for="(item, index) in attendants">
+              <v-list-item :key="item.index">
+                <v-list-item-action class="ma-1">
+                  <v-btn icon @click="swapItem(parseInt(index) - 1, parseInt(index))"><v-icon color="green">mdi-arrow-up</v-icon></v-btn>
+                  <v-btn icon @click="swapItem(parseInt(index), parseInt(index) + 1)"><v-icon color="red">mdi-arrow-down</v-icon></v-btn>
+                </v-list-item-action>
+                <v-list-item-avatar class="mr-2" width="45px" height="45px">
+                  <v-img :src="item.photo"></v-img>
+                </v-list-item-avatar>
 
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.name + ' ' + item.paternal_surname }} </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-divider v-if="index < attendants.length - 1" :key="index"></v-divider>
+            </template>
+          </v-list>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-spacer />
+        <v-col cols="auto">
+          <v-btn @click.native="cancel" color="primary" outlined class="mr-1">
+            <span>Cancelar</span>
+            <v-icon>mdi-cancel</v-icon>
+          </v-btn>
+
+          <v-btn type="submit" color="primary" class="mr-4">
+            <span>Guardar</span>
+            <v-icon>mdi-check</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-form>
     <!-- {{ attendants }} -->
     <!-- {{ church_service }} -->
   </v-container>
@@ -44,6 +61,12 @@ export default {
     }
   },
   methods: {
+    saveChurchServiceAttendant() {
+      console.log('guardar')
+    },
+    cancel() {
+      this.$router.push('/church-service')
+    },
     swapItem(ix1, ix2) {
       console.log(ix1, ix2, this.attendants.length)
       if (ix1 == -1 || ix2 == this.attendants.length) return

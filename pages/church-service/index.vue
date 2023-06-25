@@ -9,7 +9,7 @@
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="4" v-for="service in church_services" :key="service.id">
+      <v-col cols="12" md="4" v-for="service in church_services" :key="service.id">
         <v-card>
           <v-card-actions>
             <v-spacer />
