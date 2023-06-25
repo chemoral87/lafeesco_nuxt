@@ -60,7 +60,7 @@ export default {
         this.$store.dispatch('hideNextLoading')
         let itemz = await this.$repository.AttendantMinistry.filter({
           queryText: val,
-          ids: this.attendant_ids,
+          attendant_ids: this.attendant_ids,
           ministry_id: this.ministry_id
         })
         this.searching = false

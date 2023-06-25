@@ -1,6 +1,7 @@
 <template>
   <v-container>
-    Fecha: {{ church_service.event_date | moment('dddd DD MMMM YYYY - H:mm a') }}
+    Fecha: {{ church_service.event_date | moment('dddd DD MMMM YYYY -') }}
+    <strong>{{ church_service.event_date | moment('H:mm a') }}</strong>
 
     <v-form ref="form" @submit.prevent="saveChurchServiceAttendant()">
       <v-row dense>
@@ -13,8 +14,12 @@
             <template v-for="(item, index) in attendants">
               <v-list-item :key="item.index">
                 <v-list-item-action class="ma-1">
-                  <v-btn icon @click="swapItem(parseInt(index) - 1, parseInt(index))"><v-icon color="green">mdi-arrow-up</v-icon></v-btn>
-                  <v-btn icon @click="swapItem(parseInt(index), parseInt(index) + 1)"><v-icon color="red">mdi-arrow-down</v-icon></v-btn>
+                  <v-btn :disabled="parseInt(index) == 0" icon @click="swapItem(parseInt(index) - 1, parseInt(index))"
+                    ><v-icon color="green">mdi-arrow-up</v-icon></v-btn
+                  >
+                  <v-btn :disabled="parseInt(index) == attendants.length - 1" icon @click="swapItem(parseInt(index), parseInt(index) + 1)"
+                    ><v-icon color="red">mdi-arrow-down</v-icon></v-btn
+                  >
                 </v-list-item-action>
                 <v-list-item-avatar class="mr-2" width="45px" height="45px">
                   <v-img :src="item.photo"></v-img>
@@ -61,8 +66,15 @@ export default {
     }
   },
   methods: {
-    saveChurchServiceAttendant() {
-      console.log('guardar')
+    async saveChurchServiceAttendant() {
+      let payload = { attendant_ids: this.attendant_ids, ministry_id: this.ministry_id, church_service_id: this.church_service_id }
+      await this.$repository.ChurchServiceAttendant.update(this.church_service_id, payload)
+        .then((res) => {
+          this.$router.push('/church-service')
+        })
+        .catch((e) => {
+          // alert(e)
+        })
     },
     cancel() {
       this.$router.push('/church-service')
@@ -79,6 +91,11 @@ export default {
   },
   mounted() {
     let me = this
+  },
+  computed: {
+    attendant_ids() {
+      return this.attendants.map((x) => x.id)
+    }
   },
   async asyncData({ $axios, app, params }) {
     const my_ministries = await app.$repository.MinistryLeader.my().catch((e) => {})

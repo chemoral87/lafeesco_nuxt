@@ -30,5 +30,6 @@ export default ($axios) => ({
   Ministry: CommonRepository($axios)('/ministry'),
   MinistryLeader: MinistryLeaderRepository($axios)('/ministry-leader'),
   Bible: CommonRepository($axios)('/bible'),
-  ChurchService: CommonRepository($axios)('/church-service')
+  ChurchService: CommonRepository($axios)('/church-service'),
+  ChurchServiceAttendant: CommonRepository($axios)('/church-service-attendant')
 })
