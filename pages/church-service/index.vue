@@ -11,10 +11,23 @@
     <v-row dense>
       <v-col cols="4" v-for="service in church_services" :key="service.id">
         <v-card>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              v-for="lead in myLeaders"
+              :key="lead.id"
+              :color="lead.ministry.color"
+              class="white--text"
+              small
+              @click="assignAttendant(service.id, lead.ministry)"
+            >
+              <v-icon>mdi-plus</v-icon>
+              {{ lead.ministry.name }}
+            </v-btn>
+          </v-card-actions>
           <v-card-title>
             {{ service.event_date | moment('dddd DD MMMM YYYY H:mm a') }}
           </v-card-title>
-          <v-card-actions> <v-spacer /> <v-btn color="primary" small>Asignar</v-btn> </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
@@ -72,10 +85,14 @@ export default {
       current: new Date(),
       modal2: false,
       time: null,
-      church_services: []
+      church_services: [],
+      myLeaders: []
     }
   },
   methods: {
+    assignAttendant(service_id, ministry) {
+      this.$router.push(`/church-service/assign/${service_id}/${ministry.id}`)
+    },
     allowedStep: (m) => m % 30 === 0,
     // allowedDates: (val) => parseInt(val.split('-')[2], 10) % 2 === 0,
     allowedDates(val) {
@@ -109,9 +126,9 @@ export default {
       sortDesc: [false],
       itemsPerPage: 30
     }
-
+    const myLeaders = await app.$repository.MinistryLeader.my().catch((e) => {})
     const res = await app.$repository.ChurchService.index(op).catch((e) => {})
-    return { church_services: res.church_services, options: op }
+    return { myLeaders: myLeaders, church_services: res.church_services, options: op }
   },
   created() {
     this.$nuxt.$emit('setNavBar', {

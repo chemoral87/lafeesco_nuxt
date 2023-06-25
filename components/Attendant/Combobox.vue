@@ -5,13 +5,14 @@
       :filter="filter"
       item-value="id"
       item-text="name"
-      label="Ministerios"
+      label="Servidores"
       hide-selected
       :hide-no-data="!search"
       :items="items"
       :search-input.sync="search"
       v-bind="$attrs"
       multiple
+      hide-details
     >
       <template v-slot:no-data>
         <v-list-item v-if="!searching"> Intente con otra búsqueda </v-list-item>
@@ -19,16 +20,13 @@
       </template>
       <template v-slot:selection="{ attrs, item, parent, selected }">
         <v-chip v-if="item === Object(item)" v-bind="attrs" color="primary" :input-value="selected" label>
-          <span class="pr-2">
-            {{ item.name }}
-          </span>
+          <span class="pr-2"> {{ item.name }} {{ item.paternal_surname }} </span>
           <v-icon small @click="parent.selectItem(item)"> $delete </v-icon>
         </v-chip>
       </template>
       <template v-slot:item="{ item }">
-        <v-chip color="info" dark label small>
-          {{ item.name }}
-        </v-chip>
+        <img class="image-cropper mr-2" width="60px" :src="item.photo" /> {{ item.name }} {{ item.paternal_surname }}
+
         <v-spacer></v-spacer>
       </template>
     </v-combobox>
@@ -36,7 +34,7 @@
 </template>
 <script>
 export default {
-  props: ['ministries'],
+  props: ['attendants', 'ministry_id'],
   data: () => ({
     items: [],
     model: [],
@@ -44,20 +42,27 @@ export default {
     searching: false
   }),
   computed: {
-    ministry_ids() {
-      let ids = []
-      this.model.forEach((element) => {
-        ids.push(element.id)
-      })
-      return ids
+    attendant_ids() {
+      return this.model.map((x) => x.id)
     }
+    // ministry_ids() {
+    //   let ids = []
+    //   this.model.forEach((element) => {
+    //     ids.push(element.id)
+    //   })
+    //   return ids
+    // }
   },
   watch: {
     async search(val, prev) {
       this.searching = true
       if (!(val == null || val.trim() == '')) {
         this.$store.dispatch('hideNextLoading')
-        let itemz = await this.$repository.Ministry.filter({ queryText: val, ids: this.ministry_ids })
+        let itemz = await this.$repository.AttendantMinistry.filter({
+          queryText: val,
+          ids: this.attendant_ids,
+          ministry_id: this.ministry_id
+        })
         this.searching = false
         this.items = itemz
       }
@@ -71,11 +76,15 @@ export default {
         }
       }
       this.model = val
-      this.$emit('modelChange', val)
+      this.$emit('update:attendants', val)
+      // this.$emit('modelChange', val)
+    },
+    attendants(val, pre) {
+      this.model = val
     }
   },
   mounted() {
-    this.model = this.ministries || []
+    this.model = this.attendants || []
   },
   methods: {
     filter(item, queryText, itemText) {
@@ -87,3 +96,9 @@ export default {
   }
 }
 </script>
+<style scoped>
+.image-cropper {
+  border-radius: 50%;
+  display: inline;
+}
+</style>

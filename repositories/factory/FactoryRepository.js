@@ -8,6 +8,7 @@ import MemberCallRepository from '../MemberCallRepository'
 import HouseFaithReposiotry from '../CommonRepository'
 import AgroEventRepository from '../AgroEventRepository'
 import TemplateGeneratorRepository from '../TemplateGeneratorRepository'
+import MinistryLeaderRepository from '../MinistryLeaderRepository'
 
 export default ($axios) => ({
   Role: CommonRepository($axios)('/roles'),
@@ -24,8 +25,10 @@ export default ($axios) => ({
   FaithHouse: HouseFaithReposiotry($axios)('/faith-house'),
   AgroEvent: AgroEventRepository($axios)('/agro-event'),
   Attendant: CommonRepository($axios)('/attendant'),
+  AttendantMinistry: CommonRepository($axios)('/attendant-ministry'),
   TemplateGenerator: TemplateGeneratorRepository($axios)('/template-generator'),
   Ministry: CommonRepository($axios)('/ministry'),
+  MinistryLeader: MinistryLeaderRepository($axios)('/ministry-leader'),
   Bible: CommonRepository($axios)('/bible'),
   ChurchService: CommonRepository($axios)('/church-service')
 })
