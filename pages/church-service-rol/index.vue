@@ -1,30 +1,8 @@
 <template>
   <v-container>
     <v-row dense>
-      <v-col cols="auto"
-        ><v-btn color="success" @click="newChurchService()">
-          <v-icon class="mr-1">mdi-account-plus</v-icon>
-          Nuevo
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row dense>
       <v-col cols="12" md="4" v-for="service in church_services" :key="service.id">
         <v-card>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn
-              v-for="lead in myLeaders"
-              :key="lead.id"
-              :color="lead.ministry.color"
-              class="white--text"
-              small
-              @click="assignAttendant(service.church_service_id, lead.ministry)"
-            >
-              <v-icon>mdi-plus</v-icon>
-              {{ lead.ministry.name }}
-            </v-btn>
-          </v-card-actions>
           <v-card-title class="py-1">
             {{ service.event_date | moment('dddd DD MMMM YYYY H:mm a') }}
           </v-card-title>
