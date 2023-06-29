@@ -73,7 +73,6 @@ export default {
       this.prompt = this.$route.query.s
       this.$repository.Bible.index({ prompt: this.prompt }).then((resp) => {
         this.versicles = resp
-        // console.log(resp)
       })
     }
   },

@@ -124,7 +124,7 @@ export default {
   },
   async asyncData({ $axios, app, params }) {
     const attendant = await app.$repository.Attendant.show(params.id).catch((e) => {})
-    console.log(attendant, params.id)
+
     return { attendant, id: params.id }
   },
   mounted() {

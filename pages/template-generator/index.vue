@@ -46,24 +46,13 @@
       <v-col cols="6">
         <v-text-field v-model="model_name" label="Modelo"></v-text-field>
         <v-radio-group v-model="radioComponent" column>
-          <v-radio
-            v-for="item in components"
-            :label="item.name"
-            :value="item.name"
-            @click="getComponent()"
-            :key="item.name"
-          ></v-radio>
+          <v-radio v-for="item in components" :label="item.name" :value="item.name" @click="getComponent()" :key="item.name"></v-radio>
         </v-radio-group>
       </v-col>
     </v-row>
     <v-row dense>
       <v-col cols="12" v-if="Object.entries(definitions).length !== 0 && radioComponent != ''">
-        <TemplateGeneratorCompo
-          :component="radioComponent"
-          :definitions="definitions"
-          :table_name="radioTable"
-          :model_name="model_name"
-        />
+        <TemplateGeneratorCompo :component="radioComponent" :definitions="definitions" :table_name="radioTable" :model_name="model_name" />
       </v-col>
     </v-row>
   </v-container>
@@ -126,13 +115,10 @@ export default {
     },
     getColumns(payload) {
       this.model_name = this.radioTable
-      // console.log(payload);
+
       this.getDefinitions([payload])
-      // console.log(this.radioTable, "getColumns");
     },
-    getComponent() {
-      // console.log(this.radioComponent, "getComponent");
-    },
+    getComponent() {},
     async getDefinitions(data) {
       // let { mark_tables } = this;
       let payload = data.map((tab) => {

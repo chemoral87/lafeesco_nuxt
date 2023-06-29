@@ -1,24 +1,44 @@
 <template>
   <v-container>
     <v-row dense>
+      <v-col cols="12">
+        <v-select
+          outlined
+          hide-details
+          label="Ministerios"
+          v-model="ministry_id_combo"
+          :items="ministries"
+          item-value="id"
+          item-text="name"
+          :clearable="true"
+        ></v-select>
+      </v-col>
       <v-col cols="12" md="4" v-for="service in church_services" :key="service.id">
         <v-card>
-          <v-card-title class="py-1">
-            {{ service.event_date | moment('dddd DD MMMM YYYY H:mm a') }}
-          </v-card-title>
-          <v-card-text>
-            <v-row dense v-for="ministry in service.ministries" :key="ministry.id">
-              <v-col cols="12"
-                >{{ ministry.name }}
+          <v-card-text class="py-1 text--primary">
+            {{ service.event_date | moment('ddd DD MMM YYYY') }}
+            <strong> {{ service.event_date | moment('h:mm a') }}</strong>
+
+            <v-chip small outlined :color="getDayDiffClass(service.event_date)">
+              <strong v-if="getDayDiff(service.event_date) == 0"> HOY </strong>
+              <strong v-else> {{ service.event_date | humanize }} </strong>
+            </v-chip>
+          </v-card-text>
+          <v-card-text class="py-0 px-2">
+            <v-row dense v-for="ministry in service.ministries" :key="ministry.ministry_id">
+              <v-col cols="12" v-if="ministry_id_combo == null || ministry_id_combo == ministry.ministry_id">
+                <span v-if="ministry_id_combo == null">
+                  {{ ministry.name }}
+                </span>
 
                 <v-row dense>
                   <v-col
-                    class="py-0 my-0 text--primary d-flex align-center"
+                    class="py-0 mt-0 mb-1 text--primary d-flex align-start"
                     cols="6"
                     v-for="attendant in ministry.attendants"
                     :key="attendant.id"
                   >
-                    <img class="image-cropper mr-1" width="40px" :src="attendant.photo" /> {{ attendant.name }}
+                    <img class="image-cropper mr-1" width="35px" :src="attendant.photo" /> {{ attendant.name }}
                     {{ attendant.paternal_surname }}
                   </v-col>
                 </v-row>
@@ -29,7 +49,6 @@
       </v-col>
     </v-row>
 
-    servicios
     <v-dialog v-model="dialogChurchService" persistent width="400px">
       <v-card>
         <v-card-title> Nuevo Servicio <v-spacer /> <v-icon @click.native="dialogChurchService = false"> $delete </v-icon> </v-card-title>
@@ -83,10 +102,25 @@ export default {
       modal2: false,
       time: null,
       church_services: [],
-      myLeaders: []
+      myLeaders: [],
+      ministry_id_combo: null,
+      ministries: [{ id: '', name: '' }]
     }
   },
   methods: {
+    getDayDiffClass(date) {
+      const dayDiff = this.$options.filters.daysDiffFromNow(date)
+      if (dayDiff > 0) {
+        return 'orange'
+      } else if (dayDiff === 0) {
+        return 'red'
+      } else {
+        return 'blue'
+      }
+    },
+    getDayDiff(date) {
+      return this.$options.filters.daysDiffFromNow(date)
+    },
     assignAttendant(service_id, ministry) {
       this.$router.push(`/church-service/assign/${service_id}/${ministry.id}`)
     },
@@ -103,7 +137,7 @@ export default {
     },
     async saveChurchService() {
       var churchService = { event_date: this.date + ' ' + this.time }
-      console.log(churchService)
+
       await this.$repository.ChurchService.create(churchService)
         .then((res) => {
           // this.$router.push('/church-service')
@@ -124,8 +158,14 @@ export default {
       itemsPerPage: 30
     }
     const myLeaders = await app.$repository.MinistryLeader.my().catch((e) => {})
+    let opMin = {
+      sortBy: ['name'],
+      sortDesc: [false],
+      itemsPerPage: 50
+    }
+    const ministries = await app.$repository.Ministry.index(opMin)
     const church_services = await app.$repository.ChurchService.index(op).catch((e) => {})
-    return { myLeaders: myLeaders, church_services: church_services, options: op }
+    return { ministries: ministries.data, myLeaders: myLeaders, church_services: church_services, options: op }
   },
   created() {
     this.$nuxt.$emit('setNavBar', {
@@ -139,5 +179,15 @@ export default {
 .image-cropper {
   border-radius: 50%;
   display: inline;
+}
+
+.bg-red {
+  color: red;
+}
+.bg-green {
+  color: green;
+}
+.bg-blue {
+  color: blue;
 }
 </style>

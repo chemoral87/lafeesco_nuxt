@@ -60,7 +60,7 @@
 /* pagination end */
 
 .v-application--is-ltr .v-text-field--outlined fieldset {
-  padding-left: 3px !important;
+  /* padding-left: 3px !important; */
 }
 
 .v-data-table__wrapper tbody tr:nth-child(odd) {

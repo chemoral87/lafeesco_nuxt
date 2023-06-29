@@ -80,7 +80,6 @@ export default {
       this.$router.push('/church-service')
     },
     swapItem(ix1, ix2) {
-      console.log(ix1, ix2, this.attendants.length)
       if (ix1 == -1 || ix2 == this.attendants.length) return
 
       const temp = this.attendants[ix1]
@@ -108,9 +107,7 @@ export default {
     if (!mini) this.$router.push('/church-service')
 
     let ministry = this.church_service.ministries.find((x) => x.ministry_id == this.ministry_id)
-    this.attendants = ministry.attendants
-
-    // console.log(mini)
+    this.attendants = ministry?.attendants || []
 
     this.$nuxt.$emit('setNavBar', {
       title: 'Asignar ' + mini.ministry.name,

@@ -21,7 +21,7 @@
               small
               @click="assignAttendant(service.church_service_id, lead.ministry)"
             >
-              <v-icon>mdi-plus</v-icon>
+              <v-icon>mdi-pencil</v-icon>
               {{ lead.ministry.name }}
             </v-btn>
           </v-card-actions>
@@ -125,7 +125,7 @@ export default {
     },
     async saveChurchService() {
       var churchService = { event_date: this.date + ' ' + this.time }
-      console.log(churchService)
+
       await this.$repository.ChurchService.create(churchService)
         .then((res) => {
           // this.$router.push('/church-service')
