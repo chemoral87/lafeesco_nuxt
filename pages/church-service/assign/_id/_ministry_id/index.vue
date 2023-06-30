@@ -21,12 +21,18 @@
                     ><v-icon color="red">mdi-arrow-down</v-icon></v-btn
                   >
                 </v-list-item-action>
-                <v-list-item-avatar class="mr-2" width="45px" height="45px">
+                <v-list-item-avatar class="mr-1" width="45px" height="45px">
                   <v-img :src="item.photo"></v-img>
                 </v-list-item-avatar>
 
-                <v-list-item-content>
-                  <v-list-item-title>{{ item.name + ' ' + item.paternal_surname }} </v-list-item-title>
+                <v-list-item-content class="mr-1">
+                  <v-list-item-title>
+                    {{ item.name + ' ' + item.paternal_surname }}
+
+                    <v-chip color="red" outlined v-if="getMinistryAssigned(item) != null">
+                      {{ getMinistryAssigned(item) }}
+                    </v-chip>
+                  </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
               <v-divider v-if="index < attendants.length - 1" :key="index"></v-divider>
@@ -36,6 +42,11 @@
       </v-row>
       <v-row>
         <v-spacer />
+        <v-col cols="auto" v-if="error_message">
+          <v-alert dense outlined type="error">
+            {{ error_message }}
+          </v-alert>
+        </v-col>
         <v-col cols="auto">
           <v-btn @click.native="cancel" color="primary" outlined class="mr-1">
             <span>Cancelar</span>
@@ -66,7 +77,15 @@ export default {
     }
   },
   methods: {
+    getMinistryAssigned(item) {
+      if (this.errors) {
+        let church_service_attendant = this.errors.find((x) => x.attendant_id == item.id)
+        return church_service_attendant?.ministry?.name || null
+      }
+      return null
+    },
     async saveChurchServiceAttendant() {
+      this.clearErrors()
       let payload = { attendant_ids: this.attendant_ids, ministry_id: this.ministry_id, church_service_id: this.church_service_id }
       await this.$repository.ChurchServiceAttendant.update(this.church_service_id, payload)
         .then((res) => {

@@ -1,29 +1,30 @@
-import Vue from "vue";
-import { mapGetters } from "vuex";
+import Vue from 'vue'
+import { mapGetters } from 'vuex'
 
 const validation = {
   install(Vue, options) {
     Vue.mixin({
       computed: {
         ...mapGetters({
-          errors: "validation/errors",
-        }),
+          errors: 'validation/errors',
+          error_message: 'validation/error_message'
+        })
       },
       methods: {
         clearErrors: function () {
           // metodo global para limpiar errorres
-          this.$store.dispatch("validation/clearErrors");
+          this.$store.dispatch('validation/clearErrors')
         },
         validatePermission: function (permission) {
           if (this.$store.getters.permissions.includes(permission)) {
-            return true;
+            return true
           } else {
-            throw error({ statusCode: 403 });
+            throw error({ statusCode: 403 })
           }
-        },
-      },
-    });
-  },
-};
+        }
+      }
+    })
+  }
+}
 
-Vue.use(validation);
+Vue.use(validation)
