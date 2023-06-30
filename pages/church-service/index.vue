@@ -51,7 +51,6 @@
       </v-col>
     </v-row>
 
-    servicios
     <v-dialog v-model="dialogChurchService" persistent width="400px">
       <v-card>
         <v-card-title> Nuevo Servicio <v-spacer /> <v-icon @click.native="dialogChurchService = false"> $delete </v-icon> </v-card-title>

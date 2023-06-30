@@ -33,12 +33,12 @@
 
                 <v-row dense>
                   <v-col
-                    class="py-0 mt-0 mb-1 text--primary d-flex align-start"
+                    class="py-0 mt-0 mb-1 text--primary d-flex align-start remove-line-height"
                     cols="6"
                     v-for="attendant in ministry.attendants"
                     :key="attendant.id"
                   >
-                    <img class="image-cropper mr-1" width="35px" :src="attendant.photo" /> {{ attendant.name }}
+                    <img class="image-cropper mr-1" width="42px" :src="attendant.photo" /> {{ attendant.name }}
                     {{ attendant.paternal_surname }}
                   </v-col>
                 </v-row>
@@ -176,6 +176,9 @@ export default {
 }
 </script>
 <style scoped>
+.remove-line-height {
+  line-height: normal;
+}
 .image-cropper {
   border-radius: 50%;
   display: inline;
