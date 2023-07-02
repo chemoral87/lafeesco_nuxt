@@ -79,7 +79,7 @@ export default {
   methods: {
     getMinistryAssigned(item) {
       if (this.errors) {
-        let church_service_attendant = this.errors.find((x) => x.attendant_id == item.id)
+        let church_service_attendant = this.errors?.find((x) => x.attendant_id == item.id)
         return church_service_attendant?.ministry?.name || null
       }
       return null

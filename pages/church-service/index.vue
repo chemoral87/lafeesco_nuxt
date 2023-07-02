@@ -9,8 +9,8 @@
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="12" md="4" v-for="service in church_services" :key="service.id">
-        <v-card>
+      <v-col cols="12" sm="6" md="4" v-for="service in church_services" :key="service.id">
+        <v-card :color="ix % 2 == 1 ? 'yellow lighten-5' : ''">
           <v-card-actions>
             <v-spacer />
             <v-btn

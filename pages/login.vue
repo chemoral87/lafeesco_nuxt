@@ -16,7 +16,7 @@
                 label="Correo Electrónico"
                 placeholder=" "
                 persistent-placeholder
-                :error-messages="errors ? errors.email : []"
+                :error-messages="errors ? errors?.email : []"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -27,7 +27,7 @@
                 label="Contraseña"
                 placeholder=" "
                 persistent-placeholder
-                :error-messages="errors ? errors.password : []"
+                :error-messages="errors ? errors?.password : []"
                 @click:append="showned = !showned"
                 :append-icon="showned ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showned ? 'text' : 'password'"

@@ -11,19 +11,14 @@
       <v-card-text>
         <v-row dense>
           <v-col cols="12">
-            <v-text-field
-              @keyup.enter="save"
-              v-model="item.name"
-              label="Nombre"
-              :error-messages="errors.name"
-            ></v-text-field>
+            <v-text-field @keyup.enter="save" v-model="item.name" label="Nombre" :error-messages="errors?.name"></v-text-field>
           </v-col>
           <v-col cols="12">
             <v-text-field
               @keyup.enter="save"
               v-model="item.last_name"
               label="Ap. Paterno"
-              :error-messages="errors.last_name"
+              :error-messages="errors?.last_name"
             ></v-text-field>
           </v-col>
           <v-col cols="12">
@@ -31,33 +26,21 @@
               @keyup.enter="save"
               v-model="item.second_last_name"
               label="Ap. materno"
-              :error-messages="errors.second_last_name"
+              :error-messages="errors?.second_last_name"
             ></v-text-field>
           </v-col>
           <v-col cols="12" v-if="!item.id">
-            <v-text-field
-              @keyup.enter="save"
-              v-model="item.email"
-              label="E-mail"
-              :error-messages="errors.email"
-            ></v-text-field>
+            <v-text-field @keyup.enter="save" v-model="item.email" label="E-mail" :error-messages="errors?.email"></v-text-field>
           </v-col>
           <v-col cols="12">
-            <v-text-field
-              @keyup.enter="save"
-              v-model="item.cellphone"
-              label="Celular"
-              :error-messages="errors.cellphone"
-            ></v-text-field>
+            <v-text-field @keyup.enter="save" v-model="item.cellphone" label="Celular" :error-messages="errors?.cellphone"></v-text-field>
           </v-col>
         </v-row>
       </v-card-text>
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="primary" class="mr-1" outlined @click.native="close">
-          Cancelar
-        </v-btn>
+        <v-btn color="primary" class="mr-1" outlined @click.native="close"> Cancelar </v-btn>
         <v-btn color="primary" @click.native="save"> Guardar </v-btn>
       </v-card-actions>
     </v-card>
@@ -66,40 +49,40 @@
 
 <script>
 export default {
-  props: ["value", "userx"],
+  props: ['value', 'userx'],
   data() {
     return {
-      item: {},
-    };
+      item: {}
+    }
   },
   computed: {
     iconTitle() {
       if (this.item.id) {
-        return "mdi-pencil";
+        return 'mdi-pencil'
       } else {
-        return "mdi-plus";
+        return 'mdi-plus'
       }
     },
     formTitle() {
       if (this.item.id) {
-        return "Editar Usuario";
+        return 'Editar Usuario'
       } else {
-        return "Nuevo Usuario";
+        return 'Nuevo Usuario'
       }
-    },
+    }
   },
   methods: {
     close() {
-      this.$emit("close");
+      this.$emit('close')
     },
     save() {
-      this.$emit("save", this.item);
-    },
+      this.$emit('save', this.item)
+    }
   },
   mounted() {
     if (this.userx) {
-      this.item = this.userx;
+      this.item = this.userx
     }
-  },
-};
+  }
+}
 </script>
