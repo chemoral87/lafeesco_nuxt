@@ -33,7 +33,7 @@
 export default {
   data() {
     return {
-      ministry: {}
+      ministry: { color: '#E91E63FF' }
     }
   },
   methods: {

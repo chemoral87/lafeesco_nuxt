@@ -71,6 +71,7 @@ export default {
   },
   async asyncData({ $axios, app, params }) {
     const ministry = await app.$repository.Ministry.show(params.id).catch((e) => {})
+    ministry.color = ministry.color ? ministry.color : '#E91E63FF'
     return { ministry, id: params.id }
   },
   created() {
