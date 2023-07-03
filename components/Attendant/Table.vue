@@ -15,6 +15,9 @@
       <template v-slot:[`item.full_name`]="{ item }">
         {{ getfullName(item.name, item.paternal_surname, item.maternal_surname) }}
       </template>
+      <template v-slot:[`item.name`]="{ item }">
+        {{ getfullName(item.name, item.paternal_surname, item.maternal_surname) }}
+      </template>
       <template v-slot:[`item.next_call_date`]="{ item }">
         <div v-if="item.next_call_date">
           {{ item.next_call_date | moment('DD MMM YYYY') }} |
@@ -89,12 +92,11 @@ export default {
         {
           text: 'Nombre Completo',
           align: 'start',
-          value: 'full_name',
-          sortable: false
+          value: 'name',
+          sortable: true
         },
         { text: 'Ministerios', value: 'ministries', sortable: false },
         { text: 'Celular', value: 'cellphone', sortable: false },
-
 
         { text: 'Acciones', value: 'actions', width: '200px', sortable: false }
       ],

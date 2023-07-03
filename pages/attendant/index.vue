@@ -29,7 +29,7 @@ export default {
   async asyncData({ $axios, app }) {
     let options = {
       sortBy: ['name'],
-      sortDesc: [true],
+      sortDesc: [false],
       itemsPerPage: 20
     }
     const response = await app.$repository.Attendant.index(options).catch((e) => {})
@@ -62,17 +62,17 @@ export default {
       await this.$repository.Attendant.delete(item.id)
         .then((res) => {
           this.dialogDeleteAttendant = false
-          this.index()
+          this.indexAttendant()
         })
         .catch((e) => {})
-    },
-    async index(options) {
-      if (options) {
-        this.options = options
-      }
-      let op = Object.assign({ filter: this.filter }, this.options)
-      this.response = await this.$repository.Attendant.index(op)
     }
+    // async index(options) {
+    //   if (options) {
+    //     this.options = options
+    //   }
+    //   let op = Object.assign({ filter: this.filter }, this.options)
+    //   this.response = await this.$repository.Attendant.index(op)
+    // }
   },
   data() {
     return {
