@@ -9,11 +9,12 @@ import HouseFaithReposiotry from '../CommonRepository'
 import AgroEventRepository from '../AgroEventRepository'
 import TemplateGeneratorRepository from '../TemplateGeneratorRepository'
 import MinistryLeaderRepository from '../MinistryLeaderRepository'
+import UserRepository from '../UserRepository'
 
 export default ($axios) => ({
   Role: CommonRepository($axios)('/roles'),
   Permission: CommonRepository($axios)('/permissions'),
-  User: CommonRepository($axios)('/users'),
+  User: UserRepository($axios)('/users'),
   Investor: InvestorRepository($axios)('/investor'),
   InvestorProfile: InvestorProfileRepository($axios)('/investor-profile'),
   Investment: InvestmentRepository($axios)('/investment'),

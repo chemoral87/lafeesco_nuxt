@@ -70,37 +70,47 @@ export class MenuService {
         })
       }
 
-      menu.push({
-        icon: 'mdi-sprout',
-        title: 'Agro Evento',
-        to: '/agro-event'
-      })
-      menu.push({
-        icon: 'mdi-hand-heart',
-        title: 'Ministerios',
-        to: '/ministry'
-      })
-      menu.push({
-        icon: 'mdi-church',
-        title: 'Servicios Generales',
-        to: '/church-service'
-      })
-      menu.push({
-        icon: 'mdi-human-greeting-variant',
-        title: 'Servidores',
-        to: '/attendant'
-      })
-      menu.push({
-        icon: 'mdi-chart-bar',
-        title: 'Reportes',
-        to: '/reports'
-      })
+      if (this.hasPermission('church-service-index')) {
+        menu.push({
+          icon: 'mdi-church',
+          title: 'Servicios Generales',
+          to: '/church-service'
+        })
+      }
 
-      menu.push({
-        icon: 'mdi-engine',
-        title: 'Template G',
-        to: '/template-generator'
-      })
+      if (this.hasPermission('super-admin')) {
+        menu.push({
+          icon: 'mdi-sprout',
+          title: 'Agro Evento',
+          to: '/agro-event'
+        })
+        menu.push({
+          icon: 'mdi-hand-heart',
+          title: 'Ministerios',
+          to: '/ministry'
+        })
+        menu.push({
+          icon: 'mdi-church',
+          title: 'Servicios Generales',
+          to: '/church-service'
+        })
+        menu.push({
+          icon: 'mdi-human-greeting-variant',
+          title: 'Servidores',
+          to: '/attendant'
+        })
+        menu.push({
+          icon: 'mdi-chart-bar',
+          title: 'Reportes',
+          to: '/reports'
+        })
+
+        menu.push({
+          icon: 'mdi-engine',
+          title: 'Template G',
+          to: '/template-generator'
+        })
+      }
       // menu.push({
       //   icon: "mdi-chart-bar",
       //   title: "ReportesA",
