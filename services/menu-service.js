@@ -70,16 +70,19 @@ export class MenuService {
         })
       }
 
+      if (this.hasPermission('attendant-index')) {
+        menu.push({
+          icon: 'mdi-human-greeting-variant',
+          title: 'Servidores',
+          to: '/attendant'
+        })
+      }
+
       if (this.hasPermission('church-service-index')) {
         menu.push({
           icon: 'mdi-church',
           title: 'Servicios Generales',
           to: '/church-service'
-        })
-        menu.push({
-          icon: 'mdi-church',
-          title: 'Servicios Generales',
-          to: '/attendant'
         })
       }
 
