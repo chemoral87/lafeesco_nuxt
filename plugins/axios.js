@@ -11,9 +11,7 @@ export default function (context) {
       if (error.response.status === 422 || error.response.status === 401) {
         context.store.dispatch(
           'validation/setErrors',
-          {
-            errors: error.response.data
-          }
+          error.response.data
 
           // error.response.data.errors
         )

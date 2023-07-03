@@ -22,6 +22,7 @@ export const mutations = {
 //actions
 export const actions = {
   setErrors({ commit }, payload) {
+    console.log('SET_VALIDATION_ERRORS', payload)
     commit('SET_VALIDATION_ERRORS', payload)
   },
   clearErrors({ commit }) {

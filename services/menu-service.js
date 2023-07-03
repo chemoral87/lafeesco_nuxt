@@ -76,6 +76,11 @@ export class MenuService {
           title: 'Servicios Generales',
           to: '/church-service'
         })
+        menu.push({
+          icon: 'mdi-church',
+          title: 'Servicios Generales',
+          to: '/attendant'
+        })
       }
 
       if (this.hasPermission('super-admin')) {
