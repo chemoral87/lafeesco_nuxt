@@ -4,7 +4,7 @@
       v-model="model"
       :filter="filter"
       item-value="id"
-      item-text="name"
+      item-text="full_name"
       label="Servidores"
       hide-selected
       :hide-no-data="!search"
@@ -26,8 +26,7 @@
       </template>
       <template v-slot:item="{ item }">
         <img class="image-cropper mr-2" width="60px" :src="item.photo" /> {{ item.name }} {{ item.paternal_surname }}
-
-        <v-spacer></v-spacer>
+        <!-- <v-spacer></v-spacer>  -->
       </template>
     </v-combobox>
   </div>
@@ -64,7 +63,13 @@ export default {
           ministry_id: this.ministry_id
         })
         this.searching = false
-        this.items = itemz
+        let attendants = itemz.map((item) => {
+          return {
+            ...item, // Spread operator to copy all existing properties
+            full_name: item.name + ' ' + item.paternal_surname // Adding new property
+          }
+        })
+        this.items = attendants
       }
     },
     model(val, prev) {
