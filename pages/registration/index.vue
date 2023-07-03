@@ -53,16 +53,20 @@
         <v-col cols="12" md="3">
           <v-text-field
             @keyup.enter="save"
-            v-model="item.confirm_password"
+            v-model="item.password_confirmation"
             :rules="[rules.required]"
             label="Confirma Contraseña"
             type="password"
           ></v-text-field>
         </v-col>
+        <v-col cols="auto"> </v-col>
       </v-row>
       <v-row>
         <v-spacer />
         <v-col cols="auto">
+          <span class="red--text">
+            {{ errors?.status }}
+          </span>
           <v-btn color="primary" class="mr-1" outlined @click="gotoMain"> Cancelar </v-btn>
           <v-btn color="primary" type="submit"> Guardar </v-btn>
         </v-col>

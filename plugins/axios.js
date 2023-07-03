@@ -6,14 +6,19 @@ export default function (context) {
       // alert(JSON.stringify(error));
     }
 
-    if (error.response)
+    if (error.response) {
+      console.log(error.response.data)
       if (error.response.status === 422 || error.response.status === 401) {
         context.store.dispatch(
           'validation/setErrors',
-          error.response.data
+          {
+            errors: error.response.data
+          }
+
           // error.response.data.errors
         )
       }
+    }
     context.store.dispatch('hideLoading')
     return Promise.reject(error)
   })
