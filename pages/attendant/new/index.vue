@@ -73,10 +73,13 @@ export default {
   data() {
     return {
       img: 'https://images.pexels.com/photos/4323307/pexels-photo-4323307.jpeg',
-      attendant: {},
+      attendant: {
+        ministries: []
+      },
       imga: ''
     }
   },
+
   methods: {
     setMinistries(ministries) {
       this.attendant.ministries = ministries

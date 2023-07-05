@@ -1,6 +1,9 @@
 <template>
   <v-container>
     <v-row dense>
+      <v-col cols="auto">
+        <my-datepicker label="Fecha Inicio" v-model="start_date"></my-datepicker>
+      </v-col>
       <v-col cols="auto"
         ><v-btn color="success" @click="newChurchService()">
           <v-icon class="mr-1">mdi-account-plus</v-icon>
@@ -25,10 +28,11 @@
               {{ lead.ministry.name }}
             </v-btn>
           </v-card-actions>
-          <v-card-title class="py-1">
-            {{ service.event_date | moment('dddd DD MMMM YYYY H:mm a') }}
-          </v-card-title>
-          <v-card-text>
+          <v-card-text class="py-1 text--primary">
+            {{ service.event_date | moment('dddd DD MMM YYYY') }}
+            <strong> {{ service.event_date | moment('h:mm a') }}</strong>
+          </v-card-text>
+          <v-card-text class="pt-1 pb-3">
             <v-row dense v-for="ministry in service.ministries" :key="ministry.id">
               <v-col cols="12"
                 >{{ ministry.name }}
@@ -104,10 +108,25 @@ export default {
       modal2: false,
       time: null,
       church_services: [],
-      myLeaders: []
+      myLeaders: [],
+      start_date: '2020-01-01'
+    }
+  },
+  watch: {
+    start_date() {
+      this.getChurchService()
     }
   },
   methods: {
+    async getChurchService() {
+      let op = {
+        sortBy: ['event_date'],
+        sortDesc: [false],
+        itemsPerPage: 50,
+        start_date: this.start_date
+      }
+      this.church_services = await this.$repository.ChurchService.index(op).catch((e) => {})
+    },
     assignAttendant(service_id, ministry) {
       this.$router.push(`/church-service/assign/${service_id}/${ministry.id}`)
     },
@@ -133,10 +152,13 @@ export default {
         .catch((e) => {})
     }
   },
+
   mounted() {
     let me = this
     this.date = this.$moment().format('YYYY-MM-DD')
     this.current = this.$moment().format('YYYY-MM-DD')
+
+    this.getChurchService()
   },
   async asyncData({ $axios, app }) {
     let op = {
@@ -144,9 +166,10 @@ export default {
       sortDesc: [false],
       itemsPerPage: 30
     }
+    let start_date = app.$moment().format('YYYY-MM-DD')
     const myLeaders = await app.$repository.MinistryLeader.my().catch((e) => {})
-    const church_services = await app.$repository.ChurchService.index(op).catch((e) => {})
-    return { myLeaders: myLeaders, church_services: church_services, options: op }
+    // const church_services = await app.$repository.ChurchService.index(op).catch((e) => {})
+    return { myLeaders: myLeaders, options: op, start_date: start_date }
   },
   created() {
     this.$nuxt.$emit('setNavBar', {

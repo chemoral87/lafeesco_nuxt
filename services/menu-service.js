@@ -143,6 +143,8 @@ export class MenuService {
         }
       )
     }
-    return menu
+    // remove duplicates
+    let uniqueArr = menu.filter((v, i, a) => a.findIndex((t) => t.to === v.to) === i)
+    return uniqueArr
   }
 }
