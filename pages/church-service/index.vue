@@ -1,10 +1,13 @@
 <template>
   <v-container>
     <v-row dense>
-      <v-col cols="auto">
+      <v-col cols="6" sm="auto">
         <my-datepicker label="Fecha Inicio" v-model="start_date"></my-datepicker>
       </v-col>
-      <v-col cols="auto"
+      <v-col cols="6" sm="auto">
+        <v-switch v-model="showArrive" :label="showArrive ? 'Hra. LLegada' : 'Hra. Servicio'"></v-switch>
+      </v-col>
+      <v-col cols="6" sm="auto"
         ><v-btn color="success" @click="newChurchService()">
           <v-icon class="mr-1">mdi-account-plus</v-icon>
           Nuevo
@@ -30,7 +33,8 @@
           </v-card-actions>
           <v-card-text class="py-1 text--primary">
             {{ service.event_date | moment('dddd DD MMM YYYY') }}
-            <strong> {{ service.event_date | moment('h:mm a') }}</strong>
+            <strong v-if="!showArrive"> {{ service.event_date | moment('h:mm a') }}</strong>
+            <strong v-else> {{ getArriveDate(service.event_date) | moment('h:mm a') }}</strong>
           </v-card-text>
           <v-card-text class="pt-1 pb-3">
             <v-row dense v-for="ministry in service.ministries" :key="ministry.id">
@@ -109,7 +113,8 @@ export default {
       time: null,
       church_services: [],
       myLeaders: [],
-      start_date: '2020-01-01'
+      start_date: '2020-01-01',
+      showArrive: false
     }
   },
   watch: {
@@ -118,6 +123,10 @@ export default {
     }
   },
   methods: {
+    getArriveDate(date) {
+      let _date = this.$moment(date)
+      return _date.subtract(40, 'minutes')
+    },
     async getChurchService() {
       let op = {
         sortBy: ['event_date'],

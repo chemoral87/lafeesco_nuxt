@@ -1,5 +1,5 @@
 <template>
-  <v-menu v-model="menu_picker" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
+  <v-menu v-model="menu_picker" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y>
     <template v-slot:activator="{ on }">
       <v-text-field
         v-bind="{ ...$props, ...$attrs }"
