@@ -43,7 +43,7 @@
       </template>
 
       <template v-slot:[`item.photo`]="{ item }">
-        <img class="image-cropper" :src="item.photo" />
+        <v-img class="image-cropper" :src="item.photo" :lazy-src="item.photo" />
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <div>
@@ -161,6 +161,7 @@ export default {
 <style scoped>
 .image-cropper {
   border-radius: 50%;
-  height: 50px;
+  height: 45px;
+  width: 45px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="pa-2">
     <v-row dense>
       <v-col cols="12">
         <v-select
@@ -34,12 +34,16 @@
                 <v-row dense>
                   <v-col
                     class="py-0 mt-0 mb-1 text--primary d-flex align-start remove-line-height"
-                    cols="6"
+                    cols="auto"
                     v-for="attendant in ministry.attendants"
                     :key="attendant.id"
                   >
-                    <img class="image-cropper mr-1" width="42px" :src="attendant.photo" /> {{ attendant.name }}
-                    {{ attendant.paternal_surname }}
+                    <div class="image-wrapper">
+                      <v-img class="image-cropper mr-1" :lazy-src="attendant.photo" :src="attendant.photo" />
+                      {{ attendant.name }} {{ attendant.paternal_surname }}
+                    </div>
+                    <!-- <img class="image-cropper mr-1" width="42px" :src="attendant.photo" /> {{ attendant.name }}
+                    {{ attendant.paternal_surname }} -->
                   </v-col>
                 </v-row>
               </v-col>
@@ -176,6 +180,16 @@ export default {
 }
 </script>
 <style scoped>
+.image-wrapper {
+  display: flex;
+  align-items: center;
+}
+.image-cropper {
+  border-radius: 50%;
+  display: inline;
+  width: 30px;
+  aspect-ratio: 1;
+}
 .remove-line-height {
   line-height: normal;
 }

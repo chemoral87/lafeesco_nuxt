@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="pa-2">
     <v-row dense>
       <v-col cols="6" sm="auto">
         <my-datepicker label="Fecha Inicio" v-model="start_date"></my-datepicker>
@@ -36,7 +36,7 @@
             <strong v-if="!showArrive"> {{ service.event_date | moment('h:mm a') }}</strong>
             <strong v-else> {{ getArriveDate(service.event_date) | moment('h:mm a') }}</strong>
           </v-card-text>
-          <v-card-text class="pt-1 pb-3">
+          <v-card-text class="px-1 pt-1 pb-3">
             <v-row dense v-for="ministry in service.ministries" :key="ministry.id">
               <v-col cols="12"
                 >{{ ministry.name }}
@@ -44,12 +44,14 @@
                 <v-row dense>
                   <v-col
                     class="py-0 my-0 text--primary d-flex align-center"
-                    cols="6"
+                    cols="auto"
                     v-for="attendant in ministry.attendants"
                     :key="attendant.id"
                   >
-                    <img class="image-cropper mr-1" width="40px" :src="attendant.photo" /> {{ attendant.name }}
-                    {{ attendant.paternal_surname }}
+                    <div class="image-wrapper">
+                      <v-img class="image-cropper mr-1" :lazy-src="attendant.photo" :src="attendant.photo" />
+                      {{ attendant.name }} {{ attendant.paternal_surname }}
+                    </div>
                   </v-col>
                 </v-row>
               </v-col>
@@ -189,8 +191,14 @@ export default {
 }
 </script>
 <style scoped>
+.image-wrapper {
+  display: flex;
+  align-items: center;
+}
 .image-cropper {
   border-radius: 50%;
   display: inline;
+  width: 30px;
+  aspect-ratio: 1;
 }
 </style>

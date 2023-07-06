@@ -41,8 +41,6 @@
             placeholder="Seleccione imagen"
             @change="uploaded"
           ></my-uploadimage>
-
-          <!-- <img style="height: 90px" :src="attendant.image_url" /> -->
         </v-col>
         <v-col cols="6" md="2">
           <cropper stencil-component="circle-stencil" :src="attendant.image_url" @change="change" />

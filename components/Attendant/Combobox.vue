@@ -25,7 +25,11 @@
         </v-chip>
       </template>
       <template v-slot:item="{ item }">
-        <img class="image-cropper mr-2" width="60px" :src="item.photo" /> {{ item.name }} {{ item.paternal_surname }}
+        <div class="image-wrapper">
+          <v-img class="image-cropper mr-2" :src="item.photo" :lazy-src="item.photo" aspect-ratio="1" contain />
+          {{ item.name }} {{ item.paternal_surname }}
+        </div>
+        <!-- <img class="image-cropper mr-2" width="60px" :src="item.photo" /> {{ item.name }} {{ item.paternal_surname }} -->
         <!-- <v-spacer></v-spacer>  -->
       </template>
     </v-combobox>
@@ -92,6 +96,11 @@ export default {
     this.model = this.attendants || []
   },
   methods: {
+    getLowResPlaceholder(item) {
+      // Use a base64-encoded image as the low-resolution placeholder
+      const lowResImage = 'data:image/png;base64,iVBORw0KG...' // Replace with your base64-encoded image
+      return lowResImage
+    },
     filter(item, queryText, itemText) {
       const hasValue = (val) => (val != null ? val : '')
       const text = hasValue(itemText)
@@ -105,5 +114,11 @@ export default {
 .image-cropper {
   border-radius: 50%;
   display: inline;
+  width: 45px;
+  aspect-ratio: 1;
+}
+.image-wrapper {
+  display: flex;
+  align-items: center;
 }
 </style>
