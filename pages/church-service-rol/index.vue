@@ -14,7 +14,7 @@
         ></v-select>
       </v-col>
       <v-col cols="12" sm="6" md="4" v-for="(service, ix) in church_services" :key="service.id">
-        <v-card class="py-1" :color="ix % 2 == 1 ? 'yellow lighten-5' : ''">
+        <v-card :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''">
           <v-card-text class="py-1 text--primary">
             {{ service.event_date | moment('ddd DD MMM YYYY') }}
             <strong> {{ service.event_date | moment('h:mm a') }}</strong>
@@ -112,6 +112,9 @@ export default {
     }
   },
   methods: {
+    isSunday(date) {
+      return this.$moment(date).day() === 0
+    },
     getDayDiffClass(date) {
       const dayDiff = this.$options.filters.daysDiffFromNow(date)
       if (dayDiff > 0) {

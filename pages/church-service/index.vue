@@ -5,7 +5,7 @@
         <my-datepicker label="Fecha Inicio" v-model="start_date"></my-datepicker>
       </v-col>
       <v-col cols="6" sm="auto">
-        <v-switch v-model="showArrive" :label="showArrive ? 'Hra. LLegada' : 'Hra. Servicio'"></v-switch>
+        <v-switch v-model="showChurchService" :label="!showChurchService ? 'Hra. LLegada' : 'Hra. Servicio'"></v-switch>
       </v-col>
       <v-col cols="6" sm="auto"
         ><v-btn color="success" @click="newChurchService()">
@@ -16,7 +16,7 @@
     </v-row>
     <v-row dense>
       <v-col cols="12" sm="6" md="4" v-for="(service, ix) in church_services" :key="service.id">
-        <v-card :color="ix % 2 == 1 ? 'yellow lighten-5' : ''">
+        <v-card :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''">
           <v-card-actions>
             <v-spacer />
             <v-btn
@@ -33,7 +33,7 @@
           </v-card-actions>
           <v-card-text class="py-1 text--primary">
             {{ service.event_date | moment('dddd DD MMM YYYY') }}
-            <strong v-if="!showArrive"> {{ service.event_date | moment('h:mm a') }}</strong>
+            <strong v-if="showChurchService"> {{ service.event_date | moment('h:mm a') }}</strong>
             <strong v-else> {{ getArriveDate(service.event_date) | moment('h:mm a') }}</strong>
           </v-card-text>
           <v-card-text class="px-1 pt-1 pb-3">
@@ -116,7 +116,7 @@ export default {
       church_services: [],
       myLeaders: [],
       start_date: '2020-01-01',
-      showArrive: false
+      showChurchService: false
     }
   },
   watch: {
@@ -125,6 +125,9 @@ export default {
     }
   },
   methods: {
+    isSunday(date) {
+      return this.$moment(date).day() === 0
+    },
     getArriveDate(date) {
       let _date = this.$moment(date)
       return _date.subtract(40, 'minutes')
