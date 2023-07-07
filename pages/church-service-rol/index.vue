@@ -14,7 +14,7 @@
         ></v-select>
       </v-col>
       <v-col cols="12" sm="6" md="4" v-for="(service, ix) in church_services" :key="service.id">
-        <v-card :color="ix % 2 == 1 ? 'yellow lighten-5' : ''">
+        <v-card class="py-1" :color="ix % 2 == 1 ? 'yellow lighten-5' : ''">
           <v-card-text class="py-1 text--primary">
             {{ service.event_date | moment('ddd DD MMM YYYY') }}
             <strong> {{ service.event_date | moment('h:mm a') }}</strong>
@@ -33,8 +33,8 @@
 
                 <v-row dense>
                   <v-col
-                    class="py-0 mt-0 mb-1 text--primary d-flex align-start remove-line-height"
-                    cols="auto"
+                    class="py-0 mt-0 mb-0 text--primary d-flex align-start remove-line-height"
+                    cols="6"
                     v-for="attendant in ministry.attendants"
                     :key="attendant.id"
                   >

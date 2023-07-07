@@ -44,7 +44,7 @@
                 <v-row dense>
                   <v-col
                     class="py-0 my-0 text--primary d-flex align-center"
-                    cols="auto"
+                    cols="6"
                     v-for="attendant in ministry.attendants"
                     :key="attendant.id"
                   >
