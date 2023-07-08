@@ -25,35 +25,43 @@
               :color="lead.ministry.color"
               class="white--text"
               small
-              @click="assignAttendant(service.church_service_id, lead.ministry)"
+              @click="openChurchService(service.church_service_id, lead.ministry.id)"
             >
               <v-icon>mdi-pencil</v-icon>
               {{ lead.ministry.name }}
             </v-btn>
+            <!-- <v-btn
+              v-for="lead in myLeaders"
+              :key="lead.id"
+              :color="lead.ministry.color"
+              class="white--text"
+              small
+              @click="assignAttendant(service.church_service_id, lead.ministry)"
+            >
+              <v-icon>mdi-pencil</v-icon>
+              {{ lead.ministry.name }}
+            </v-btn> -->
           </v-card-actions>
-          <v-card-text class="py-1 text--primary">
+          <v-card-text class="pt-1 pb-0 text--primary">
             {{ service.event_date | moment('dddd DD MMM YYYY') }}
             <strong v-if="showChurchService"> {{ service.event_date | moment('h:mm a') }}</strong>
             <strong v-else> {{ getArriveDate(service.event_date) | moment('h:mm a') }}</strong>
           </v-card-text>
-          <v-card-text class="px-1 pt-1 pb-3">
+          <v-card-text class="px-1 pt-1 pb-2">
             <v-row dense v-for="ministry in service.ministries" :key="ministry.id">
-              <v-col cols="12"
-                >{{ ministry.name }}
-
-                <v-row dense>
-                  <v-col
-                    class="py-0 my-0 text--primary d-flex align-center"
-                    cols="6"
-                    v-for="attendant in ministry.attendants"
-                    :key="attendant.id"
-                  >
-                    <div class="image-wrapper">
-                      <v-img class="image-cropper mr-1" :lazy-src="attendant.photo" :src="attendant.photo" />
-                      {{ attendant.name }} {{ attendant.paternal_surname }}
-                    </div>
-                  </v-col>
-                </v-row>
+              <v-col cols="12" class="py-0 my-0">
+                <v-chip x-small outlined color="primary">{{ ministry.name }}</v-chip>
+              </v-col>
+              <v-col
+                class="py-0 my-0 text--primary d-flex align-center"
+                cols="6"
+                v-for="attendant in ministry.attendants"
+                :key="attendant.id"
+              >
+                <div class="image-wrapper">
+                  <v-img class="image-cropper mr-1" :lazy-src="attendant.photo" :src="attendant.photo" />
+                  {{ attendant.name }} {{ attendant.paternal_surname }}
+                </div>
               </v-col>
             </v-row>
           </v-card-text>
@@ -61,9 +69,9 @@
       </v-col>
     </v-row>
 
-    <v-dialog v-model="dialogChurchService" persistent width="400px">
+    <v-dialog v-model="modalNewChurchService" persistent width="400px">
       <v-card>
-        <v-card-title> Nuevo Servicio <v-spacer /> <v-icon @click.native="dialogChurchService = false"> $delete </v-icon> </v-card-title>
+        <v-card-title> Nuevo Servicio <v-spacer /> <v-icon @click.native="modalNewChurchService = false"> $delete </v-icon> </v-card-title>
         <v-form ref="form" @submit.prevent="save">
           <v-card-text>
             <v-row dense>
@@ -96,11 +104,17 @@
 
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" class="mr-1" outlined @click.native="dialogChurchService = false"> Cancelar </v-btn>
+          <v-btn color="primary" class="mr-1" outlined @click.native="modalNewChurchService = false"> Cancelar </v-btn>
           <v-btn color="primary" @click="saveChurchService()"> Guardar </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <ChurchServiceMinistryDialog
+      :payload="payloadAssingChurchService"
+      v-if="modalAssingChurchService"
+      @close="modalAssingChurchService = false"
+      @setChurchService="setChurchService"
+    />
   </v-container>
 </template>
 <script>
@@ -108,15 +122,18 @@ export default {
   props: {},
   data() {
     return {
-      dialogChurchService: false,
+      modalNewChurchService: false,
       date: '2018-03-02',
       current: new Date(),
       modal2: false,
       time: null,
       church_services: [],
+      church_service: {},
       myLeaders: [],
       start_date: '2020-01-01',
-      showChurchService: false
+      showChurchService: false,
+      modalAssingChurchService: false,
+      payloadAssingChurchService: {}
     }
   },
   watch: {
@@ -132,6 +149,11 @@ export default {
       let _date = this.$moment(date)
       return _date.subtract(40, 'minutes')
     },
+    setChurchService(item) {
+      let _church_service = this.church_services.find((x) => x.church_service_id == item.church_service_id)
+      _church_service.ministries = item.ministries
+      this.church_services.splice(this.church_services.indexOf(_church_service), 1, _church_service)
+    },
     async getChurchService() {
       let op = {
         sortBy: ['event_date'],
@@ -144,6 +166,10 @@ export default {
     assignAttendant(service_id, ministry) {
       this.$router.push(`/church-service/assign/${service_id}/${ministry.id}`)
     },
+    openChurchService(church_service_id, ministry_id) {
+      this.payloadAssingChurchService = { church_service_id: church_service_id, ministry_id: ministry_id }
+      this.modalAssingChurchService = true
+    },
     allowedStep: (m) => m % 30 === 0,
     // allowedDates: (val) => parseInt(val.split('-')[2], 10) % 2 === 0,
     allowedDates(val) {
@@ -153,7 +179,7 @@ export default {
       return false
     },
     newChurchService() {
-      this.dialogChurchService = true
+      this.modalNewChurchService = true
     },
     async saveChurchService() {
       var churchService = { event_date: this.date + ' ' + this.time }
@@ -161,7 +187,7 @@ export default {
       await this.$repository.ChurchService.create(churchService)
         .then((res) => {
           // this.$router.push('/church-service')
-          this.dialogChurchService = false
+          this.modalNewChurchService = false
         })
         .catch((e) => {})
     }
@@ -202,6 +228,6 @@ export default {
   border-radius: 50%;
   display: inline;
   width: 30px;
-  aspect-ratio: 1;
+  height: 30px;
 }
 </style>

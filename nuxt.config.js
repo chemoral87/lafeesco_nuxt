@@ -204,7 +204,8 @@ export default {
     // lang: {
     //   t: (key, ...params) => app.i18n.t(key, params)
     // },
-    optionsPath: './vuetify.options.js'
+    optionsPath: './vuetify.options.js',
+    customVariables: ['~/assets/variables.scss']
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
