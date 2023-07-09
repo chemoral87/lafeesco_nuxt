@@ -3,49 +3,48 @@
 </template>
 
 <script>
-import { VTextField } from "vuetify/lib";
+import { VTextField } from 'vuetify/lib'
 
 export default {
   extends: VTextField,
   data() {
     return {
-      rawValue: null,
-    };
+      rawValue: null
+    }
   },
   computed: {
     formattedValue: {
       get() {
         // Format the raw value for display
-        if (this.rawValue == null) return "";
-        if ((this.rawValue * 100) % 100 == 0) return `${this.rawValue}`;
-        return `${this.rawValue.toFixed(2)}`;
+        if (this.rawValue == null) return ''
+        if ((this.rawValue * 100) % 100 == 0) return `${this.rawValue}`
+        return `${this.rawValue.toFixed(2)}`
       },
       set(value) {
         // Parse the formatted value and store the raw value
-        if (value == null || value === "") {
-          this.rawValue = null;
+        if (value == null || value === '') {
+          this.rawValue = null
         } else {
           // const regex = /^\$\s(\d+(\.\d{0,2})?)$/; // Original regular expression
-          const regex = /^(\d+(\.\d{0,2})?)$/;
+          const regex = /^(\d+(\.\d{0,2})?)$/
           //const regex = /^\$\s(\d+(\.\d{0,2})?)?$/; // Modified regular expression
-          const matches = regex.exec(value);
+          const matches = regex.exec(value)
           if (matches) {
-            console.log("reg", value);
-            this.rawValue = parseFloat(matches[1]);
+            this.rawValue = parseFloat(matches[1])
           }
         }
-      },
-    },
+      }
+    }
   },
   methods: {
     onInput() {
-      this.$emit("input", this.rawValue);
-    },
+      this.$emit('input', this.rawValue)
+    }
   },
   watch: {
     value() {
-      this.rawValue = this.value;
-    },
-  },
-};
+      this.rawValue = this.value
+    }
+  }
+}
 </script>

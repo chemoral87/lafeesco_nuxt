@@ -1,14 +1,19 @@
 <template>
   <!-- <v-dialog max-width="450px" :value="true" class="ma-1 my-dialog" scrollable persistent> -->
-  <v-dialog max-width="450px" :value="true" class="ma-1 my-dialog" fullscreen hide-overlay>
+  <v-dialog max-width="450px" :value="true" class="ma-1" fullscreen hide-overlay>
     <v-card>
-      <v-card-title class="pa-2 text-title text--primary">
-        <!-- {{ church_service }} -->
+      <v-card-title class="px-2 py-0 text-subtitle-1 text--primary">
         {{ church_service.event_date | moment('ddd DD MMM YYYY -') }}
-        <strong>{{ church_service.event_date | moment('H:mm a') }}</strong>
+
+        <strong v-if="showChurchService"> {{ church_service.event_date | moment('h:mm a') }}</strong>
+        <strong v-else> {{ getArriveDate(church_service.event_date) | moment('h:mm a') }}</strong>
         <v-spacer></v-spacer>
         <v-icon @click.native="close">$delete</v-icon>
       </v-card-title>
+      <v-card-title class="px-2 py-0 text-subtitle-2 text--primary">
+        {{ ministry_name }}
+      </v-card-title>
+
       <v-card-title class="px-2 py-0">
         <AttendantCombobox :attendants.sync="attendants" :ministry_id="ministry_id"></AttendantCombobox>
       </v-card-title>
@@ -19,14 +24,18 @@
               <template v-for="(item, index) in attendants">
                 <v-list-item :key="item.index" class="py-0">
                   <v-list-item-action class="ma-0">
-                    <v-btn :disabled="parseInt(index) == 0" icon @click="swapItem(parseInt(index) - 1, parseInt(index))"
+                    <v-btn small :disabled="parseInt(index) == 0" icon @click="swapItem(parseInt(index) - 1, parseInt(index))"
                       ><v-icon color="green">mdi-arrow-up</v-icon></v-btn
                     >
-                    <v-btn :disabled="parseInt(index) == attendants.length - 1" icon @click="swapItem(parseInt(index), parseInt(index) + 1)"
+                    <v-btn
+                      small
+                      :disabled="parseInt(index) == attendants.length - 1"
+                      icon
+                      @click="swapItem(parseInt(index), parseInt(index) + 1)"
                       ><v-icon color="red">mdi-arrow-down</v-icon></v-btn
                     >
                   </v-list-item-action>
-                  <v-list-item-avatar class="mr-1" width="45px" height="45px">
+                  <v-list-item-avatar class="mr-1" width="43px" height="43px">
                     <v-img :src="item.photo"></v-img>
                   </v-list-item-avatar>
 
@@ -61,7 +70,7 @@
 </template>
 <script>
 export default {
-  props: ['payload'],
+  props: ['payload', 'showChurchService'],
   data() {
     return {
       church_service: {
@@ -70,10 +79,15 @@ export default {
       attendants: [],
       item: {},
       ministry_id: null,
+      ministry_name: null,
       church_service_id: null
     }
   },
   methods: {
+    getArriveDate(date) {
+      let _date = this.$moment(date)
+      return _date.subtract(40, 'minutes')
+    },
     async saveChurchServiceAttendant() {
       this.clearErrors()
       let payload = { attendant_ids: this.attendant_ids, ministry_id: this.ministry_id, church_service_id: this.church_service_id }
@@ -117,13 +131,14 @@ export default {
   },
   mounted() {
     let me = this
-
+    console.log(this.payload)
     this.church_service_id = this.payload.church_service_id
-    this.ministry_id = this.payload.ministry_id
+    this.ministry_id = this.payload.ministry.id
+    this.ministry_name = this.payload.ministry.name
     this.$repository.ChurchService.show(this.church_service_id)
       .then((res) => {
         this.church_service = res
-        let ministry = this.church_service.ministries.find((x) => x.ministry_id == this.ministry_id)
+        let ministry = this.church_service.ministries.find((x) => x.id == this.ministry_id)
         this.attendants = ministry?.attendants || []
       })
 
@@ -131,8 +146,4 @@ export default {
   }
 }
 </script>
-<style scoped>
-.my-dialog {
-  min-height: 52vh; /* set the value as you need */
-}
-</style>
+<style scoped></style>

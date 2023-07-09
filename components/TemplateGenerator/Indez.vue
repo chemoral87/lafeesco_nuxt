@@ -141,10 +141,6 @@ export default {
 
   mounted() {
     let me = this
-    // let str = this.model_name.toLowerCase();
-    // console.log(str);
-    // this.Modelname = str.charAt(0).toUpperCase() + str.slice(1);
-    // console.log(this.Modelname);
   }
 }
 </script>

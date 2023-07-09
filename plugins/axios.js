@@ -7,7 +7,6 @@ export default function (context) {
     }
 
     if (error.response) {
-      console.log(error.response.data)
       if (error.response.status === 422 || error.response.status === 401) {
         context.store.dispatch(
           'validation/setErrors',
@@ -15,6 +14,9 @@ export default function (context) {
 
           // error.response.data.errors
         )
+        let err = error.response.data
+
+        if (err.message) context.store.dispatch('notify', { error: err.message })
       }
     }
     context.store.dispatch('hideLoading')

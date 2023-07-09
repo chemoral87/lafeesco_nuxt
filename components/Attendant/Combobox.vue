@@ -114,7 +114,7 @@ export default {
 .image-cropper {
   border-radius: 50%;
   display: inline;
-  width: 45px;
+  width: 43px;
   aspect-ratio: 1;
 }
 .image-wrapper {

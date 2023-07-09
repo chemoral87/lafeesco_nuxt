@@ -33,7 +33,6 @@ export default {
       this.$emit('input', this.date_value)
     },
     value(val) {
-      console.log(val, 'ingresa')
       this.date_value = val
     }
   },

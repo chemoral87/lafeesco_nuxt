@@ -25,22 +25,11 @@
               :color="lead.ministry.color"
               class="white--text"
               small
-              @click="openChurchService(service.church_service_id, lead.ministry.id)"
+              @click="openChurchService(service.id, lead.ministry)"
             >
               <v-icon>mdi-pencil</v-icon>
               {{ lead.ministry.name }}
             </v-btn>
-            <!-- <v-btn
-              v-for="lead in myLeaders"
-              :key="lead.id"
-              :color="lead.ministry.color"
-              class="white--text"
-              small
-              @click="assignAttendant(service.church_service_id, lead.ministry)"
-            >
-              <v-icon>mdi-pencil</v-icon>
-              {{ lead.ministry.name }}
-            </v-btn> -->
           </v-card-actions>
           <v-card-text class="pt-1 pb-0 text--primary">
             {{ service.event_date | moment('dddd DD MMM YYYY') }}
@@ -50,7 +39,7 @@
           <v-card-text class="px-1 pt-1 pb-2">
             <v-row dense v-for="ministry in service.ministries" :key="ministry.id">
               <v-col cols="12" class="py-0 my-0">
-                <v-chip x-small outlined color="primary">{{ ministry.name }}</v-chip>
+                <v-chip x-small outlined color="primary">{{ ministry.name }} {{ ministry.order }}</v-chip>
               </v-col>
               <v-col
                 class="py-0 my-0 text--primary d-flex align-center"
@@ -60,7 +49,7 @@
               >
                 <div class="image-wrapper">
                   <v-img class="image-cropper mr-1" :lazy-src="attendant.photo" :src="attendant.photo" />
-                  {{ attendant.name }} {{ attendant.paternal_surname }}
+                  {{ attendant.name }} {{ attendant.paternal_surname }} {{ attendant.seq }}
                 </div>
               </v-col>
             </v-row>
@@ -111,6 +100,7 @@
     </v-dialog>
     <ChurchServiceMinistryDialog
       :payload="payloadAssingChurchService"
+      :showChurchService="showChurchService"
       v-if="modalAssingChurchService"
       @close="modalAssingChurchService = false"
       @setChurchService="setChurchService"
@@ -151,7 +141,7 @@ export default {
     },
     setChurchService(item) {
       let _church_service = this.church_services.find((x) => x.church_service_id == item.church_service_id)
-      _church_service.ministries = item.ministries
+      _church_service.ministries = item?.ministries || []
       this.church_services.splice(this.church_services.indexOf(_church_service), 1, _church_service)
     },
     async getChurchService() {
@@ -166,8 +156,8 @@ export default {
     assignAttendant(service_id, ministry) {
       this.$router.push(`/church-service/assign/${service_id}/${ministry.id}`)
     },
-    openChurchService(church_service_id, ministry_id) {
-      this.payloadAssingChurchService = { church_service_id: church_service_id, ministry_id: ministry_id }
+    openChurchService(church_service_id, ministry) {
+      this.payloadAssingChurchService = { church_service_id: church_service_id, ministry: ministry }
       this.modalAssingChurchService = true
     },
     allowedStep: (m) => m % 30 === 0,
