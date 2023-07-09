@@ -76,7 +76,8 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
-    '@nuxtjs/moment'
+    '@nuxtjs/moment',
+    'nuxt-webpack-optimisations'
   ],
   googleAnalytics: {
     id: 'G-8H2274BQF6',
