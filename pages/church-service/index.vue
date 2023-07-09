@@ -156,7 +156,7 @@ export default {
       return _date.subtract(40, 'minutes')
     },
     setChurchService(item) {
-      let _church_service = this.church_services.find((x) => x.church_service_id == item.church_service_id)
+      let _church_service = this.church_services.find((x) => x.id == item.id)
       _church_service.ministries = item?.ministries || []
       this.church_services.splice(this.church_services.indexOf(_church_service), 1, _church_service)
     },
