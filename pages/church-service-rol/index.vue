@@ -11,9 +11,10 @@
           item-value="id"
           item-text="name"
           :clearable="true"
+          multiple
         ></v-select>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-for="(service, ix) in church_services" :key="service.id">
+      <v-col cols="12" sm="6" md="4" v-for="service in church_services" :key="service.id">
         <v-card :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''">
           <v-card-text class="py-1 text--primary">
             {{ service.event_date | moment('ddd DD MMM YYYY') }}

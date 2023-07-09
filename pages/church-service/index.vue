@@ -1,6 +1,18 @@
 <template>
   <v-container class="pa-2">
     <v-row dense>
+      <v-col cols="6" sm="3">
+        <v-select
+          outlined
+          hide-details
+          label="Ministerios"
+          v-model="ministry_id_combo"
+          :items="ministries"
+          item-value="id"
+          item-text="name"
+          :clearable="true"
+        ></v-select>
+      </v-col>
       <v-col cols="6" sm="auto">
         <my-datepicker label="Fecha Inicio" v-model="start_date"></my-datepicker>
       </v-col>
@@ -38,20 +50,22 @@
           </v-card-text>
           <v-card-text class="px-1 pt-1 pb-2">
             <v-row dense v-for="ministry in service.ministries" :key="ministry.id">
-              <v-col cols="12" class="py-0 my-0">
-                <v-chip x-small outlined color="primary">{{ ministry.name }} {{ ministry.order }}</v-chip>
-              </v-col>
-              <v-col
-                class="py-0 my-0 text--primary d-flex align-center"
-                cols="6"
-                v-for="attendant in ministry.attendants"
-                :key="attendant.id"
-              >
-                <div class="image-wrapper">
-                  <v-img class="image-cropper mr-1" :lazy-src="attendant.photo" :src="attendant.photo" />
-                  {{ attendant.name }} {{ attendant.paternal_surname }} {{ attendant.seq }}
-                </div>
-              </v-col>
+              <template v-if="ministry_id_combo == null || ministry_id_combo == ministry.id">
+                <v-col cols="12" class="py-0 my-0">
+                  <v-chip x-small outlined color="primary">{{ ministry.name }} {{ ministry.order }}</v-chip>
+                </v-col>
+                <v-col
+                  class="py-0 my-0 text--primary d-flex align-center"
+                  cols="6"
+                  v-for="attendant in ministry.attendants"
+                  :key="attendant.id"
+                >
+                  <div class="image-wrapper">
+                    <v-img class="image-cropper mr-1" :lazy-src="attendant.photo" :src="attendant.photo" />
+                    {{ attendant.name }} {{ attendant.paternal_surname }} {{ attendant.seq }}
+                  </div>
+                </v-col>
+              </template>
             </v-row>
           </v-card-text>
         </v-card>
@@ -123,7 +137,9 @@ export default {
       start_date: '2020-01-01',
       showChurchService: false,
       modalAssingChurchService: false,
-      payloadAssingChurchService: {}
+      payloadAssingChurchService: {},
+      ministries: [],
+      ministry_id_combo: null
     }
   },
   watch: {
@@ -187,7 +203,7 @@ export default {
     let me = this
     this.date = this.$moment().format('YYYY-MM-DD')
     this.current = this.$moment().format('YYYY-MM-DD')
-
+    this.ministry_id_combo = (this.myLeaders && this.myLeaders[0].ministry_id) || null
     this.getChurchService()
   },
   async asyncData({ $axios, app }) {
@@ -197,9 +213,14 @@ export default {
       itemsPerPage: 30
     }
     let start_date = app.$moment().format('YYYY-MM-DD')
+    const ministries = await app.$repository.Ministry.index({
+      sortBy: ['name'],
+      sortDesc: [false],
+      itemsPerPage: 50
+    })
     const myLeaders = await app.$repository.MinistryLeader.my().catch((e) => {})
     // const church_services = await app.$repository.ChurchService.index(op).catch((e) => {})
-    return { myLeaders: myLeaders, options: op, start_date: start_date }
+    return { ministries: ministries.data, myLeaders: myLeaders, options: op, start_date: start_date }
   },
   created() {
     this.$nuxt.$emit('setNavBar', {
