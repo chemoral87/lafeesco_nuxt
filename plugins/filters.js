@@ -23,8 +23,8 @@ Vue.filter('daysDiff', function (value, otherValue) {
 
 Vue.filter('daysDiffFromNow', function (value) {
   if (!value) return ''
-  const now = moment()
-  const date = moment(value)
+  const now = moment().startOf('day')
+  const date = moment(value).startOf('day')
   return now.diff(date, 'days')
 })
 // Vue.filter("currency", function(value) {
