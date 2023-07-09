@@ -48,6 +48,9 @@
                       </v-chip>
                     </v-list-item-title>
                   </v-list-item-content>
+                  <v-list-item-action class="ma-0">
+                    <v-btn small icon @click="deleteItem(index)"><v-icon color="error">mdi-delete</v-icon></v-btn>
+                  </v-list-item-action>
                 </v-list-item>
                 <v-divider v-if="index < attendants.length - 1" :key="index"></v-divider>
               </template>
@@ -115,6 +118,11 @@ export default {
       this.attendants[ix1] = this.attendants[ix2]
       this.attendants[ix2] = temp
       this.attendants = Object.assign([], this.attendants)
+    },
+    deleteItem(ix) {
+      if (ix < 0 || ix >= this.attendants.length) return
+      this.attendants.splice(ix, 1)
+      this.attendants = [...this.attendants]
     },
     getMinistryAssigned(item) {
       if (this.errors) {
