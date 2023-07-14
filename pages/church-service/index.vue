@@ -52,7 +52,7 @@
             <v-row dense v-for="ministry in service.ministries" :key="ministry.id">
               <template v-if="ministry_id_combo == null || ministry_id_combo == ministry.id">
                 <v-col cols="12" class="py-0 my-0">
-                  <v-chip x-small outlined color="primary">{{ ministry.name }} {{ ministry.order }}</v-chip>
+                  <v-chip x-small outlined color="primary">{{ ministry.name }} </v-chip>
                 </v-col>
                 <v-col
                   class="py-0 my-0 text--primary d-flex align-center"
@@ -62,7 +62,7 @@
                 >
                   <div class="image-wrapper">
                     <v-img class="image-cropper mr-1" :lazy-src="attendant.photo" :src="attendant.photo" />
-                    {{ attendant.name }} {{ attendant.paternal_surname }} {{ attendant.seq }}
+                    {{ attendant.name }} {{ attendant.paternal_surname }}
                   </div>
                 </v-col>
               </template>

@@ -81,8 +81,13 @@ export class MenuService {
       if (this.hasPermission('church-service-index')) {
         menu.push({
           icon: 'mdi-church',
-          title: 'Servicios Generales',
+          title: 'Servicio General',
           to: '/church-service'
+        })
+        menu.push({
+          icon: 'mdi-church',
+          title: 'Visor Servicio G.',
+          to: '/church-service-rol'
         })
       }
 
@@ -99,8 +104,13 @@ export class MenuService {
         })
         menu.push({
           icon: 'mdi-church',
-          title: 'Servicios Generales',
+          title: 'Servicio General',
           to: '/church-service'
+        })
+        menu.push({
+          icon: 'mdi-church',
+          title: 'Visor Servicio G.',
+          to: '/church-service-rol'
         })
         menu.push({
           icon: 'mdi-human-greeting-variant',
