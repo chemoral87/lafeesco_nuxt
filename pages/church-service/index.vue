@@ -2,7 +2,8 @@
   <v-container fluid class="pa-2">
     <v-row dense>
       <v-col cols="6" sm="3">
-        <v-select
+        <MinistrySelect :ministries="ministries" v-model="selectedMinistries"></MinistrySelect>
+        <!-- <v-select
           outlined
           hide-details
           label="Ministerios"
@@ -11,13 +12,13 @@
           item-value="id"
           item-text="name"
           :clearable="true"
-        ></v-select>
+        ></v-select> -->
       </v-col>
       <v-col cols="6" sm="auto">
-        <my-datepicker label="Fecha Inicio" v-model="start_date"></my-datepicker>
+        <my-datepicker hide-details outlined label="Fecha Inicio" v-model="start_date"></my-datepicker>
       </v-col>
       <v-col cols="6" sm="auto">
-        <v-switch v-model="showChurchService" :label="!showChurchService ? 'Hra. LLegada' : 'Hra. Servicio'"></v-switch>
+        <v-switch hide-details v-model="showChurchService" :label="!showChurchService ? 'Hra. LLegada' : 'Hra. Servicio'"></v-switch>
       </v-col>
       <v-col cols="6" sm="auto"
         ><v-btn color="success" @click="newChurchService()">
@@ -47,7 +48,7 @@
           </v-card-text>
           <v-card-text class="px-1 pt-1 pb-2">
             <v-row dense v-for="ministry in service.ministries" :key="ministry.id">
-              <template v-if="ministry_id_combo == null || ministry_id_combo == ministry.id">
+              <template v-if="displayFromSelectedMinistry(ministry.id)">
                 <v-col cols="12" class="py-0 my-0">
                   <v-chip x-small outlined :color="ministry.color">{{ ministry.name | uppercase }} </v-chip>
                 </v-col>
@@ -124,6 +125,7 @@ export default {
   data() {
     return {
       modalNewChurchService: false,
+      selectedMinistries: [],
       date: '2018-03-02',
       current: new Date(),
       modal2: false,
@@ -145,6 +147,11 @@ export default {
     }
   },
   methods: {
+    displayFromSelectedMinistry(ministry_id) {
+      if (this.selectedMinistries.length == 0) return true
+      else if (this.selectedMinistries.indexOf(ministry_id) > -1) return true
+      return false
+    },
     isSunday(date) {
       return this.$moment(date).day() === 0
     },
@@ -218,6 +225,7 @@ export default {
     this.date = this.$moment().format('YYYY-MM-DD')
     this.current = this.$moment().format('YYYY-MM-DD')
     this.ministry_id_combo = (this.myLeaders && this.myLeaders[0].ministry_id) || null
+    this.selectedMinistries = this.myLeaders.map((x) => x.ministry_id)
     this.getChurchService()
   },
   async asyncData({ $axios, app }) {
