@@ -43,3 +43,8 @@ Vue.filter('toCurrency', function (value) {
   })
   return formatter.format(value)
 })
+
+Vue.filter('uppercase', function (value) {
+  if (!value) return ''
+  return value.toString().toUpperCase()
+})

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-2">
+  <v-container fluid class="pa-2">
     <v-row dense>
       <v-col cols="6" sm="3">
         <v-select
@@ -27,23 +27,20 @@
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="12" sm="6" md="4" v-for="(service, ix) in church_services" :key="service.id">
+      <v-col cols="12" sm="6" md="3" v-for="(service, ix) in church_services" :key="service.id">
         <v-card :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''">
-          <v-card-actions>
-            <v-spacer />
-            <v-btn
-              v-for="lead in myLeaders"
-              :key="lead.id"
-              :color="lead.ministry.color"
-              class="white--text"
-              small
-              @click="openChurchService(service.id, lead.ministry)"
-            >
-              <v-icon>mdi-pencil</v-icon>
-              {{ lead.ministry.name }}
-            </v-btn>
-          </v-card-actions>
+          <v-card-text class="pa-1">
+            <v-row dense>
+              <v-col cols="auto" v-for="lead in myLeaders" :key="lead.id">
+                <v-btn :color="lead.ministry.color" class="white--text" small @click="openChurchService(service.id, lead.ministry)">
+                  <v-icon>mdi-pencil</v-icon>
+                  {{ lead.ministry.name }}
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
           <v-card-text class="pt-1 pb-0 text--primary">
+            <strong>{{ getServiceNumber(service.event_date) }}</strong>
             {{ service.event_date | moment('dddd DD MMM YYYY') }}
             <strong v-if="showChurchService"> {{ service.event_date | moment('h:mm a') }}</strong>
             <strong v-else> {{ getArriveDate(service.event_date) | moment('h:mm a') }}</strong>
@@ -52,7 +49,7 @@
             <v-row dense v-for="ministry in service.ministries" :key="ministry.id">
               <template v-if="ministry_id_combo == null || ministry_id_combo == ministry.id">
                 <v-col cols="12" class="py-0 my-0">
-                  <v-chip x-small outlined color="primary">{{ ministry.name }} </v-chip>
+                  <v-chip x-small outlined :color="ministry.color">{{ ministry.name | uppercase }} </v-chip>
                 </v-col>
                 <v-col
                   class="py-0 my-0 text--primary d-flex align-center"
@@ -150,6 +147,23 @@ export default {
   methods: {
     isSunday(date) {
       return this.$moment(date).day() === 0
+    },
+    getServiceNumber(date) {
+      let hours = this.$moment(date).hours()
+      let minutes = this.$moment(date).minutes()
+      const time = `${hours}:${minutes}`
+
+      switch (time) {
+        case '9:0':
+        case '19:30':
+          return '1º'
+        case '11:30':
+          return '2º'
+        case '18:0':
+          return '3º'
+        default:
+          return '0º'
+      }
     },
     getArriveDate(date) {
       let _date = this.$moment(date)

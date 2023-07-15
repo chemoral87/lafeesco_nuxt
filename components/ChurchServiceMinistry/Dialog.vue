@@ -1,10 +1,9 @@
 <template>
   <!-- <v-dialog max-width="450px" :value="true" class="ma-1 my-dialog" scrollable persistent> -->
-  <v-dialog max-width="450px" :value="true" class="ma-1" fullscreen hide-overlay>
-    <v-card>
+  <v-dialog :value="true" class="ma-1" :max-width="dialogMaxWidth" :fullscreen="canFullScreen" persistent>
+    <v-card :max-width="600">
       <v-card-title class="px-2 py-0 text-subtitle-1 text--primary">
         {{ church_service.event_date | moment('ddd DD MMM YYYY -') }}
-
         <strong v-if="showChurchService"> {{ church_service.event_date | moment('h:mm a') }}</strong>
         <strong v-else> {{ getArriveDate(church_service.event_date) | moment('h:mm a') }}</strong>
         <v-spacer></v-spacer>
@@ -135,6 +134,20 @@ export default {
   computed: {
     attendant_ids() {
       return this.attendants.map((x) => x.id)
+    },
+    canFullScreen() {
+      if (this.$vuetify.breakpoint.mdAndUp) return false
+      return true
+    },
+    dialogMaxWidth() {
+      // If the screen size is greater than or equal to the size of "md"
+      if (this.$vuetify.breakpoint.mdAndUp) {
+        // for larger screens, set max-width to 600px
+        return '600px'
+      } else {
+        // for smaller screens, set max-width to 90% of the viewport width
+        return ''
+      }
     }
   },
   mounted() {

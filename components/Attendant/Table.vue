@@ -57,9 +57,11 @@
         </div>
       </template>
       <template v-slot:[`item.ministries`]="{ item }">
-        <v-chip v-for="it in item.ministries" :key="it.id" class="ma-2" color="primary">
-          {{ it.name }}
-        </v-chip>
+        <template v-for="it in item.ministries">
+          <v-chip class="ma-2" :color="it.color" outlined>
+            <strong> {{ it.name }} </strong>
+          </v-chip>
+        </template>
       </template>
     </v-data-table>
     <DialogDelete
