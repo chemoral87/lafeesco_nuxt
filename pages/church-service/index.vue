@@ -3,16 +3,6 @@
     <v-row dense>
       <v-col cols="6" sm="3">
         <MinistrySelect :ministries="ministries" v-model="selectedMinistries"></MinistrySelect>
-        <!-- <v-select
-          outlined
-          hide-details
-          label="Ministerios"
-          v-model="ministry_id_combo"
-          :items="ministries"
-          item-value="id"
-          item-text="name"
-          :clearable="true"
-        ></v-select> -->
       </v-col>
       <v-col cols="6" sm="auto">
         <my-datepicker hide-details outlined label="Fecha Inicio" v-model="start_date"></my-datepicker>
@@ -28,7 +18,7 @@
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="12" sm="6" md="3" v-for="(service, ix) in church_services" :key="service.id">
+      <v-col cols="12" sm="6" md="4" lg="3" v-for="(service, ix) in church_services" :key="service.id">
         <v-card :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''">
           <v-card-text class="pa-1">
             <v-row dense>
@@ -46,26 +36,7 @@
             <strong v-if="showChurchService"> {{ service.event_date | moment('h:mm a') }}</strong>
             <strong v-else> {{ getArriveDate(service.event_date) | moment('h:mm a') }}</strong>
           </v-card-text>
-          <v-card-text class="px-1 pt-1 pb-2">
-            <v-row dense v-for="ministry in service.ministries" :key="ministry.id">
-              <template v-if="displayFromSelectedMinistry(ministry.id)">
-                <v-col cols="12" class="py-0 my-0">
-                  <v-chip x-small outlined :color="ministry.color">{{ ministry.name | uppercase }} </v-chip>
-                </v-col>
-                <v-col
-                  class="py-0 my-0 text--primary d-flex align-center"
-                  cols="6"
-                  v-for="attendant in ministry.attendants"
-                  :key="attendant.id"
-                >
-                  <div class="image-wrapper">
-                    <v-img class="image-cropper mr-1" :lazy-src="attendant.photo" :src="attendant.photo" />
-                    {{ attendant.name }} {{ attendant.paternal_surname }}
-                  </div>
-                </v-col>
-              </template>
-            </v-row>
-          </v-card-text>
+          <MinistryAttendantCard :selectedMinistries="selectedMinistries" :service_ministries="service.ministries" />
         </v-card>
       </v-col>
     </v-row>
@@ -137,8 +108,7 @@ export default {
       showChurchService: false,
       modalAssingChurchService: false,
       payloadAssingChurchService: {},
-      ministries: [],
-      ministry_id_combo: null
+      ministries: []
     }
   },
   watch: {
@@ -147,11 +117,11 @@ export default {
     }
   },
   methods: {
-    displayFromSelectedMinistry(ministry_id) {
-      if (this.selectedMinistries.length == 0) return true
-      else if (this.selectedMinistries.indexOf(ministry_id) > -1) return true
-      return false
-    },
+    // displayFromSelectedMinistry(ministry_id) {
+    //   if (this.selectedMinistries.length == 0) return true
+    //   else if (this.selectedMinistries.indexOf(ministry_id) > -1) return true
+    //   return false
+    // },
     isSunday(date) {
       return this.$moment(date).day() === 0
     },
@@ -224,7 +194,7 @@ export default {
     let me = this
     this.date = this.$moment().format('YYYY-MM-DD')
     this.current = this.$moment().format('YYYY-MM-DD')
-    this.ministry_id_combo = (this.myLeaders && this.myLeaders[0].ministry_id) || null
+    // this.ministry_id_combo = (this.myLeaders && this.myLeaders[0].ministry_id) || null
     this.selectedMinistries = this.myLeaders.map((x) => x.ministry_id)
     this.getChurchService()
   },
@@ -252,15 +222,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-.image-wrapper {
-  display: flex;
-  align-items: center;
-}
-.image-cropper {
-  border-radius: 50%;
-  display: inline;
-  width: 30px;
-  height: 30px;
-}
-</style>

@@ -1,22 +1,15 @@
 <template>
-  <v-container class="pa-2">
+  <v-container fluid class="pa-2">
     <v-row dense>
-      <v-col cols="12">
-        <v-select
-          outlined
-          hide-details
-          label="Ministerios"
-          v-model="ministry_id_combo"
-          :items="ministries"
-          item-value="id"
-          item-text="name"
-          :clearable="true"
-          multiple
-        ></v-select>
+      <v-col cols="6" sm="3">
+        <MinistrySelect :ministries="ministries" v-model="selectedMinistries"></MinistrySelect>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-for="service in church_services" :key="service.id">
+    </v-row>
+    <v-row dense>
+      <v-col cols="12" sm="6" md="4" lg="3" v-for="service in church_services" :key="service.id">
         <v-card :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''">
-          <v-card-text class="py-1 text--primary">
+          <v-card-text class="py-1 pb-0 text--primary">
+            <strong>{{ getServiceNumber(service.event_date) }}</strong>
             {{ service.event_date | moment('ddd DD MMM YYYY') }}
             <strong> {{ service.event_date | moment('h:mm a') }}</strong>
 
@@ -25,31 +18,32 @@
               <strong v-else> {{ service.event_date | humanize }} </strong>
             </v-chip>
           </v-card-text>
-          <v-card-text class="py-0 px-2">
+          <MinistryAttendantCard :selectedMinistries="selectedMinistries" :service_ministries="service.ministries" />
+          <!-- <v-card-text class="px-1 pt-1 pb-2">
             <v-row dense v-for="ministry in service.ministries" :key="ministry.ministry_id">
-              <v-col cols="12" v-if="ministry_id_combo == null || ministry_id_combo == ministry.ministry_id">
-                <span v-if="ministry_id_combo == null">
-                  {{ ministry.name }}
-                </span>
+              <template v-if="displayFromSelectedMinistry(ministry.id)">
+                <v-col cols="12" class="py-0 my-0">
+                  <span v-if="ministry_id_combo == null">
+                    {{ ministry.name }}
+                  </span>
 
-                <v-row dense>
-                  <v-col
-                    class="py-0 mt-0 mb-0 text--primary d-flex align-start remove-line-height"
-                    cols="6"
-                    v-for="attendant in ministry.attendants"
-                    :key="attendant.id"
-                  >
-                    <div class="image-wrapper">
-                      <v-img class="image-cropper mr-1" :lazy-src="attendant.photo" :src="attendant.photo" />
-                      {{ attendant.name }} {{ attendant.paternal_surname }}
-                    </div>
-                    <!-- <img class="image-cropper mr-1" width="42px" :src="attendant.photo" /> {{ attendant.name }}
-                    {{ attendant.paternal_surname }} -->
-                  </v-col>
-                </v-row>
-              </v-col>
+                  <v-row dense>
+                    <v-col
+                      class="py-0 mt-0 mb-0 text--primary d-flex align-start remove-line-height"
+                      cols="6"
+                      v-for="attendant in ministry.attendants"
+                      :key="attendant.id"
+                    >
+                      <div class="image-wrapper">
+                        <v-img class="image-cropper mr-1" :lazy-src="attendant.photo" :src="attendant.photo" />
+                        {{ attendant.name }} {{ attendant.paternal_surname }}
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </template>
             </v-row>
-          </v-card-text>
+          </v-card-text> -->
         </v-card>
       </v-col>
     </v-row>
@@ -108,14 +102,42 @@ export default {
       time: null,
       church_services: [],
       myLeaders: [],
-      ministry_id_combo: null,
-      ministries: [{ id: '', name: '' }]
+
+      ministries: [{ id: '', name: '' }],
+      selectedMinistries: []
     }
   },
   methods: {
+    async getChurchService() {
+      let op = {
+        sortBy: ['event_date'],
+        sortDesc: [false],
+        itemsPerPage: 50
+        // start_date: this.start_date
+      }
+      this.church_services = await this.$repository.ChurchService.index(op).catch((e) => {})
+    },
     isSunday(date) {
       return this.$moment(date).day() === 0
     },
+    getServiceNumber(date) {
+      let hours = this.$moment(date).hours()
+      let minutes = this.$moment(date).minutes()
+      const time = `${hours}:${minutes}`
+
+      switch (time) {
+        case '9:0':
+        case '19:30':
+          return '1º'
+        case '11:30':
+          return '2º'
+        case '18:0':
+          return '3º'
+        default:
+          return '0º'
+      }
+    },
+
     getDayDiffClass(date) {
       const dayDiff = this.$options.filters.daysDiffFromNow(date)
       if (dayDiff > 0) {
@@ -158,6 +180,9 @@ export default {
     let me = this
     this.date = this.$moment().format('YYYY-MM-DD')
     this.current = this.$moment().format('YYYY-MM-DD')
+
+    this.selectedMinistries = this.myLeaders.map((x) => x.ministry_id)
+    this.getChurchService()
   },
   async asyncData({ $axios, app }) {
     let op = {
@@ -172,8 +197,8 @@ export default {
       itemsPerPage: 50
     }
     const ministries = await app.$repository.Ministry.index(opMin)
-    const church_services = await app.$repository.ChurchService.index(op).catch((e) => {})
-    return { ministries: ministries.data, myLeaders: myLeaders, church_services: church_services, options: op }
+    // const church_services = await app.$repository.ChurchService.index(op).catch((e) => {})
+    return { ministries: ministries.data, myLeaders: myLeaders, options: op }
   },
   created() {
     this.$nuxt.$emit('setNavBar', {
@@ -184,7 +209,7 @@ export default {
 }
 </script>
 <style scoped>
-.image-wrapper {
+/* .image-wrapper {
   display: flex;
   align-items: center;
 }
@@ -193,8 +218,8 @@ export default {
   display: inline;
   width: 30px;
   aspect-ratio: 1;
-}
-.remove-line-height {
+} */
+/* .remove-line-height {
   line-height: normal;
 }
 .image-cropper {
@@ -210,5 +235,5 @@ export default {
 }
 .bg-blue {
   color: blue;
-}
+} */
 </style>

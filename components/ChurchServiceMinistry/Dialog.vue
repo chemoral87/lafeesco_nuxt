@@ -1,6 +1,6 @@
 <template>
   <!-- <v-dialog max-width="450px" :value="true" class="ma-1 my-dialog" scrollable persistent> -->
-  <v-dialog :value="true" class="ma-1" :max-width="dialogMaxWidth" :fullscreen="canFullScreen" persistent>
+  <v-dialog :value="true" class="ma-1" :fullscreen="canFullScreen" :max-width="dialogMaxWidth" persistent scrollable>
     <v-card :max-width="600">
       <v-card-title class="px-2 py-0 text-subtitle-1 text--primary">
         {{ church_service.event_date | moment('ddd DD MMM YYYY -') }}
