@@ -117,11 +117,6 @@ export default {
     }
   },
   methods: {
-    // displayFromSelectedMinistry(ministry_id) {
-    //   if (this.selectedMinistries.length == 0) return true
-    //   else if (this.selectedMinistries.indexOf(ministry_id) > -1) return true
-    //   return false
-    // },
     isSunday(date) {
       return this.$moment(date).day() === 0
     },
