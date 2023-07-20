@@ -10,11 +10,7 @@
                 class="d-block ml-auto mr-auto"
                 max-width="350px"
               /> -->
-              <v-img
-                src="/img/mapi.png"
-                class="d-block ml-auto mr-auto"
-                max-width="300px"
-              />
+              <v-img src="/img/mapi.png" class="d-block ml-auto mr-auto" max-width="300px" />
             </v-col>
             <v-col cols="12" sm="8" class="white--text text-left">
               <span class="font-weight-light text-h3 mb-2">Contacto</span>
@@ -24,15 +20,7 @@
                 66057 Cd Gral Escobedo, N.L., México
               </span>
               <br />
-              <v-btn
-                rounded
-                outlined
-                href="https://goo.gl/maps/fsAoiGp5CDwHFa3a8"
-                target="_blank"
-                large
-                color="white"
-                class="mt-4"
-              >
+              <v-btn rounded outlined href="https://goo.gl/maps/fsAoiGp5CDwHFa3a8" target="_blank" large color="white" class="mt-4">
                 <v-icon class="mr-2"> mdi-map-marker </v-icon>
                 Google Maps
               </v-btn>
@@ -47,7 +35,7 @@
 <style scoped>
 #contact {
   /* background-image: url("~@/assets/img/bgDownload.jpg"); */
-  background-image: url("/img/bgdrawer.png");
+  background-image: url('/img/bgdrawer-min.png');
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
