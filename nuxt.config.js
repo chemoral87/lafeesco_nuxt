@@ -87,6 +87,7 @@ export default {
     defaultLocale: 'es',
     locales: ['es']
   },
+
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
@@ -205,7 +206,10 @@ export default {
     // lang: {
     //   t: (key, ...params) => app.i18n.t(key, params)
     // },
+    treeShake: true,
+
     optionsPath: './vuetify.options.js',
+
     customVariables: ['~/assets/variables.scss']
   },
 
