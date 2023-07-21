@@ -35,7 +35,7 @@
             </v-col>
             <v-col cols="12">
               <v-btn type="submit" color="primary" class="mr-2 mb-8">Iniciar Sesión</v-btn>
-              <v-btn outlined color="primary" class="mr-2 mb-8">Olvidaste tu contraseña?</v-btn>
+              <v-btn outlined color="primary" class="mr-2 mb-8" @click="$router.push('/forgot-password')">Olvidaste tu contraseña?</v-btn>
             </v-col>
           </v-row>
         </v-form>

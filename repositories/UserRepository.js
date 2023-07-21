@@ -8,10 +8,18 @@ export default ($axios) => (resource) => {
   const register = (payload) => {
     return $axios.$post(`${resource}/register`, payload)
   }
+  const sendResetCode = (payload) => {
+    return $axios.$post(`${resource}/send-code`, payload)
+  }
+  const resetPassword = (payload) => {
+    return $axios.$post(`${resource}/reset-password`, payload)
+  }
 
   // Return a new object with all methods from commonRepo and the new register method
   return {
     ...commonRepo,
-    register
+    register,
+    sendResetCode,
+    resetPassword
   }
 }
