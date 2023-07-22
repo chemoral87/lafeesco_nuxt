@@ -4,6 +4,10 @@
       <v-col cols="6" sm="3">
         <MinistrySelect :ministries="ministries" v-model="selectedMinistries"></MinistrySelect>
       </v-col>
+
+      <v-col cols="6" sm="auto">
+        <v-switch hide-details v-model="showChurchService" :label="!showChurchService ? 'Hra. LLegada' : 'Hra. Servicio'"></v-switch>
+      </v-col>
     </v-row>
     <v-row dense>
       <v-col cols="12" sm="6" md="4" lg="3" v-for="service in church_services" :key="service.id">
@@ -11,7 +15,8 @@
           <v-card-text class="py-1 pb-0 text--primary">
             <strong>{{ getServiceNumber(service.event_date) }}</strong>
             {{ service.event_date | moment('ddd DD MMM YYYY') }}
-            <strong> {{ service.event_date | moment('h:mm a') }}</strong>
+            <strong v-if="showChurchService"> {{ service.event_date | moment('h:mm a') }}</strong>
+            <strong v-else> {{ getArriveDate(service.event_date) | moment('h:mm a') }}</strong>
 
             <v-chip small outlined :color="getDayDiffClass(service.event_date)">
               <strong v-if="getDayDiff(service.event_date) == 0"> HOY </strong>
@@ -19,31 +24,6 @@
             </v-chip>
           </v-card-text>
           <MinistryAttendantCard :selectedMinistries="selectedMinistries" :service_ministries="service.ministries" />
-          <!-- <v-card-text class="px-1 pt-1 pb-2">
-            <v-row dense v-for="ministry in service.ministries" :key="ministry.ministry_id">
-              <template v-if="displayFromSelectedMinistry(ministry.id)">
-                <v-col cols="12" class="py-0 my-0">
-                  <span v-if="ministry_id_combo == null">
-                    {{ ministry.name }}
-                  </span>
-
-                  <v-row dense>
-                    <v-col
-                      class="py-0 mt-0 mb-0 text--primary d-flex align-start remove-line-height"
-                      cols="6"
-                      v-for="attendant in ministry.attendants"
-                      :key="attendant.id"
-                    >
-                      <div class="image-wrapper">
-                        <v-img class="image-cropper mr-1" :lazy-src="attendant.photo" :src="attendant.photo" />
-                        {{ attendant.name }} {{ attendant.paternal_surname }}
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-col>
-              </template>
-            </v-row>
-          </v-card-text> -->
         </v-card>
       </v-col>
     </v-row>
@@ -102,12 +82,16 @@ export default {
       time: null,
       church_services: [],
       myLeaders: [],
-
+      showChurchService: false,
       ministries: [{ id: '', name: '' }],
       selectedMinistries: []
     }
   },
   methods: {
+    getArriveDate(date) {
+      let _date = this.$moment(date)
+      return _date.subtract(40, 'minutes')
+    },
     async getChurchService() {
       let op = {
         sortBy: ['event_date'],
@@ -208,32 +192,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-/* .image-wrapper {
-  display: flex;
-  align-items: center;
-}
-.image-cropper {
-  border-radius: 50%;
-  display: inline;
-  width: 30px;
-  aspect-ratio: 1;
-} */
-/* .remove-line-height {
-  line-height: normal;
-}
-.image-cropper {
-  border-radius: 50%;
-  display: inline;
-}
-
-.bg-red {
-  color: red;
-}
-.bg-green {
-  color: green;
-}
-.bg-blue {
-  color: blue;
-} */
-</style>

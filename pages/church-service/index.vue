@@ -171,7 +171,8 @@ export default {
       return false
     },
     newChurchService() {
-      this.modalNewChurchService = true
+      //this.modalNewChurchService = true
+      this.$repository.ChurchService.generate()
     },
     async saveChurchService() {
       var churchService = { event_date: this.date + ' ' + this.time }
