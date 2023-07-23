@@ -21,7 +21,7 @@
           <v-col cols="12" class="my-dialog">
             <v-list class="py-0">
               <template v-for="(item, index) in attendants">
-                <v-list-item :key="item.index" class="py-0">
+                <v-list-item :key="item.index" class="py-0 px-0">
                   <v-list-item-action class="ma-0">
                     <v-btn small :disabled="parseInt(index) == 0" icon @click="swapItem(parseInt(index) - 1, parseInt(index))"
                       ><v-icon color="green">mdi-arrow-up</v-icon></v-btn
@@ -34,7 +34,7 @@
                       ><v-icon color="red">mdi-arrow-down</v-icon></v-btn
                     >
                   </v-list-item-action>
-                  <v-list-item-avatar class="mr-1" width="43px" height="43px">
+                  <v-list-item-avatar class="mr-1" width="39px" height="39px">
                     <v-img :src="item.photo"></v-img>
                   </v-list-item-avatar>
 
@@ -56,14 +56,16 @@
             </v-list>
           </v-col>
         </v-row>
+        <v-row dense>
+          <v-alert v-if="error_message" class="mr-2" dense outlined type="error">
+            {{ error_message }}
+          </v-alert>
+        </v-row>
       </v-card-text>
 
       <v-card-actions>
         <v-spacer />
 
-        <v-alert v-if="error_message" class="mr-2" dense outlined type="error">
-          {{ error_message }}
-        </v-alert>
         <v-btn color="primary" class="mr-1" outlined @click.native="close"> Cancelar </v-btn>
         <v-btn color="primary" @click="saveChurchServiceAttendant"> Guardar </v-btn>
       </v-card-actions>

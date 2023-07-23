@@ -179,7 +179,6 @@ export default {
 
       await this.$repository.ChurchService.create(churchService)
         .then((res) => {
-          // this.$router.push('/church-service')
           this.modalNewChurchService = false
         })
         .catch((e) => {})
