@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="pa-2">
     <v-row dense>
-      <v-col cols="6" sm="3">
+      <v-col cols="12" sm="6" md="3">
         <MinistrySelect :ministries="ministries" v-model="selectedMinistries"></MinistrySelect>
       </v-col>
 
