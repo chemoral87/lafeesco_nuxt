@@ -6,14 +6,14 @@
           <v-chip x-small outlined :color="ministry.color">{{ ministry.name | uppercase }} </v-chip>
         </v-col>
         <v-col
-          class="py-0 my-0 text--primary d-flex align-center"
+          class="py-0 my-0 text--primary d-flex align-center no-line-height"
           cols="6"
           v-for="attendant in ministry.attendants"
           :key="attendant.id + 'att'"
         >
           <div class="image-wrapper">
             <v-img class="image-cropper mr-1" :lazy-src="attendant.photo" :src="attendant.photo" />
-            {{ attendant.name }} {{ attendant.paternal_surname }}
+            {{ attendant.name }} {{ attendant.paternal_surname }} s
           </div>
         </v-col>
       </template>
@@ -42,6 +42,9 @@ export default {
 .image-wrapper {
   display: flex;
   align-items: center;
+}
+.no-line-height {
+  line-height: 14px;
 }
 .image-cropper {
   border-radius: 50%;
