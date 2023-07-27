@@ -10,26 +10,18 @@
       <v-col cols="3" sm="2" md="2">
         <v-select :items="range_views" item-text="text" item-value="value" label="Vista" v-model="range_view"></v-select>
       </v-col>
-
+      <v-col cols="auto">
+        <v-btn @click="exportImg()"> Exportar </v-btn>
+      </v-col>
       <v-col cols="6" sm="auto">
         <v-switch hide-details v-model="showChurchService" :label="!showChurchService ? 'Hra. LLegada' : 'Hra. Servicio'"></v-switch>
       </v-col>
     </v-row>
-    <v-row dense>
+    <v-row dense ref="captureElement">
       <v-col cols="12" sm="6" md="4" lg="3" v-for="service in church_services" :key="service.id">
         <v-card :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''">
           <ChurchServiceCardTitle :service="service" :show-church-service-hour="showChurchService" :show-diff-humanize="true" />
-          <!-- <v-card-text class="py-1 pb-0 text--primary">
-            <strong>{{ getServiceNumber(service.event_date) }}</strong>
-            {{ service.event_date | moment('ddd DD MMM YYYY') }}
-            <strong v-if="showChurchService"> {{ service.event_date | moment('h:mm a') }}</strong>
-            <strong v-else> {{ getArriveDate(service.event_date) | moment('h:mm a') }}</strong>
 
-            <v-chip small outlined :color="getDayDiffClass(service.event_date)">
-              <strong v-if="getDayDiff(service.event_date) == 0"> HOY </strong>
-              <strong v-else> {{ service.event_date | humanize }} </strong>
-            </v-chip>
-          </v-card-text> -->
           <MinistryAttendantCard :selectedMinistries="selectedMinistries" :service_ministries="service.ministries" />
         </v-card>
       </v-col>
@@ -78,10 +70,12 @@
   </v-container>
 </template>
 <script>
+import domtoimage from 'dom-to-image'
 export default {
   props: {},
   data() {
     return {
+      captureElement: null,
       range_items: [{ value: 'today', text: 'Hoy' }],
       range_display: 'today',
       range_views: [
@@ -108,6 +102,18 @@ export default {
     }
   },
   methods: {
+    exportImg() {
+      domtoimage
+        .toPng(this.captureElement)
+        .then(function (dataUrl) {
+          var img = new Image()
+          img.src = dataUrl
+          document.body.appendChild(img)
+        })
+        .catch(function (error) {
+          console.error('Error occurred:', error)
+        })
+    },
     getArriveDate(date) {
       let _date = this.$moment(date)
       return _date.subtract(40, 'minutes')
@@ -170,9 +176,10 @@ export default {
   },
   mounted() {
     let me = this
+    this.captureElement = this.$refs.captureElement
+
     this.date = this.$moment().format('YYYY-MM-DD')
     this.current = this.$moment().format('YYYY-MM-DD')
-
     this.selectedMinistries = this.myLeaders.map((x) => x.ministry_id)
     this.getChurchService()
 
