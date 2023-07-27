@@ -71,8 +71,6 @@
 </template>
 <script>
 import domtoimage from 'dom-to-image'
-import rasterizeHTML from 'rasterizehtml'
-
 export default {
   props: {},
   data() {
