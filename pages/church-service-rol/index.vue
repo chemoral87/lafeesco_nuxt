@@ -106,9 +106,14 @@ export default {
       domtoimage
         .toPng(this.captureElement, { cacheBust: false })
         .then(function (dataUrl) {
-          var img = new Image()
-          img.src = dataUrl
-          document.body.appendChild(img)
+          var link = document.createElement('a')
+          link.download = 'my-image.png'
+          link.href = dataUrl
+          link.click()
+          console.log('OKAS')
+          // var img = new Image()
+          // img.src = dataUrl
+          // document.body.appendChild(img)
         })
         .catch(function (error) {
           console.error('Error occurred:', error)
