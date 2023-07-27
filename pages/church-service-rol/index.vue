@@ -104,7 +104,7 @@ export default {
   methods: {
     exportImg() {
       domtoimage
-        .toPng(this.captureElement, { cacheBust: true })
+        .toPng(this.captureElement, { cacheBust: false })
         .then(function (dataUrl) {
           var img = new Image()
           img.src = dataUrl
