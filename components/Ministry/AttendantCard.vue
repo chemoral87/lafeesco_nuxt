@@ -12,7 +12,7 @@
           :key="attendant.id + 'att'"
         >
           <div class="image-wrapper">
-            <img class="image-cropper mr-1" :lazy-src="attendant.photo" :src="attendant.photo" />
+            <v-img class="image-cropper mr-1" :src="attendant.photo" />
             {{ attendant.name }} {{ attendant.paternal_surname }} s
           </div>
         </v-col>
