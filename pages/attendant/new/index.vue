@@ -37,16 +37,16 @@
             :url.sync="attendant.image_url"
             v-model="attendant.image_blob"
             label="Foto"
-            :size="850"
+            :size="130"
             placeholder="Seleccione imagen"
             @change="uploaded"
           ></my-uploadimage>
         </v-col>
-        <v-col cols="6" md="2">
+        <v-col cols="6" md="3">
           <cropper stencil-component="circle-stencil" :src="attendant.image_url" @change="change" />
         </v-col>
         <v-col cols="6" md="1">
-          <img class="image-cropper" style="max-width: 100%" :src="imga" />
+          <img class="image-cropper" style="max-width: 100%; min-height: 120px" :src="imga" />
         </v-col>
       </v-row>
       <v-row>
