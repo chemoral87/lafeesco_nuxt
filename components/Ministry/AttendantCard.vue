@@ -25,7 +25,7 @@
 export default {
   props: ['service_ministries', 'selectedMinistries'],
   data() {
-    return { attendantsBase64Images: [] }
+    return { attendantsBase64Images: {} }
   },
   methods: {
     getImageAsBase64(imageUrl) {
