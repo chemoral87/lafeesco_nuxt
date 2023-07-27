@@ -12,7 +12,7 @@
           :key="attendant.id + 'att'"
         >
           <div class="image-wrapper">
-            <img class="image-cropper mr-1" :src="attendantsBase64Images[attendant.id]" :alt="attendant.name" />
+            <img class="image-cropper mr-1" :src="attendant.photo" :alt="attendant.name" />
             {{ attendant.name }} {{ attendant.paternal_surname }}
           </div>
         </v-col>
