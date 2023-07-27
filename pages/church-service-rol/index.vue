@@ -109,6 +109,52 @@ export default {
       let promises = imgElements.map((img) => {
         return new Promise((resolve, reject) => {
           let imgElement = new Image()
+          imgElement.crossOrigin = 'Anonymous' // crucial part to bypass CORS
+          imgElement.src = img.src
+          imgElement.onload = () => {
+            img.src = imgElement.src
+            resolve()
+          }
+          imgElement.onerror = reject
+        })
+      })
+
+      Promise.all(promises)
+        .then(() => {
+          domtoimage
+            .toPng(me.$refs.captureElement, {
+              cacheBust: false, // set to true to ensure fresh image load
+              height: me.$refs.captureElement.offsetHeight * 2,
+              width: me.$refs.captureElement.offsetWidth * 2,
+              style: {
+                transform: 'scale(2)',
+                transformOrigin: 'top left',
+                width: me.$refs.captureElement.offsetWidth + 'px',
+                height: me.$refs.captureElement.offsetHeight + 'px'
+              }
+            })
+            .then(function (dataUrl) {
+              var link = document.createElement('a')
+              link.download = 'my-image.png'
+              link.href = dataUrl
+              link.click()
+              me.$store.dispatch('hideLoading')
+            })
+            .catch(function (error) {
+              me.$store.dispatch('hideLoading')
+              console.error('Error occurred:', error)
+            })
+        })
+        .catch((error) => console.error('An error occurred:', error))
+    },
+
+    exportImg3() {
+      let me = this
+      let imgElements = [...this.$refs.captureElement.querySelectorAll('img')]
+
+      let promises = imgElements.map((img) => {
+        return new Promise((resolve, reject) => {
+          let imgElement = new Image()
           imgElement.crossOrigin = 'anonymous' // crucial part to bypass CORS
           imgElement.src = img.src
           imgElement.onload = () => {
