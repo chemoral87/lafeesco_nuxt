@@ -4,6 +4,12 @@
       <v-col cols="12" sm="6" md="3">
         <MinistrySelect :ministries="ministries" v-model="selectedMinistries"></MinistrySelect>
       </v-col>
+      <v-col cols="3" sm="2" md="2">
+        <v-select :items="range_items" item-text="text" item-value="value" label="Rango" v-model="range_display"></v-select>
+      </v-col>
+      <v-col cols="3" sm="2" md="2">
+        <v-select :items="range_views" item-text="text" item-value="value" label="Vista" v-model="range_view"></v-select>
+      </v-col>
 
       <v-col cols="6" sm="auto">
         <v-switch hide-details v-model="showChurchService" :label="!showChurchService ? 'Hra. LLegada' : 'Hra. Servicio'"></v-switch>
@@ -12,7 +18,8 @@
     <v-row dense>
       <v-col cols="12" sm="6" md="4" lg="3" v-for="service in church_services" :key="service.id">
         <v-card :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''">
-          <v-card-text class="py-1 pb-0 text--primary">
+          <ChurchServiceCardTitle :service="service" :show-church-service-hour="showChurchService" :show-diff-humanize="true" />
+          <!-- <v-card-text class="py-1 pb-0 text--primary">
             <strong>{{ getServiceNumber(service.event_date) }}</strong>
             {{ service.event_date | moment('ddd DD MMM YYYY') }}
             <strong v-if="showChurchService"> {{ service.event_date | moment('h:mm a') }}</strong>
@@ -22,7 +29,7 @@
               <strong v-if="getDayDiff(service.event_date) == 0"> HOY </strong>
               <strong v-else> {{ service.event_date | humanize }} </strong>
             </v-chip>
-          </v-card-text>
+          </v-card-text> -->
           <MinistryAttendantCard :selectedMinistries="selectedMinistries" :service_ministries="service.ministries" />
         </v-card>
       </v-col>
@@ -75,6 +82,14 @@ export default {
   props: {},
   data() {
     return {
+      range_items: [{ value: 'today', text: 'Hoy' }],
+      range_display: 'today',
+      range_views: [
+        { value: 'card', text: 'Servicios' },
+        { value: 'text', text: 'Texto' },
+        { value: 'attendants', text: 'Servidor' }
+      ],
+      range_view: 'card',
       dialogChurchService: false,
       date: '2018-03-02',
       current: new Date(),
@@ -87,6 +102,11 @@ export default {
       selectedMinistries: []
     }
   },
+  watch: {
+    range_display() {
+      this.getChurchService()
+    }
+  },
   methods: {
     getArriveDate(date) {
       let _date = this.$moment(date)
@@ -96,6 +116,7 @@ export default {
       let op = {
         sortBy: ['event_date'],
         sortDesc: [false],
+        range_display: this.range_display,
         itemsPerPage: 50
         // start_date: this.start_date
       }
@@ -122,19 +143,6 @@ export default {
       }
     },
 
-    getDayDiffClass(date) {
-      const dayDiff = this.$options.filters.daysDiffFromNow(date)
-      if (dayDiff > 0) {
-        return 'orange'
-      } else if (dayDiff === 0) {
-        return 'red'
-      } else {
-        return 'blue'
-      }
-    },
-    getDayDiff(date) {
-      return this.$options.filters.daysDiffFromNow(date)
-    },
     assignAttendant(service_id, ministry) {
       this.$router.push(`/church-service/assign/${service_id}/${ministry.id}`)
     },
@@ -167,6 +175,38 @@ export default {
 
     this.selectedMinistries = this.myLeaders.map((x) => x.ministry_id)
     this.getChurchService()
+
+    let currentDate = this.$moment().subtract(21, 'days')
+    const endDate = this.$moment().add(21, 'days')
+
+    while (currentDate.isSameOrBefore(endDate)) {
+      const formattedDate = currentDate.format('YYYY-MM')
+      if (!this.range_items.some((x) => x.value === formattedDate)) {
+        this.range_items.push({
+          value: formattedDate,
+          text: currentDate.format('MMMM YYYY')
+        })
+      }
+      currentDate.add(1, 'months')
+    }
+    // get the 15 day before of today and 15 days after
+    // let start_date = this.$moment().subtract(20, 'days')
+    // let today = this.$moment()
+    // let end_date = this.$moment().add(20, 'days')
+
+    // this.range_items.push({ value: start_date.format('YYYY-MM'), text: start_date.format('MMMM YYYY') })
+    // // if today not exists in this.range_items add it
+    // if (this.range_items.filter((x) => x.value === today.format('YYYY-MM')).length === 0) {
+    //   this.range_items.push({ value: today.format('YYYY-MM'), text: today.format('MMMM YYYY') })
+    // }
+    // if (this.range_items.filter((x) => x.value === end_date.format('YYYY-MM')).length === 0) {
+    //   this.range_items.push({ value: end_date.format('YYYY-MM'), text: end_date.format('MMMM YYYY') })
+    // }
+
+    //function to upper the first letter
+    this.range_items.forEach((x) => {
+      x.text = x.text.charAt(0).toUpperCase() + x.text.slice(1)
+    })
   },
   async asyncData({ $axios, app }) {
     let op = {

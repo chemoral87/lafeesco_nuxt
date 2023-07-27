@@ -19,7 +19,8 @@
     </v-row>
     <v-row dense>
       <v-col cols="12" sm="6" md="4" lg="3" v-for="(service, ix) in church_services" :key="service.id">
-        <v-card :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''">
+        <!-- <v-card :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''"> -->
+        <v-card :color="getServiceColor(service.event_date)">
           <v-card-text class="pa-1">
             <v-row dense>
               <v-col cols="auto" v-for="lead in myLeaders" :key="lead.id">
@@ -30,12 +31,13 @@
               </v-col>
             </v-row>
           </v-card-text>
-          <v-card-text class="pt-1 pb-0 text--primary">
-            <strong>{{ getServiceNumber(service.event_date) }}</strong>
+          <ChurchServiceCardTitle :service="service" :show-church-service-hour="showChurchService" />
+          <!-- <v-card-text class="pt-1 pb-0 text--primary">
             {{ service.event_date | moment('dddd DD MMM YYYY') }}
+            <strong>{{ getServiceNumber(service.event_date) }}</strong> -
             <strong v-if="showChurchService"> {{ service.event_date | moment('h:mm a') }}</strong>
             <strong v-else> {{ getArriveDate(service.event_date) | moment('h:mm a') }}</strong>
-          </v-card-text>
+          </v-card-text> -->
           <MinistryAttendantCard :selectedMinistries="selectedMinistries" :service_ministries="service.ministries" />
         </v-card>
       </v-col>
@@ -120,23 +122,24 @@ export default {
     isSunday(date) {
       return this.$moment(date).day() === 0
     },
-    getServiceNumber(date) {
+    getServiceColor(date) {
       let hours = this.$moment(date).hours()
       let minutes = this.$moment(date).minutes()
       const time = `${hours}:${minutes}`
-
       switch (time) {
-        case '9:0':
-        case '19:30':
-          return '1º'
-        case '11:30':
-          return '2º'
-        case '18:0':
-          return '3º'
-        default:
-          return '0º'
+        case '19:30': // domingo 1
+          return 'light-blue lighten-5'
+        // case '19:30': // miercoles
+        //   return 'light-blue lighten-5'
+        // case '11:30':
+        //   return 'orange lighten-5'
+        // case '18:0':
+        //   return 'red lighten-5'
+        // default:
+        //   return '0º'
       }
     },
+
     getArriveDate(date) {
       let _date = this.$moment(date)
       return _date.subtract(40, 'minutes')
