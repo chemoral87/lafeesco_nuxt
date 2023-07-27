@@ -13,7 +13,7 @@
         >
           <div class="image-wrapper">
             <v-img class="image-cropper mr-1" :lazy-src="attendant.photo" :src="attendant.photo" />
-            {{ attendant.name }} {{ attendant.paternal_surname }} s
+            {{ attendant.name }} {{ attendant.paternal_surname }}
           </div>
         </v-col>
       </template>
