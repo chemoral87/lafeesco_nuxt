@@ -83,6 +83,12 @@ export default {
     id: 'G-8H2274BQF6',
     checkDuplicatedScript: true
   },
+  webpackOptimisations: {
+    // hard source is the riskiest, if you have issues don't enable it
+    cacheLoader: false,
+    hardSourcePlugin: true,
+    parallelPlugin: true
+  },
   moment: {
     defaultLocale: 'es',
     locales: ['es']
