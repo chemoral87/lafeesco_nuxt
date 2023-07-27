@@ -71,6 +71,8 @@
 </template>
 <script>
 import domtoimage from 'dom-to-image'
+import rasterizeHTML from 'rasterizehtml'
+
 export default {
   props: {},
   data() {
@@ -102,9 +104,19 @@ export default {
     }
   },
   methods: {
-    exportImg() {
+    async exportImg() {
       domtoimage
-        .toPng(this.captureElement, { cacheBust: false })
+        .toPng(this.captureElement, {
+          cacheBust: false
+          // height: this.captureElement.offsetHeight * 2,
+          // width: this.captureElement.offsetWidth * 2,
+          // style: {
+          //   transform: 'scale(2)',
+          //   transformOrigin: 'top left',
+          //   width: this.captureElement.offsetWidth + 'px',
+          //   height: this.captureElement.offsetHeight + 'px'
+          // }
+        })
         .then(function (dataUrl) {
           var link = document.createElement('a')
           link.download = 'my-image.png'
