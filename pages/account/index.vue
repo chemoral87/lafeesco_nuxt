@@ -7,7 +7,7 @@
           {{ user.second_last_name }}
         </div>
         <div class="text-h6">Email: {{ user.email }}</div>
-        v.0.0.8
+        v.0.0.9
       </v-col>
       <v-col>
         <v-btn color="primary">Editar Nombre</v-btn>
