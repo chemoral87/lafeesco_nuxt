@@ -105,7 +105,7 @@ export default {
     async exportImg() {
       domtoimage
         .toPng(this.captureElement, {
-          cacheBust: treu
+          cacheBust: true
           // height: this.captureElement.offsetHeight * 2,
           // width: this.captureElement.offsetWidth * 2,
           // style: {
