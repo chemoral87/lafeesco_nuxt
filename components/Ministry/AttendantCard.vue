@@ -12,13 +12,13 @@
           :key="attendant.id + 'att'"
         >
           <div class="image-wrapper">
-            <img class="image-cropper mr-1" :src="attendant.photo" :alt="attendant.name" />
+            <img class="image-cropper mr-1" :src="attendantsBase64Images[attendant.id]" :alt="attendant.name" />
+            <!-- <img class="image-cropper mr-1" :src="'data:image/jpeg;base64,' + attendant.photo" :alt="attendant.name" /> -->
             {{ attendant.name }} {{ attendant.paternal_surname }}
           </div>
         </v-col>
       </template>
     </v-row>
-    {{ attendantsBase64Images }}
   </v-card-text>
 </template>
 <script>
@@ -28,38 +28,60 @@ export default {
     return { attendantsBase64Images: {} }
   },
   methods: {
-    getImageAsBase64(imageUrl) {
-      console.log('getImageAsBase64', imageUrl)
+    async getImageAsBase64(url) {
+      const response = await fetch(url)
+      const blob = await response.blob()
+
       return new Promise((resolve, reject) => {
-        fetch(imageUrl)
-          .then((response) => response.blob())
-          .then((blob) => {
-            const reader = new FileReader()
-            reader.onloadend = () => resolve(reader.result)
-            reader.onerror = reject
-            reader.readAsDataURL(blob)
-          })
-          .catch((error) => {
-            console.error('Error fetching image:', error)
-            reject('Error fetching image')
-          })
+        const reader = new FileReader()
+        reader.onloadend = () => resolve(reader.result)
+        reader.onerror = reject
+        reader.readAsDataURL(blob)
       })
     },
+    // getImageAsBase64(imageUrl) {
+    //   console.log('getImageAsBase64', imageUrl)
+    //   return new Promise((resolve, reject) => {
+    //     fetch(imageUrl)
+    //       .then((response) => response.blob())
+    //       .then((blob) => {
+    //         const reader = new FileReader()
+    //         reader.onloadend = () => resolve(reader.result)
+    //         reader.onerror = reject
+    //         reader.readAsDataURL(blob)
+    //       })
+    //       .catch((error) => {
+    //         console.error('Error fetching image:', error)
+    //         reject('Error fetching image')
+    //       })
+    //   })
+    // },
     displayFromSelectedMinistry(ministry_id) {
       if (this.selectedMinistries.length == 0) return true
       else if (this.selectedMinistries.indexOf(ministry_id) > -1) return true
       return false
-    }
-  },
-  async created() {
-    // this.attendantsBase64Images[3] = this.getImageAsBase64('https://via.placeholder.com/150')
-    for (let ministry of this.service_ministries) {
-      for (let attendant of ministry.attendants) {
-        if (attendant.photo) {
-          this.attendantsBase64Images[attendant.id] = await this.getImageAsBase64(attendant.photo)
+    },
+    async loadImages() {
+      for (let ministry of this.service_ministries) {
+        for (let attendant of ministry.attendants) {
+          if (attendant.photo) {
+            const base64Image = await this.getImageAsBase64(attendant.photo)
+            this.attendantsBase64Images = { ...this.attendantsBase64Images, [attendant.id]: base64Image }
+          }
         }
       }
     }
+  },
+  async created() {
+    await this.loadImages()
+    // this.attendantsBase64Images[3] = this.getImageAsBase64('https://via.placeholder.com/150')
+    // for (let ministry of this.service_ministries) {
+    //   for (let attendant of ministry.attendants) {
+    //     if (attendant.photo) {
+    //       this.attendantsBase64Images[attendant.id] = await this.getImageAsBase64(attendant.photo)
+    //     }
+    //   }
+    // }
     // When component is created, start fetching images
   },
   mounted() {

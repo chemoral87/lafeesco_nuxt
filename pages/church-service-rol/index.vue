@@ -11,7 +11,7 @@
         <v-select :items="range_views" item-text="text" item-value="value" label="Vista" v-model="range_view"></v-select>
       </v-col>
       <v-col cols="auto">
-        <v-btn @click="exportImg()"> Exportar </v-btn>
+        <v-btn @click="exportImg2()"> Exportar </v-btn>
       </v-col>
       <v-col cols="6" sm="auto">
         <v-switch hide-details v-model="showChurchService" :label="!showChurchService ? 'Hra. LLegada' : 'Hra. Servicio'"></v-switch>
@@ -102,127 +102,33 @@ export default {
     }
   },
   methods: {
-    exportImg() {
-      let me = this
-      let imgElements = [...this.$refs.captureElement.querySelectorAll('img')]
-
-      let promises = imgElements.map((img) => {
-        return new Promise((resolve, reject) => {
-          let imgElement = new Image()
-          imgElement.crossOrigin = 'Anonymous' // crucial part to bypass CORS
-          imgElement.src = img.src
-          imgElement.onload = () => {
-            img.src = imgElement.src
-            resolve()
-          }
-          imgElement.onerror = reject
-        })
-      })
-
-      Promise.all(promises)
-        .then(() => {
-          domtoimage
-            .toPng(me.$refs.captureElement, {
-              cacheBust: false, // set to true to ensure fresh image load
-              height: me.$refs.captureElement.offsetHeight * 2,
-              width: me.$refs.captureElement.offsetWidth * 2,
-              style: {
-                transform: 'scale(2)',
-                transformOrigin: 'top left',
-                width: me.$refs.captureElement.offsetWidth + 'px',
-                height: me.$refs.captureElement.offsetHeight + 'px'
-              }
-            })
-            .then(function (dataUrl) {
-              var link = document.createElement('a')
-              link.download = 'my-image.png'
-              link.href = dataUrl
-              link.click()
-              me.$store.dispatch('hideLoading')
-            })
-            .catch(function (error) {
-              me.$store.dispatch('hideLoading')
-              console.error('Error occurred:', error)
-            })
-        })
-        .catch((error) => console.error('An error occurred:', error))
-    },
-
-    exportImg3() {
-      let me = this
-      let imgElements = [...this.$refs.captureElement.querySelectorAll('img')]
-
-      let promises = imgElements.map((img) => {
-        return new Promise((resolve, reject) => {
-          let imgElement = new Image()
-          imgElement.crossOrigin = 'anonymous' // crucial part to bypass CORS
-          imgElement.src = img.src
-          imgElement.onload = () => {
-            img.src = imgElement.src
-            resolve()
-          }
-        })
-      })
-
-      Promise.all(promises)
-        .then(() => {
-          domtoimage
-            .toPng(me.$refs.captureElement, {
-              cacheBust: false,
-              height: me.$refs.captureElement.offsetHeight * 2,
-              width: me.$refs.captureElement.offsetWidth * 2,
-              style: {
-                transform: 'scale(2)',
-                transformOrigin: 'top left',
-                width: me.$refs.captureElement.offsetWidth + 'px',
-                height: me.$refs.captureElement.offsetHeight + 'px'
-              }
-            })
-            .then(function (dataUrl) {
-              var link = document.createElement('a')
-              link.download = 'my-image.png'
-              link.href = dataUrl
-              link.click()
-              me.$store.dispatch('hideLoading')
-            })
-            .catch(function (error) {
-              me.$store.dispatch('hideLoading')
-              console.error('Error occurred:', error)
-            })
-        })
-        .catch((error) => console.error('An error occurred:', error))
-    },
     async exportImg2() {
       let me = this
       me.$store.dispatch('showLoading')
       domtoimage
-        .toJpeg(this.captureElement, {
-          cacheBust: false
-          // height: this.captureElement.offsetHeight * 2,
-          // width: this.captureElement.offsetWidth * 2,
-          // style: {
-          //   transform: 'scale(2)',
-          //   transformOrigin: 'top left',
-          //   width: this.captureElement.offsetWidth + 'px',
-          //   height: this.captureElement.offsetHeight + 'px'
-          // }
+        .toPng(this.captureElement, {
+          cacheBust: true,
+          height: this.captureElement.offsetHeight * 2,
+          width: this.captureElement.offsetWidth * 2,
+          style: {
+            transform: 'scale(2)',
+            transformOrigin: 'top left',
+            width: this.captureElement.offsetWidth + 'px',
+            height: this.captureElement.offsetHeight + 'px'
+          }
         })
         .then(function (dataUrl) {
           var link = document.createElement('a')
           link.download = 'my-image.png'
           link.href = dataUrl
           link.click()
-          console.log('OKAS')
+
           me.$store.dispatch('hideLoading')
         })
         .catch(function (error) {
           me.$store.dispatch('hideLoading')
           console.error('Error occurred:', error)
         })
-    },
-    getArriveDate(date) {
-      let _date = this.$moment(date)
-      return _date.subtract(40, 'minutes')
     },
     async getChurchService() {
       let op = {
