@@ -47,7 +47,16 @@
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <div>
-          <v-btn title="Editar" class="ma-1" color="primary" outlined fab small @click="emitAction('edit', item)">
+          <v-btn
+            title="Editar"
+            :href="'/attendant/' + item.id"
+            class="ma-1"
+            color="primary"
+            outlined
+            fab
+            small
+            @click.prevent="emitAction('edit', item)"
+          >
             <v-icon> mdi-pencil </v-icon>
           </v-btn>
 
