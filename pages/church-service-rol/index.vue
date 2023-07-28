@@ -108,10 +108,10 @@ export default {
       domtoimage
         .toPng(this.captureElement, {
           cacheBust: true,
-          height: this.captureElement.offsetHeight * 2,
-          width: this.captureElement.offsetWidth * 2,
+          height: this.captureElement.offsetHeight * 1.5,
+          width: this.captureElement.offsetWidth * 1.5,
           style: {
-            transform: 'scale(2)',
+            transform: 'scale(1.5)',
             transformOrigin: 'top left',
             width: this.captureElement.offsetWidth + 'px',
             height: this.captureElement.offsetHeight + 'px'

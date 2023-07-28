@@ -10,12 +10,6 @@
       <v-col cols="6" sm="auto">
         <v-switch hide-details v-model="showChurchService" :label="!showChurchService ? 'Hra. LLegada' : 'Hra. Servicio'"></v-switch>
       </v-col>
-      <v-col cols="6" sm="auto"
-        ><v-btn color="success" @click="newChurchService()">
-          <v-icon class="mr-1">mdi-account-plus</v-icon>
-          Nuevo
-        </v-btn>
-      </v-col>
     </v-row>
     <v-row dense>
       <v-col cols="12" sm="6" md="4" lg="3" v-for="(service, ix) in church_services" :key="service.id">
@@ -40,6 +34,12 @@
           </v-card-text> -->
           <MinistryAttendantCard :selectedMinistries="selectedMinistries" :service_ministries="service.ministries" />
         </v-card>
+      </v-col>
+      <v-col cols="6" sm="auto"
+        ><v-btn color="success" @click="newChurchService()">
+          <v-icon class="mr-1">mdi-account-plus</v-icon>
+          Nuevo
+        </v-btn>
       </v-col>
     </v-row>
 
