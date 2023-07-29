@@ -116,15 +116,16 @@ export default {
       me.$store.dispatch('showLoading')
       domtoimage
         .toJpeg(this.captureElement, {
-          cacheBust: true
+          quality: 1,
+          cacheBust: true,
           // height: this.captureElement.offsetHeight * 1.5,
           // width: this.captureElement.offsetWidth * 1.5,
-          // style: {
-          //   transform: 'scale(1.5)',
-          //   transformOrigin: 'top left',
-          //   width: this.captureElement.offsetWidth + 'px',
-          //   height: this.captureElement.offsetHeight + 'px'
-          // }
+          style: {
+            transform: 'scale(2)',
+            transformOrigin: 'top left'
+            // width: this.captureElement.offsetWidth + 'px',
+            // height: this.captureElement.offsetHeight + 'px'
+          }
         })
         .then(function (dataUrl) {
           // Convert data URL to blob
