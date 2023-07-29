@@ -118,8 +118,8 @@ export default {
         .toJpeg(this.captureElement, {
           quality: 1,
           cacheBust: true,
-          // height: this.captureElement.offsetHeight * 1.5,
-          // width: this.captureElement.offsetWidth * 1.5,
+          height: this.captureElement.offsetHeight * 2,
+          width: this.captureElement.offsetWidth * 2,
           style: {
             transform: 'scale(2)',
             transformOrigin: 'top left'
