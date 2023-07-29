@@ -115,7 +115,7 @@ export default {
       let me = this
       me.$store.dispatch('showLoading')
       domtoimage
-        .toPng(this.captureElement, {
+        .toJpeg(this.captureElement, {
           cacheBust: true
           // height: this.captureElement.offsetHeight * 1.5,
           // width: this.captureElement.offsetWidth * 1.5,
