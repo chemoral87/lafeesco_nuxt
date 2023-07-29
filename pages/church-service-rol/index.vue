@@ -4,7 +4,7 @@
       <v-col cols="12" sm="6" md="3">
         <MinistrySelect :ministries="ministries" v-model="selectedMinistries"></MinistrySelect>
       </v-col>
-      <v-col cols="4" sm="3" md="2">
+      <v-col cols="5" sm="3" md="2">
         <v-select :items="range_items" item-text="text" item-value="value" label="Rango" v-model="range_display"></v-select>
       </v-col>
       <v-col cols="4" sm="3" md="2">
@@ -116,7 +116,7 @@ export default {
       me.$store.dispatch('showLoading')
       domtoimage
         .toPng(this.captureElement, {
-          cacheBust: false
+          cacheBust: true
           // height: this.captureElement.offsetHeight * 1.5,
           // width: this.captureElement.offsetWidth * 1.5,
           // style: {
