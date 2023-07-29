@@ -134,7 +134,7 @@ export default {
               // Convert blob to file
               var file = new File([blob], 'my-image.png', { type: 'image/png' })
 
-              if (navigator.share && this.isMobile()) {
+              if (navigator.share && me.isMobile()) {
                 console.log('share')
                 // Use Web Share API if available
                 navigator
