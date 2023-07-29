@@ -12,7 +12,8 @@
           :key="attendant.id + 'att'"
         >
           <div class="image-wrapper">
-            <v-img class="image-cropper mr-1" aspect-ratio="1" :src="attendantsBase64Images[attendant.id]">
+            <!-- <v-img class="image-cropper mr-1" aspect-ratio="1" :src="attendantsBase64Images[attendant.id]"> -->
+            <v-img class="image-cropper mr-1" aspect-ratio="1" :src="attendant.photo">
               <template v-slot:placeholder>
                 <v-row class="fill-height ma-0" align="center" justify="center">
                   <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
@@ -79,16 +80,7 @@ export default {
     }
   },
   async created() {
-    await this.loadImages()
-    // this.attendantsBase64Images[3] = this.getImageAsBase64('https://via.placeholder.com/150')
-    // for (let ministry of this.service_ministries) {
-    //   for (let attendant of ministry.attendants) {
-    //     if (attendant.photo) {
-    //       this.attendantsBase64Images[attendant.id] = await this.getImageAsBase64(attendant.photo)
-    //     }
-    //   }
-    // }
-    // When component is created, start fetching images
+    // await this.loadImages()
   },
   mounted() {
     let me = this
