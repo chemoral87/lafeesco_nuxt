@@ -4,10 +4,10 @@
       <v-col cols="12" sm="6" md="3">
         <MinistrySelect :ministries="ministries" v-model="selectedMinistries"></MinistrySelect>
       </v-col>
-      <v-col cols="3" sm="2" md="2">
+      <v-col cols="4" sm="3" md="2">
         <v-select :items="range_items" item-text="text" item-value="value" label="Rango" v-model="range_display"></v-select>
       </v-col>
-      <v-col cols="3" sm="2" md="2">
+      <v-col cols="4" sm="3" md="2">
         <v-select :items="range_views" item-text="text" item-value="value" label="Vista" v-model="range_view"></v-select>
       </v-col>
       <v-col cols="auto">
@@ -118,12 +118,37 @@ export default {
           }
         })
         .then(function (dataUrl) {
-          var link = document.createElement('a')
-          link.download = 'my-image.png'
-          link.href = dataUrl
-          link.click()
+          // Convert data URL to blob
+          fetch(dataUrl)
+            .then((res) => res.blob())
+            .then((blob) => {
+              // Convert blob to file
+              var file = new File([blob], 'my-image.png', { type: 'image/png' })
 
-          me.$store.dispatch('hideLoading')
+              if (navigator.share) {
+                console.log('share')
+                // Use Web Share API if available
+                navigator
+                  .share({
+                    title: 'My Image',
+                    text: 'Here is my image',
+                    files: [file]
+                  })
+                  .then(() => console.log('Successful share'))
+                  .catch((error) => console.log('Error sharing', error))
+              } else {
+                // Fallback to downloading the image
+                var link = document.createElement('a')
+                link.download = 'my-image.png'
+                link.href = URL.createObjectURL(blob)
+                link.click()
+              }
+
+              me.$store.dispatch('hideLoading')
+            })
+            .catch((error) => {
+              console.error('Error occurred:', error)
+            })
         })
         .catch(function (error) {
           me.$store.dispatch('hideLoading')
