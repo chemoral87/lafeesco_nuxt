@@ -11,7 +11,9 @@
         <v-select :items="range_views" item-text="text" item-value="value" label="Vista" v-model="range_view"></v-select>
       </v-col>
       <v-col cols="auto">
-        <v-btn @click="exportImg2()"> Exportar </v-btn>
+        <v-btn @click="exportImg2()" fab color="primary">
+          <v-icon>mdi-share-variant</v-icon>
+        </v-btn>
       </v-col>
       <v-col cols="6" sm="auto">
         <v-switch hide-details v-model="showChurchService" :label="!showChurchService ? 'Hra. LLegada' : 'Hra. Servicio'"></v-switch>
@@ -102,12 +104,19 @@ export default {
     }
   },
   methods: {
+    isMobile() {
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true
+      } else {
+        return false
+      }
+    },
     async exportImg2() {
       let me = this
       me.$store.dispatch('showLoading')
       domtoimage
-        .toPng(this.captureElement, {
-          cacheBust: true,
+        .toJpeg(this.captureElement, {
+          cacheBust: false,
           height: this.captureElement.offsetHeight * 1.5,
           width: this.captureElement.offsetWidth * 1.5,
           style: {
@@ -125,7 +134,7 @@ export default {
               // Convert blob to file
               var file = new File([blob], 'my-image.png', { type: 'image/png' })
 
-              if (navigator.share) {
+              if (navigator.share && isMobile()) {
                 console.log('share')
                 // Use Web Share API if available
                 navigator
