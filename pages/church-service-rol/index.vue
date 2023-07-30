@@ -131,7 +131,7 @@ export default {
       const blob = await response.blob()
 
       // Create a File object from the Blob object
-      const file = new File([blob], 'rol.png')
+      const file = new File([blob], 'rol.png', { type: 'image/png' })
 
       // Create a share object
       const share = {
