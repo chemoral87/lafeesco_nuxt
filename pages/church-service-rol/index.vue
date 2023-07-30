@@ -115,57 +115,57 @@ export default {
       let me = this
       me.$store.dispatch('showLoading')
 
-      const dataUrl = await domtoimage.toPng(this.captureElement, {
-        cacheBust: true,
-        height: this.captureElement.offsetHeight * 10, // increase scale factor
-        width: this.captureElement.offsetWidth * 10, // increase scale factor
-        style: {
-          transform: 'scale(10)', // increase scale factor
-          transformOrigin: 'top left',
-          width: this.captureElement.offsetWidth + 'px',
-          height: this.captureElement.offsetHeight + 'px'
-        }
-      })
+      // const dataUrl = await domtoimage.toPng(this.captureElement, {
+      //   cacheBust: true,
+      //   height: this.captureElement.offsetHeight * 10, // increase scale factor
+      //   width: this.captureElement.offsetWidth * 10, // increase scale factor
+      //   style: {
+      //     transform: 'scale(10)', // increase scale factor
+      //     transformOrigin: 'top left',
+      //     width: this.captureElement.offsetWidth + 'px',
+      //     height: this.captureElement.offsetHeight + 'px'
+      //   }
+      // })
 
-      const response = await fetch(dataUrl)
-      const blob = await response.blob()
+      // const response = await fetch(dataUrl)
+      // const blob = await response.blob()
 
-      // Create a File object from the Blob object
-      const file = new File([blob], 'rol.png', { type: 'image/png' })
+      // // Create a File object from the Blob object
+      // const file = new File([blob], 'rol.png', { type: 'image/png' })
 
-      // Create a share object
-      const share = {
-        files: [file],
-        title: 'Imagen capturada',
-        text: 'Esta es una imagen capturada de mi página web.'
-      }
+      // // Create a share object
+      // const share = {
+      //   files: [file],
+      //   title: 'Imagen capturada',
+      //   text: 'Esta es una imagen capturada de mi página web.'
+      // }
 
-      // Check if the user has granted permission to share the image
-      if (navigator.share) {
-        // Share the image
-        navigator.share(share).then(
-          function () {
-            console.log('Image shared successfully')
-          },
-          function (error) {
-            console.log('Error sharing image:', error)
-          }
-        )
-      } else {
-        // Fallback for browsers that don't support the Web Share API
-        console.log('Web Share API is not supported')
-      }
+      // // Check if the user has granted permission to share the image
+      // if (navigator.share) {
+      //   // Share the image
+      //   navigator.share(share).then(
+      //     function () {
+      //       console.log('Image shared successfully')
+      //     },
+      //     function (error) {
+      //       console.log('Error sharing image:', error)
+      //     }
+      //   )
+      // } else {
+      //   // Fallback for browsers that don't support the Web Share API
+      //   console.log('Web Share API is not supported')
+      // }
 
-      me.$store.dispatch('hideLoading')
+      // me.$store.dispatch('hideLoading')
 
       // domtoimage
       //   .toPng(this.captureElement, {
       //     quality: 1,
       //     cacheBust: true,
-      //     height: this.captureElement.offsetHeight * 2, // increase scale factor
-      //     width: this.captureElement.offsetWidth * 2, // increase scale factor
+      //     height: this.captureElement.offsetHeight * 8, // increase scale factor
+      //     width: this.captureElement.offsetWidth * 8, // increase scale factor
       //     style: {
-      //       transform: 'scale(2)', // increase scale factor
+      //       transform: 'scale(8)', // increase scale factor
       //       transformOrigin: 'top left',
       //       width: this.captureElement.offsetWidth + 'px',
       //       height: this.captureElement.offsetHeight + 'px'
@@ -208,56 +208,56 @@ export default {
       //     me.$store.dispatch('hideLoading')
       //   })
 
-      // domtoimage
-      //   .toPng(this.captureElement, {
-      //     // quality: 1,
-      //     cacheBust: true,
-      //     height: this.captureElement.offsetHeight * 3,
-      //     width: this.captureElement.offsetWidth * 3,
-      //     style: {
-      //       transform: 'scale(3)',
-      //       transformOrigin: 'top left',
-      //       width: this.captureElement.offsetWidth + 'px',
-      //       height: this.captureElement.offsetHeight + 'px'
-      //     }
-      //   })
-      //   .then(function (dataUrl) {
-      //     // Convert data URL to blob
-      //     fetch(dataUrl)
-      //       .then((res) => res.blob())
-      //       .then((blob) => {
-      //         // Convert blob to file
-      //         var file = new File([blob], 'my-image.png', { type: 'image/png' })
+      domtoimage
+        .toPng(this.captureElement, {
+          // quality: 1,
+          cacheBust: true,
+          height: this.captureElement.offsetHeight * 8,
+          width: this.captureElement.offsetWidth * 8,
+          style: {
+            transform: 'scale(8)',
+            transformOrigin: 'top left',
+            width: this.captureElement.offsetWidth + 'px',
+            height: this.captureElement.offsetHeight + 'px'
+          }
+        })
+        .then(function (dataUrl) {
+          // Convert data URL to blob
+          fetch(dataUrl)
+            .then((res) => res.blob())
+            .then((blob) => {
+              // Convert blob to file
+              var file = new File([blob], 'my-image.png', { type: 'image/png' })
 
-      //         if (navigator.share && me.isMobile()) {
-      //           console.log('share')
-      //           // Use Web Share API if available
-      //           navigator
-      //             .share({
-      //               title: 'My Image',
-      //               text: 'Here is my image',
-      //               files: [file]
-      //             })
-      //             .then(() => console.log('Successful share'))
-      //             .catch((error) => console.log('Error sharing', error))
-      //         } else {
-      //           // Fallback to downloading the image
-      //           var link = document.createElement('a')
-      //           link.download = 'my-image.png'
-      //           link.href = URL.createObjectURL(blob)
-      //           link.click()
-      //         }
+              if (navigator.share && me.isMobile()) {
+                console.log('share')
+                // Use Web Share API if available
+                navigator
+                  .share({
+                    title: 'My Image',
+                    text: 'Here is my image',
+                    files: [file]
+                  })
+                  .then(() => console.log('Successful share'))
+                  .catch((error) => console.log('Error sharing', error))
+              } else {
+                // Fallback to downloading the image
+                var link = document.createElement('a')
+                link.download = 'my-image.png'
+                link.href = URL.createObjectURL(blob)
+                link.click()
+              }
 
-      //         me.$store.dispatch('hideLoading')
-      //       })
-      //       .catch((error) => {
-      //         console.error('Error occurred:', error)
-      //       })
-      //   })
-      //   .catch(function (error) {
-      //     me.$store.dispatch('hideLoading')
-      //     console.error('Error occurred:', error)
-      //   })
+              me.$store.dispatch('hideLoading')
+            })
+            .catch((error) => {
+              console.error('Error occurred:', error)
+            })
+        })
+        .catch(function (error) {
+          me.$store.dispatch('hideLoading')
+          console.error('Error occurred:', error)
+        })
     },
     async getChurchService() {
       let op = {
