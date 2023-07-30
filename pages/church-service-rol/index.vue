@@ -115,7 +115,7 @@ export default {
       let me = this
       me.$store.dispatch('showLoading')
 
-      const blob = domtoimage.toPng(this.captureElement, {
+      const dataUrl = await domtoimage.toPng(this.captureElement, {
         cacheBust: true,
         height: this.captureElement.offsetHeight * 2, // increase scale factor
         width: this.captureElement.offsetWidth * 2, // increase scale factor
@@ -126,6 +126,9 @@ export default {
           height: this.captureElement.offsetHeight + 'px'
         }
       })
+
+      const response = await fetch(dataUrl)
+      const blob = await response.blob()
 
       // Create a File object from the Blob object
       const file = new File([blob], 'rol.png')
@@ -138,26 +141,8 @@ export default {
       }
 
       // Check if the user has granted permission to share the image
-      const permission = await navigator.permissions.query({ name: 'share' })
-      if (!permission.hasPermission) {
-        // Ask the user for permission to share the image
-        const result = await navigator.permissions.request({ name: 'share' })
-        if (result.granted) {
-          // Share the image
-          navigator.share(share).then(
-            function () {
-              console.log('Image shared successfully')
-            },
-            function (error) {
-              console.log('Error sharing image:', error)
-            }
-          )
-        } else {
-          // The user denied permission to share the image
-          console.log('User denied permission to share image')
-        }
-      } else {
-        // The user has already granted permission to share the image
+      if (navigator.share) {
+        // Share the image
         navigator.share(share).then(
           function () {
             console.log('Image shared successfully')
@@ -166,6 +151,9 @@ export default {
             console.log('Error sharing image:', error)
           }
         )
+      } else {
+        // Fallback for browsers that don't support the Web Share API
+        console.log('Web Share API is not supported')
       }
 
       // domtoimage
