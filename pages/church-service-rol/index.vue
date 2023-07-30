@@ -115,55 +115,84 @@ export default {
       let me = this
       me.$store.dispatch('showLoading')
 
-      domtoimage
-        .toPng(this.captureElement, {
-          quality: 1,
-          cacheBust: true,
-          height: this.captureElement.offsetHeight * 2, // increase scale factor
-          width: this.captureElement.offsetWidth * 2, // increase scale factor
-          style: {
-            transform: 'scale(2)', // increase scale factor
-            transformOrigin: 'top left',
-            width: this.captureElement.offsetWidth + 'px',
-            height: this.captureElement.offsetHeight + 'px'
-          }
-        })
-        .then(function (dataUrl) {
-          // Create a new Blob object with the image data
-          if (me.isMobile()) {
-            var blob = new Blob([dataUrl], { type: 'image/png' })
+      const blob = domtoimage.toPng(this.captureElement, {
+        cacheBust: true,
+        height: this.captureElement.offsetHeight * 2, // increase scale factor
+        width: this.captureElement.offsetWidth * 2, // increase scale factor
+        style: {
+          transform: 'scale(2)', // increase scale factor
+          transformOrigin: 'top left',
+          width: this.captureElement.offsetWidth + 'px',
+          height: this.captureElement.offsetHeight + 'px'
+        }
+      })
 
-            // Create a share object
-            var share = {
-              url: window.URL.createObjectURL(blob),
-              title: 'Imagen capturada',
-              text: 'Esta es una imagen capturada de mi página web.'
-            }
+      // Create a share object
+      const share = {
+        files: [blob],
+        title: 'Imagen capturada',
+        text: 'Esta es una imagen capturada de mi página web.'
+      }
 
-            // Share the image
-            navigator.share(share).then(
-              function () {
-                console.log('Image shared successfully')
-              },
-              function (error) {
-                console.log('Error sharing image:', error)
-              }
-            )
-          } else {
-            var link = document.createElement('a')
-            link.download = 'servicio_general.png'
-            link.href = dataUrl
+      // Share the image
+      navigator.share(share).then(
+        function () {
+          console.log('Image shared successfully')
+        },
+        function (error) {
+          console.log('Error sharing image:', error)
+        }
+      )
 
-            link.click()
-          }
+      // domtoimage
+      //   .toPng(this.captureElement, {
+      //     quality: 1,
+      //     cacheBust: true,
+      //     height: this.captureElement.offsetHeight * 2, // increase scale factor
+      //     width: this.captureElement.offsetWidth * 2, // increase scale factor
+      //     style: {
+      //       transform: 'scale(2)', // increase scale factor
+      //       transformOrigin: 'top left',
+      //       width: this.captureElement.offsetWidth + 'px',
+      //       height: this.captureElement.offsetHeight + 'px'
+      //     }
+      //   })
+      //   .then(function (dataUrl) {
+      //     // Create a new Blob object with the image data
+      //     if (me.isMobile()) {
+      //       var blob = new Blob([dataUrl], { type: 'image/png' })
 
-          me.$store.dispatch('notify', { success: 'Imagen descargada' })
-          me.$store.dispatch('hideLoading')
-        })
-        .catch(function (error) {
-          console.error('Error occurred:', error)
-          me.$store.dispatch('hideLoading')
-        })
+      //       // Create a share object
+      //       var share = {
+      //         url: window.URL.createObjectURL(blob),
+      //         title: 'Imagen capturada',
+      //         text: 'Esta es una imagen capturada de mi página web.'
+      //       }
+
+      //       // Share the image
+      //       navigator.share(share).then(
+      //         function () {
+      //           console.log('Image shared successfully')
+      //         },
+      //         function (error) {
+      //           console.log('Error sharing image:', error)
+      //         }
+      //       )
+      //     } else {
+      //       var link = document.createElement('a')
+      //       link.download = 'servicio_general.png'
+      //       link.href = dataUrl
+
+      //       link.click()
+      //     }
+
+      //     me.$store.dispatch('notify', { success: 'Imagen descargada' })
+      //     me.$store.dispatch('hideLoading')
+      //   })
+      //   .catch(function (error) {
+      //     console.error('Error occurred:', error)
+      //     me.$store.dispatch('hideLoading')
+      //   })
 
       // domtoimage
       //   .toPng(this.captureElement, {
