@@ -137,15 +137,36 @@ export default {
         text: 'Esta es una imagen capturada de mi página web.'
       }
 
-      // Share the image
-      navigator.share(share).then(
-        function () {
-          console.log('Image shared successfully')
-        },
-        function (error) {
-          console.log('Error sharing image:', error)
+      // Check if the user has granted permission to share the image
+      const permission = await navigator.permissions.query({ name: 'share' })
+      if (!permission.hasPermission) {
+        // Ask the user for permission to share the image
+        const result = await navigator.permissions.request({ name: 'share' })
+        if (result.granted) {
+          // Share the image
+          navigator.share(share).then(
+            function () {
+              console.log('Image shared successfully')
+            },
+            function (error) {
+              console.log('Error sharing image:', error)
+            }
+          )
+        } else {
+          // The user denied permission to share the image
+          console.log('User denied permission to share image')
         }
-      )
+      } else {
+        // The user has already granted permission to share the image
+        navigator.share(share).then(
+          function () {
+            console.log('Image shared successfully')
+          },
+          function (error) {
+            console.log('Error sharing image:', error)
+          }
+        )
+      }
 
       // domtoimage
       //   .toPng(this.captureElement, {
