@@ -117,10 +117,10 @@ export default {
 
       const dataUrl = await domtoimage.toPng(this.captureElement, {
         cacheBust: true,
-        height: this.captureElement.offsetHeight * 2, // increase scale factor
-        width: this.captureElement.offsetWidth * 2, // increase scale factor
+        height: this.captureElement.offsetHeight * 10, // increase scale factor
+        width: this.captureElement.offsetWidth * 10, // increase scale factor
         style: {
-          transform: 'scale(2)', // increase scale factor
+          transform: 'scale(10)', // increase scale factor
           transformOrigin: 'top left',
           width: this.captureElement.offsetWidth + 'px',
           height: this.captureElement.offsetHeight + 'px'
@@ -155,6 +155,8 @@ export default {
         // Fallback for browsers that don't support the Web Share API
         console.log('Web Share API is not supported')
       }
+
+      me.$store.dispatch('hideLoading')
 
       // domtoimage
       //   .toPng(this.captureElement, {
