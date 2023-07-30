@@ -127,9 +127,12 @@ export default {
         }
       })
 
+      // Create a File object from the Blob object
+      const file = new File([blob], 'rol.png')
+
       // Create a share object
       const share = {
-        files: [blob],
+        files: [file],
         title: 'Imagen capturada',
         text: 'Esta es una imagen capturada de mi página web.'
       }
