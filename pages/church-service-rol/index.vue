@@ -129,16 +129,36 @@ export default {
           }
         })
         .then(function (dataUrl) {
-          var link = document.createElement('a')
-          link.download = 'servicio_general.png'
-          link.href = dataUrl
+          // Create a new Blob object with the image data
+          if (me.isMobile()) {
+            var blob = new Blob([dataUrl], { type: 'image/png' })
 
-          link.click()
+            // Create a share object
+            var share = {
+              url: window.URL.createObjectURL(blob),
+              title: 'Imagen capturada',
+              text: 'Esta es una imagen capturada de mi página web.'
+            }
+
+            // Share the image
+            navigator.share(share).then(
+              function () {
+                console.log('Image shared successfully')
+              },
+              function (error) {
+                console.log('Error sharing image:', error)
+              }
+            )
+          } else {
+            var link = document.createElement('a')
+            link.download = 'servicio_general.png'
+            link.href = dataUrl
+
+            link.click()
+          }
+
           me.$store.dispatch('notify', { success: 'Imagen descargada' })
           me.$store.dispatch('hideLoading')
-          // Then, open the image in a new tab
-          // var imgWindow = window.open('', '_parent')
-          // imgWindow.document.write('<img src="' + dataUrl + '" alt="Downloaded Image"/>')
         })
         .catch(function (error) {
           console.error('Error occurred:', error)
