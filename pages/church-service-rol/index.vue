@@ -114,56 +114,83 @@ export default {
     async exportImg2() {
       let me = this
       me.$store.dispatch('showLoading')
+
       domtoimage
         .toPng(this.captureElement, {
-          // quality: 1,
+          quality: 1,
           cacheBust: true,
-          height: this.captureElement.offsetHeight * 3,
-          width: this.captureElement.offsetWidth * 3,
+          height: this.captureElement.offsetHeight * 2, // increase scale factor
+          width: this.captureElement.offsetWidth * 2, // increase scale factor
           style: {
-            transform: 'scale(3)',
+            transform: 'scale(2)', // increase scale factor
             transformOrigin: 'top left',
             width: this.captureElement.offsetWidth + 'px',
             height: this.captureElement.offsetHeight + 'px'
           }
         })
         .then(function (dataUrl) {
-          // Convert data URL to blob
-          fetch(dataUrl)
-            .then((res) => res.blob())
-            .then((blob) => {
-              // Convert blob to file
-              var file = new File([blob], 'my-image.png', { type: 'image/png' })
-
-              if (navigator.share && me.isMobile()) {
-                console.log('share')
-                // Use Web Share API if available
-                navigator
-                  .share({
-                    title: 'My Image',
-                    text: 'Here is my image',
-                    files: [file]
-                  })
-                  .then(() => console.log('Successful share'))
-                  .catch((error) => console.log('Error sharing', error))
-              } else {
-                // Fallback to downloading the image
-                var link = document.createElement('a')
-                link.download = 'my-image.png'
-                link.href = URL.createObjectURL(blob)
-                link.click()
-              }
-
-              me.$store.dispatch('hideLoading')
-            })
-            .catch((error) => {
-              console.error('Error occurred:', error)
-            })
+          var link = document.createElement('a')
+          link.download = 'my-image.png'
+          link.href = dataUrl
+          link.target = '_blank'
+          link.click()
+          me.$store.dispatch('hideLoading')
         })
         .catch(function (error) {
-          me.$store.dispatch('hideLoading')
           console.error('Error occurred:', error)
+          me.$store.dispatch('hideLoading')
         })
+
+      // domtoimage
+      //   .toPng(this.captureElement, {
+      //     // quality: 1,
+      //     cacheBust: true,
+      //     height: this.captureElement.offsetHeight * 3,
+      //     width: this.captureElement.offsetWidth * 3,
+      //     style: {
+      //       transform: 'scale(3)',
+      //       transformOrigin: 'top left',
+      //       width: this.captureElement.offsetWidth + 'px',
+      //       height: this.captureElement.offsetHeight + 'px'
+      //     }
+      //   })
+      //   .then(function (dataUrl) {
+      //     // Convert data URL to blob
+      //     fetch(dataUrl)
+      //       .then((res) => res.blob())
+      //       .then((blob) => {
+      //         // Convert blob to file
+      //         var file = new File([blob], 'my-image.png', { type: 'image/png' })
+
+      //         if (navigator.share && me.isMobile()) {
+      //           console.log('share')
+      //           // Use Web Share API if available
+      //           navigator
+      //             .share({
+      //               title: 'My Image',
+      //               text: 'Here is my image',
+      //               files: [file]
+      //             })
+      //             .then(() => console.log('Successful share'))
+      //             .catch((error) => console.log('Error sharing', error))
+      //         } else {
+      //           // Fallback to downloading the image
+      //           var link = document.createElement('a')
+      //           link.download = 'my-image.png'
+      //           link.href = URL.createObjectURL(blob)
+      //           link.click()
+      //         }
+
+      //         me.$store.dispatch('hideLoading')
+      //       })
+      //       .catch((error) => {
+      //         console.error('Error occurred:', error)
+      //       })
+      //   })
+      //   .catch(function (error) {
+      //     me.$store.dispatch('hideLoading')
+      //     console.error('Error occurred:', error)
+      //   })
     },
     async getChurchService() {
       let op = {
@@ -243,19 +270,6 @@ export default {
       }
       currentDate.add(1, 'months')
     }
-    // get the 15 day before of today and 15 days after
-    // let start_date = this.$moment().subtract(20, 'days')
-    // let today = this.$moment()
-    // let end_date = this.$moment().add(20, 'days')
-
-    // this.range_items.push({ value: start_date.format('YYYY-MM'), text: start_date.format('MMMM YYYY') })
-    // // if today not exists in this.range_items add it
-    // if (this.range_items.filter((x) => x.value === today.format('YYYY-MM')).length === 0) {
-    //   this.range_items.push({ value: today.format('YYYY-MM'), text: today.format('MMMM YYYY') })
-    // }
-    // if (this.range_items.filter((x) => x.value === end_date.format('YYYY-MM')).length === 0) {
-    //   this.range_items.push({ value: end_date.format('YYYY-MM'), text: end_date.format('MMMM YYYY') })
-    // }
 
     //function to upper the first letter
     this.range_items.forEach((x) => {
