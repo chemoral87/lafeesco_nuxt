@@ -130,11 +130,15 @@ export default {
         })
         .then(function (dataUrl) {
           var link = document.createElement('a')
-          link.download = 'my-image.png'
+          link.download = 'servicio_general.png'
           link.href = dataUrl
-          link.target = '_blank'
+
           link.click()
+          me.$store.dispatch('notify', { success: 'Imagen descargada' })
           me.$store.dispatch('hideLoading')
+          // Then, open the image in a new tab
+          // var imgWindow = window.open('', '_parent')
+          // imgWindow.document.write('<img src="' + dataUrl + '" alt="Downloaded Image"/>')
         })
         .catch(function (error) {
           console.error('Error occurred:', error)
