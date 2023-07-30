@@ -115,16 +115,16 @@ export default {
       let me = this
       me.$store.dispatch('showLoading')
       domtoimage
-        .toJpeg(this.captureElement, {
-          quality: 1,
+        .toPng(this.captureElement, {
+          // quality: 1,
           cacheBust: true,
-          height: this.captureElement.offsetHeight * 2,
-          width: this.captureElement.offsetWidth * 2,
+          height: this.captureElement.offsetHeight * 3,
+          width: this.captureElement.offsetWidth * 3,
           style: {
-            transform: 'scale(2)',
-            transformOrigin: 'top left'
-            // width: this.captureElement.offsetWidth + 'px',
-            // height: this.captureElement.offsetHeight + 'px'
+            transform: 'scale(3)',
+            transformOrigin: 'top left',
+            width: this.captureElement.offsetWidth + 'px',
+            height: this.captureElement.offsetHeight + 'px'
           }
         })
         .then(function (dataUrl) {
