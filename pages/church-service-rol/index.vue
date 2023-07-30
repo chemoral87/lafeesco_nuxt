@@ -158,106 +158,83 @@ export default {
 
       // me.$store.dispatch('hideLoading')
 
-      // domtoimage
-      //   .toPng(this.captureElement, {
-      //     quality: 1,
-      //     cacheBust: true,
-      //     height: this.captureElement.offsetHeight * 8, // increase scale factor
-      //     width: this.captureElement.offsetWidth * 8, // increase scale factor
-      //     style: {
-      //       transform: 'scale(8)', // increase scale factor
-      //       transformOrigin: 'top left',
-      //       width: this.captureElement.offsetWidth + 'px',
-      //       height: this.captureElement.offsetHeight + 'px'
-      //     }
-      //   })
-      //   .then(function (dataUrl) {
-      //     // Create a new Blob object with the image data
-      //     if (me.isMobile()) {
-      //       var blob = new Blob([dataUrl], { type: 'image/png' })
-
-      //       // Create a share object
-      //       var share = {
-      //         url: window.URL.createObjectURL(blob),
-      //         title: 'Imagen capturada',
-      //         text: 'Esta es una imagen capturada de mi página web.'
-      //       }
-
-      //       // Share the image
-      //       navigator.share(share).then(
-      //         function () {
-      //           console.log('Image shared successfully')
-      //         },
-      //         function (error) {
-      //           console.log('Error sharing image:', error)
-      //         }
-      //       )
-      //     } else {
-      //       var link = document.createElement('a')
-      //       link.download = 'servicio_general.png'
-      //       link.href = dataUrl
-
-      //       link.click()
-      //     }
-
-      //     me.$store.dispatch('notify', { success: 'Imagen descargada' })
-      //     me.$store.dispatch('hideLoading')
-      //   })
-      //   .catch(function (error) {
-      //     console.error('Error occurred:', error)
-      //     me.$store.dispatch('hideLoading')
-      //   })
-
       domtoimage
         .toPng(this.captureElement, {
-          // quality: 1,
           cacheBust: true,
-          height: this.captureElement.offsetHeight * 8,
-          width: this.captureElement.offsetWidth * 8,
+          height: this.captureElement.offsetHeight * 2, // increase scale factor
+          width: this.captureElement.offsetWidth * 2, // increase scale factor
           style: {
-            transform: 'scale(8)',
+            transform: 'scale(2)', // increase scale factor
             transformOrigin: 'top left',
             width: this.captureElement.offsetWidth + 'px',
             height: this.captureElement.offsetHeight + 'px'
           }
         })
         .then(function (dataUrl) {
-          // Convert data URL to blob
-          fetch(dataUrl)
-            .then((res) => res.blob())
-            .then((blob) => {
-              // Convert blob to file
-              var file = new File([blob], 'my-image.png', { type: 'image/png' })
+          var link = document.createElement('a')
+          link.download = 'servicio_general.png'
+          link.href = dataUrl
 
-              if (navigator.share && me.isMobile()) {
-                console.log('share')
-                // Use Web Share API if available
-                navigator
-                  .share({
-                    title: 'My Image',
-                    text: 'Here is my image',
-                    files: [file]
-                  })
-                  .then(() => console.log('Successful share'))
-                  .catch((error) => console.log('Error sharing', error))
-              } else {
-                // Fallback to downloading the image
-                var link = document.createElement('a')
-                link.download = 'my-image.png'
-                link.href = URL.createObjectURL(blob)
-                link.click()
-              }
+          link.click()
 
-              me.$store.dispatch('hideLoading')
-            })
-            .catch((error) => {
-              console.error('Error occurred:', error)
-            })
+          me.$store.dispatch('notify', { success: 'Imagen descargada' })
+          me.$store.dispatch('hideLoading')
         })
         .catch(function (error) {
-          me.$store.dispatch('hideLoading')
           console.error('Error occurred:', error)
+          me.$store.dispatch('hideLoading')
         })
+
+      // domtoimage
+      //   .toPng(this.captureElement, {
+      //     // quality: 1,
+      //     cacheBust: true,
+      //     height: this.captureElement.offsetHeight * 8,
+      //     width: this.captureElement.offsetWidth * 8,
+      //     style: {
+      //       transform: 'scale(8)',
+      //       transformOrigin: 'top left',
+      //       width: this.captureElement.offsetWidth + 'px',
+      //       height: this.captureElement.offsetHeight + 'px'
+      //     }
+      //   })
+      //   .then(function (dataUrl) {
+      //     // Convert data URL to blob
+      //     fetch(dataUrl)
+      //       .then((res) => res.blob())
+      //       .then((blob) => {
+      //         // Convert blob to file
+      //         var file = new File([blob], 'my-image.png', { type: 'image/png' })
+
+      //         if (navigator.share && me.isMobile()) {
+      //           console.log('share')
+      //           // Use Web Share API if available
+      //           navigator
+      //             .share({
+      //               title: 'My Image',
+      //               text: 'Here is my image',
+      //               files: [file]
+      //             })
+      //             .then(() => console.log('Successful share'))
+      //             .catch((error) => console.log('Error sharing', error))
+      //         } else {
+      //           // Fallback to downloading the image
+      //           var link = document.createElement('a')
+      //           link.download = 'my-image.png'
+      //           link.href = URL.createObjectURL(blob)
+      //           link.click()
+      //         }
+
+      //         me.$store.dispatch('hideLoading')
+      //       })
+      //       .catch((error) => {
+      //         console.error('Error occurred:', error)
+      //       })
+      //   })
+      //   .catch(function (error) {
+      //     me.$store.dispatch('hideLoading')
+      //     console.error('Error occurred:', error)
+      //   })
     },
     async getChurchService() {
       let op = {
