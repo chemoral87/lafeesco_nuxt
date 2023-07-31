@@ -19,15 +19,17 @@
         <v-switch hide-details v-model="showChurchService" :label="!showChurchService ? 'Hra. LLegada' : 'Hra. Servicio'"></v-switch>
       </v-col>
     </v-row>
-    <v-row dense ref="captureElement">
-      <v-col cols="12" sm="6" md="4" lg="3" v-for="service in church_services" :key="service.id">
+    <v-row dense ref="captureElement" v-if="range_view == 'card'">
+      <v-col cols="12" sm="6" md="4" lg="3" class="px-1" v-for="service in church_services" :key="service.id">
         <v-card :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''">
-          <ChurchServiceCardTitle :service="service" :show-church-service-hour="showChurchService" :show-diff-humanize="true" />
+          <ChurchServiceCardTitle :service="service" :show-church-service-hour="showChurchService" :show-diff-humanize="false" />
 
           <MinistryAttendantCard :selectedMinistries="selectedMinistries" :service_ministries="service.ministries" />
         </v-card>
       </v-col>
     </v-row>
+
+    <v-row dense ref="captureElement" v-else-if="range_view == 'text'"> </v-row>
 
     <v-dialog v-model="dialogChurchService" persistent width="400px">
       <v-card>
@@ -78,8 +80,8 @@ export default {
   data() {
     return {
       captureElement: null,
-      range_items: [{ value: 'today', text: 'Hoy' }],
-      range_display: 'today',
+      range_items: [{ value: 'week', text: 'Próximos' }],
+      range_display: 'week',
       range_views: [
         { value: 'card', text: 'Servicios' },
         { value: 'text', text: 'Texto' },
@@ -161,10 +163,10 @@ export default {
       domtoimage
         .toPng(this.captureElement, {
           cacheBust: true,
-          height: this.captureElement.offsetHeight * 2, // increase scale factor
-          width: this.captureElement.offsetWidth * 2, // increase scale factor
+          height: this.captureElement.offsetHeight * 2.2, // increase scale factor
+          width: this.captureElement.offsetWidth * 2.2, // increase scale factor
           style: {
-            transform: 'scale(2)', // increase scale factor
+            transform: 'scale(2.2)', // increase scale factor
             transformOrigin: 'top left',
             width: this.captureElement.offsetWidth + 'px',
             height: this.captureElement.offsetHeight + 'px'

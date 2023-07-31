@@ -1,12 +1,12 @@
 <template>
-  <v-card-text class="px-1 pt-1 pb-2">
+  <v-card-text class="px-1 pt-1 pb-0">
     <v-row dense v-for="ministry in service_ministries" :key="ministry.id + 'min'">
       <template v-if="displayFromSelectedMinistry(ministry.id)">
-        <v-col cols="12" class="py-0 my-0" v-if="selectedMinistries.length != 1">
+        <v-col cols="12" class="pt-0 pb-0 my-0" v-if="selectedMinistries.length != 1">
           <v-chip x-small outlined :color="ministry.color">{{ ministry.name | uppercase }} </v-chip>
         </v-col>
         <v-col
-          class="py-0 my-0 text--primary d-flex align-center no-line-height"
+          class="pt-0 pb-1 my-0 text--primary d-flex align-center no-line-height"
           cols="6"
           v-for="attendant in ministry.attendants"
           :key="attendant.id + 'att'"
