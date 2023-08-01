@@ -39,7 +39,7 @@ export default {
     async getImageAsBase64(url) {
       console.log(url)
       const response = await fetch(url, {
-        mode: 'no-cors'
+        // mode: 'no-cors'
       })
       const blob = await response.blob()
 
@@ -50,23 +50,7 @@ export default {
         reader.readAsDataURL(blob)
       })
     },
-    // getImageAsBase64(imageUrl) {
-    //   console.log('getImageAsBase64', imageUrl)
-    //   return new Promise((resolve, reject) => {
-    //     fetch(imageUrl)
-    //       .then((response) => response.blob())
-    //       .then((blob) => {
-    //         const reader = new FileReader()
-    //         reader.onloadend = () => resolve(reader.result)
-    //         reader.onerror = reject
-    //         reader.readAsDataURL(blob)
-    //       })
-    //       .catch((error) => {
-    //         console.error('Error fetching image:', error)
-    //         reject('Error fetching image')
-    //       })
-    //   })
-    // },
+
     displayFromSelectedMinistry(ministry_id) {
       if (this.selectedMinistries.length == 0) return true
       else if (this.selectedMinistries.indexOf(ministry_id) > -1) return true

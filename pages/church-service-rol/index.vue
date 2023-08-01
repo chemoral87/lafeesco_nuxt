@@ -11,25 +11,34 @@
         <v-select :items="range_views" item-text="text" item-value="value" label="Vista" v-model="range_view"></v-select>
       </v-col>
       <v-col cols="auto">
-        <v-btn @click="exportImg2()" fab color="primary">
+        <v-btn @click="share()" fab color="primary">
           <v-icon>mdi-share-variant</v-icon>
         </v-btn>
       </v-col>
       <v-col cols="6" sm="auto">
-        <v-switch hide-details v-model="showChurchService" :label="!showChurchService ? 'Hra. LLegada' : 'Hra. Servicio'"></v-switch>
+        <v-switch
+          hide-details
+          v-model="showHourChurchService"
+          :label="!showHourChurchService ? 'Hra. LLegada' : 'Hra. Servicio'"
+        ></v-switch>
       </v-col>
     </v-row>
     <v-row dense ref="captureElement" v-if="range_view == 'card'">
       <v-col cols="12" sm="6" md="4" lg="3" class="px-1" v-for="service in church_services" :key="service.id">
         <v-card :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''">
-          <ChurchServiceCardTitle :service="service" :show-church-service-hour="showChurchService" :show-diff-humanize="false" />
+          <ChurchServiceCardTitle :service="service" :show-church-service-hour="showHourChurchService" :show-diff-humanize="false" />
 
           <MinistryAttendantCard :selectedMinistries="selectedMinistries" :service_ministries="service.ministries" />
         </v-card>
       </v-col>
     </v-row>
 
-    <v-row dense ref="captureElement" v-else-if="range_view == 'text'"> </v-row>
+    <v-row dense ref="captureElement" v-else-if="range_view == 'text'">
+      <v-col cols="12">
+        <v-textarea rows="15" outlined readonly v-model="church_services_text" class="text-body-2"> </v-textarea>
+        <!-- {{ church_services }} -->
+      </v-col>
+    </v-row>
 
     <v-dialog v-model="dialogChurchService" persistent width="400px">
       <v-card>
@@ -95,9 +104,55 @@ export default {
       time: null,
       church_services: [],
       myLeaders: [],
-      showChurchService: false,
+      showHourChurchService: false,
       ministries: [{ id: '', name: '' }],
       selectedMinistries: []
+    }
+  },
+  computed: {
+    church_services_text() {
+      let text_format = ''
+      this.church_services.forEach((service) => {
+        // get with moment js the format dddd DD MMM of the service.event_date in text_format
+        text_format +=
+          '*' +
+          this.getServiceNumber(service.event_date) +
+          '* ' +
+          (this.showHourChurchService
+            ? this.$moment(service.event_date).format('hh:mm a')
+            : this.$moment(this.getArriveDate(service.event_date)).format('hh:mm a')) +
+          '  ' +
+          '*' +
+          this.$moment(service.event_date).format('dddd DD MMMM') +
+          '* ' +
+          '\r\n'
+
+        // skip if the ministry is not selectedMinistries
+        if (this.selectedMinistries.length > 0) {
+          let filtered_ministries = service.ministries.filter((ministry) => {
+            return this.selectedMinistries.includes(ministry.id)
+          })
+
+          filtered_ministries.forEach((ministry) => {
+            if (this.selectedMinistries.length != 1) text_format += '*' + ministry.name + '*\r\n'
+
+            ministry.attendants.forEach((attendant) => {
+              text_format += attendant.name + ' ' + attendant.paternal_surname + '\r\n'
+            })
+          })
+        }
+
+        // service.ministries.forEach((ministry) => {
+        //   text_format += '*' + ministry.name + '*\r\n'
+        //   ministry.attendants.forEach((attendant) => {
+        //     text_format += attendant.name + ' ' + attendant.paternal_surname + '\r\n'
+        //   })
+        // })
+
+        text_format += '\r\n'
+        // text_format += `${service.event_date} ${service.event_time} ${service.ministries.map((ministry) => ministry.name).join(', ')}\n`
+      })
+      return text_format
     }
   },
   watch: {
@@ -106,6 +161,23 @@ export default {
     }
   },
   methods: {
+    getServiceNumber(date) {
+      let hours = this.$moment(date).hours()
+      let minutes = this.$moment(date).minutes()
+      const time = `${hours}:${minutes}`
+
+      switch (time) {
+        case '9:0':
+        case '19:30':
+          return '1º.'
+        case '11:30':
+          return '2º.'
+        case '18:0':
+          return '3º.'
+        default:
+          return '0º'
+      }
+    },
     isMobile() {
       if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         return true
@@ -113,52 +185,28 @@ export default {
         return false
       }
     },
+    async share() {
+      if (this.range_view == 'card') {
+        this.exportImg2()
+      } else if (this.range_view == 'text') {
+        this.exportText()
+      }
+    },
+    async exportText() {
+      let me = this
+      navigator.clipboard
+        .writeText(this.church_services_text)
+        .then(() => {
+          console.log('Text copied to clipboard')
+          me.$store.dispatch('notify', { success: 'Texto Copiado' })
+        })
+        .catch((err) => {
+          console.error('Could not copy text: ', err)
+        })
+    },
     async exportImg2() {
       let me = this
       me.$store.dispatch('showLoading')
-
-      // const dataUrl = await domtoimage.toPng(this.captureElement, {
-      //   cacheBust: true,
-      //   height: this.captureElement.offsetHeight * 10, // increase scale factor
-      //   width: this.captureElement.offsetWidth * 10, // increase scale factor
-      //   style: {
-      //     transform: 'scale(10)', // increase scale factor
-      //     transformOrigin: 'top left',
-      //     width: this.captureElement.offsetWidth + 'px',
-      //     height: this.captureElement.offsetHeight + 'px'
-      //   }
-      // })
-
-      // const response = await fetch(dataUrl)
-      // const blob = await response.blob()
-
-      // // Create a File object from the Blob object
-      // const file = new File([blob], 'rol.png', { type: 'image/png' })
-
-      // // Create a share object
-      // const share = {
-      //   files: [file],
-      //   title: 'Imagen capturada',
-      //   text: 'Esta es una imagen capturada de mi página web.'
-      // }
-
-      // // Check if the user has granted permission to share the image
-      // if (navigator.share) {
-      //   // Share the image
-      //   navigator.share(share).then(
-      //     function () {
-      //       console.log('Image shared successfully')
-      //     },
-      //     function (error) {
-      //       console.log('Error sharing image:', error)
-      //     }
-      //   )
-      // } else {
-      //   // Fallback for browsers that don't support the Web Share API
-      //   console.log('Web Share API is not supported')
-      // }
-
-      // me.$store.dispatch('hideLoading')
 
       domtoimage
         .toPng(this.captureElement, {
@@ -186,57 +234,6 @@ export default {
           console.error('Error occurred:', error)
           me.$store.dispatch('hideLoading')
         })
-
-      // domtoimage
-      //   .toPng(this.captureElement, {
-      //     // quality: 1,
-      //     cacheBust: true,
-      //     height: this.captureElement.offsetHeight * 8,
-      //     width: this.captureElement.offsetWidth * 8,
-      //     style: {
-      //       transform: 'scale(8)',
-      //       transformOrigin: 'top left',
-      //       width: this.captureElement.offsetWidth + 'px',
-      //       height: this.captureElement.offsetHeight + 'px'
-      //     }
-      //   })
-      //   .then(function (dataUrl) {
-      //     // Convert data URL to blob
-      //     fetch(dataUrl)
-      //       .then((res) => res.blob())
-      //       .then((blob) => {
-      //         // Convert blob to file
-      //         var file = new File([blob], 'my-image.png', { type: 'image/png' })
-
-      //         if (navigator.share && me.isMobile()) {
-      //           console.log('share')
-      //           // Use Web Share API if available
-      //           navigator
-      //             .share({
-      //               title: 'My Image',
-      //               text: 'Here is my image',
-      //               files: [file]
-      //             })
-      //             .then(() => console.log('Successful share'))
-      //             .catch((error) => console.log('Error sharing', error))
-      //         } else {
-      //           // Fallback to downloading the image
-      //           var link = document.createElement('a')
-      //           link.download = 'my-image.png'
-      //           link.href = URL.createObjectURL(blob)
-      //           link.click()
-      //         }
-
-      //         me.$store.dispatch('hideLoading')
-      //       })
-      //       .catch((error) => {
-      //         console.error('Error occurred:', error)
-      //       })
-      //   })
-      //   .catch(function (error) {
-      //     me.$store.dispatch('hideLoading')
-      //     console.error('Error occurred:', error)
-      //   })
     },
     async getChurchService() {
       let op = {
@@ -251,6 +248,10 @@ export default {
     isSunday(date) {
       return this.$moment(date).day() === 0
     },
+    getArriveDate(date) {
+      let _date = this.$moment(date)
+      return _date.subtract(40, 'minutes')
+    },
     getServiceNumber(date) {
       let hours = this.$moment(date).hours()
       let minutes = this.$moment(date).minutes()
@@ -259,11 +260,11 @@ export default {
       switch (time) {
         case '9:0':
         case '19:30':
-          return '1º'
+          return '1º.'
         case '11:30':
-          return '2º'
+          return '2º.'
         case '18:0':
-          return '3º'
+          return '3º.'
         default:
           return '0º'
       }
