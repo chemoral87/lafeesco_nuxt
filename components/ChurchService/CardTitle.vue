@@ -2,8 +2,8 @@
   <v-card-text class="pt-1 pb-0 text--primary">
     <span class="mr-2">{{ service.event_date | moment('dddd DD MMM') }}</span>
     <strong class="text--red" :class="getServiceColor(service.event_date)">{{ getServiceNumber(service.event_date) }}</strong>
-    <strong v-if="showChurchServiceHour"> {{ service.event_date | moment('h:mm a') }}</strong>
-    <strong v-else> {{ getArriveDate(service.event_date) | moment('h:mm a') }}</strong>
+    <strong v-if="showChurchServiceHour"> {{ service.event_date | moment('hh:mm a') }}</strong>
+    <strong v-else> {{ getArriveDate(service.event_date) | moment('hh:mm a') }}</strong>
 
     <v-chip v-if="showDiffHumanize" small outlined :color="getDayDiffClass(service.event_date)">
       <strong v-if="getDayDiff(service.event_date) == 0"> HOY </strong>

@@ -1,7 +1,7 @@
 <template>
   <v-container>
     Fecha: {{ church_service.event_date | moment('dddd DD MMMM YYYY -') }}
-    <strong>{{ church_service.event_date | moment('H:mm a') }}</strong>
+    <strong>{{ church_service.event_date | moment('hh:mm a') }}</strong>
 
     <v-form ref="form" @submit.prevent="saveChurchServiceAttendant()">
       <v-row dense>

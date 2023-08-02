@@ -4,8 +4,8 @@
     <v-card :max-width="600">
       <v-card-title class="px-2 py-0 text-subtitle-1 text--primary">
         {{ church_service.event_date | moment('ddd DD MMM YYYY -') }}
-        <strong v-if="showChurchService"> {{ church_service.event_date | moment('h:mm a') }}</strong>
-        <strong v-else> {{ getArriveDate(church_service.event_date) | moment('h:mm a') }}</strong>
+        <strong v-if="showChurchService"> {{ church_service.event_date | moment('hh:mm a') }}</strong>
+        <strong v-else> {{ getArriveDate(church_service.event_date) | moment('hh:mm a') }}</strong>
         <v-spacer></v-spacer>
         <v-icon @click.native="close">$delete</v-icon>
       </v-card-title>

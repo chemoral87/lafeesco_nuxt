@@ -211,11 +211,11 @@ export default {
       domtoimage
         .toPng(this.captureElement, {
           cacheBust: true,
-          height: this.captureElement.offsetHeight * 2.2, // increase scale factor
-          width: this.captureElement.offsetWidth * 2.2, // increase scale factor
+          height: this.captureElement.offsetHeight * 2, // increase scale factor
+          width: this.captureElement.offsetWidth * 2, // increase scale factor
           style: {
-            transform: 'scale(2.2)', // increase scale factor
-            transformOrigin: 'top left',
+            transform: 'scale(2)', // increase scale factor
+            // transformOrigin: 'top left',
             width: this.captureElement.offsetWidth + 'px',
             height: this.captureElement.offsetHeight + 'px'
           }

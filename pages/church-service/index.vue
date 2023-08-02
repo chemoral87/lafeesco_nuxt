@@ -26,12 +26,7 @@
             </v-row>
           </v-card-text>
           <ChurchServiceCardTitle :service="service" :show-church-service-hour="showChurchService" />
-          <!-- <v-card-text class="pt-1 pb-0 text--primary">
-            {{ service.event_date | moment('dddd DD MMM YYYY') }}
-            <strong>{{ getServiceNumber(service.event_date) }}</strong> -
-            <strong v-if="showChurchService"> {{ service.event_date | moment('h:mm a') }}</strong>
-            <strong v-else> {{ getArriveDate(service.event_date) | moment('h:mm a') }}</strong>
-          </v-card-text> -->
+
           <MinistryAttendantCard :selectedMinistries="selectedMinistries" :service_ministries="service.ministries" />
         </v-card>
       </v-col>
