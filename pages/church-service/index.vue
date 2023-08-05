@@ -13,7 +13,6 @@
     </v-row>
     <v-row dense>
       <v-col cols="12" sm="6" md="4" lg="3" v-for="(service, ix) in church_services" :key="service.id">
-        <!-- <v-card :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''"> -->
         <v-card :color="getServiceColor(service.event_date)">
           <v-card-text class="pa-1">
             <v-row dense>
@@ -38,7 +37,7 @@
       </v-col>
     </v-row>
 
-    <v-dialog v-model="modalNewChurchService" persistent width="400px">
+    <!-- <v-dialog v-model="modalNewChurchService" persistent width="400px">
       <v-card>
         <v-card-title> Nuevo Servicio <v-spacer /> <v-icon @click.native="modalNewChurchService = false"> $delete </v-icon> </v-card-title>
         <v-form ref="form" @submit.prevent="save">
@@ -65,7 +64,7 @@
                     <v-btn text color="primary" @click="$refs.dialog.save(time)"> OK </v-btn>
                   </v-time-picker>
                 </v-dialog>
-                <!-- <v-text-field v-model="time" label="Hora"></v-text-field> -->
+
               </v-col>
             </v-row>
           </v-card-text>
@@ -77,7 +76,7 @@
           <v-btn color="primary" @click="saveChurchService()"> Guardar </v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
     <ChurchServiceMinistryDialog
       :payload="payloadAssingChurchService"
       :showChurchService="showChurchService"
@@ -88,7 +87,9 @@
   </v-container>
 </template>
 <script>
+import churchService from '~/services/church-service'
 export default {
+  mixins: [churchService],
   props: {},
   data() {
     return {
@@ -114,35 +115,11 @@ export default {
     }
   },
   methods: {
-    isSunday(date) {
-      return this.$moment(date).day() === 0
-    },
-    getServiceColor(date) {
-      let hours = this.$moment(date).hours()
-      let minutes = this.$moment(date).minutes()
-      const time = `${hours}:${minutes}`
-      switch (time) {
-        case '19:30': // domingo 1
-          return 'light-blue lighten-5'
-        // case '19:30': // miercoles
-        //   return 'light-blue lighten-5'
-        // case '11:30':
-        //   return 'orange lighten-5'
-        // case '18:0':
-        //   return 'red lighten-5'
-        // default:
-        //   return '0º'
-      }
-    },
-
-    getArriveDate(date) {
-      let _date = this.$moment(date)
-      return _date.subtract(40, 'minutes')
-    },
     setChurchService(item) {
       let _church_service = this.church_services.find((x) => x.id == item.id)
       _church_service.ministries = item?.ministries || []
-      this.church_services.splice(this.church_services.indexOf(_church_service), 1, _church_service)
+      this.church_services = this.church_services.map((service) => (service.id === item.id ? updatedChurchService : service))
+      // this.church_services.splice(this.church_services.indexOf(_church_service), 1, _church_service)
     },
     async getChurchService() {
       let op = {
@@ -162,14 +139,8 @@ export default {
     },
     allowedStep: (m) => m % 30 === 0,
     // allowedDates: (val) => parseInt(val.split('-')[2], 10) % 2 === 0,
-    allowedDates(val) {
-      let day = this.$moment(val).day()
-      //0 is sunday
-      if ([0, 3].indexOf(day) > -1) return true
-      return false
-    },
+
     newChurchService() {
-      //this.modalNewChurchService = true
       this.$repository.ChurchService.generate()
     },
     async saveChurchService() {
