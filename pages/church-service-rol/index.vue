@@ -215,7 +215,7 @@ export default {
           width: this.captureElement.offsetWidth * 2, // increase scale factor
           style: {
             transform: 'scale(2)', // increase scale factor
-            // transformOrigin: 'top left',
+            transformOrigin: 'top left',
             width: this.captureElement.offsetWidth + 'px',
             height: this.captureElement.offsetHeight + 'px'
           }
