@@ -39,47 +39,7 @@
         <!-- {{ church_services }} -->
       </v-col>
     </v-row>
-
-    <v-dialog v-model="dialogChurchService" persistent width="400px">
-      <v-card>
-        <v-card-title> Nuevo Servicio <v-spacer /> <v-icon @click.native="dialogChurchService = false"> $delete </v-icon> </v-card-title>
-        <v-form ref="form" @submit.prevent="save">
-          <v-card-text>
-            <v-row dense>
-              <v-col cols="12">
-                <v-date-picker width="auto" v-model="date" :allowed-dates="allowedDates" :show-current="current"></v-date-picker>
-              </v-col>
-              <v-col cols="12">
-                <v-dialog ref="dialog" v-model="modal2" :return-value.sync="time" persistent width="290px">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="time"
-                      label="Picker in dialog"
-                      prepend-icon="mdi-clock-time-four-outline"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-time-picker v-if="modal2" v-model="time" :allowed-minutes="allowedStep" full-width>
-                    <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="modal2 = false"> Cancel </v-btn>
-                    <v-btn text color="primary" @click="$refs.dialog.save(time)"> OK </v-btn>
-                  </v-time-picker>
-                </v-dialog>
-                <!-- <v-text-field v-model="time" label="Hora"></v-text-field> -->
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-form>
-
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" class="mr-1" outlined @click.native="dialogChurchService = false"> Cancelar </v-btn>
-          <v-btn color="primary" @click="saveChurchService()"> Guardar </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    {{ attendant_ministry_events }}
   </v-container>
 </template>
 <script>
@@ -110,6 +70,44 @@ export default {
     }
   },
   computed: {
+    attendant_ministry_events() {
+      let attendant_list = []
+      this.church_services.forEach((service) => {
+        service.ministries.forEach((ministry) => {
+          ministry.attendants.forEach((attendant) => {
+            let _attendant = attendant_list.find((attendant_item) => attendant_item.id == attendant.id)
+            if (!_attendant) {
+              _attendant = Object.assign({}, attendant)
+              _attendant.ministries = []
+
+              let _ministry = Object.assign({}, ministry)
+              delete _ministry['attendants']
+              delete _ministry['pivot']
+              _ministry.event_dates = []
+
+              _ministry.event_dates.push(service.event_date)
+              _attendant.ministries.push(_ministry)
+              // _attendant.event_dates = []
+              // _attendant.event_dates.push(service.event_date)
+              attendant_list.push(_attendant)
+            } else {
+              let _ministry = _attendant.ministries.find((t_ministry) => t_ministry.id == ministry.id)
+              if (!_ministry) {
+                let _ministry = Object.assign({}, ministry)
+                delete _ministry['attendants']
+                delete _ministry['pivot']
+                _ministry.event_dates = []
+                _ministry.event_dates.push(service.event_date)
+                _attendant.ministries.push(_ministry)
+              } else {
+                _ministry.event_dates.push(service.event_date)
+              }
+            }
+          })
+        })
+      })
+      return attendant_list
+    },
     church_services_text() {
       let text_format = ''
       this.church_services.forEach((service) => {
