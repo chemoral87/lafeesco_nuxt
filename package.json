@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev:host": "nuxt --hostname '192.168.56.44' --port 3000",
-    "dev": "cross-env NUXT_HOST=0.0.0.0 NUXT_PORT=3000 nuxt",
+    "dev": "cross-env NUXT_HOST=0.0.0.0 NUXT_PORT=3000 nuxt -w",
     "clean": "rm -rf .nuxt dist",
     "build": "npm run clean && nuxt build",
     "start": "nuxt start",

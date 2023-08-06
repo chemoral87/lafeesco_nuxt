@@ -93,7 +93,9 @@ export default {
     defaultLocale: 'es',
     locales: ['es']
   },
-
+  dev: {
+    hotReload: true
+  },
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios

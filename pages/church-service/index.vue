@@ -137,9 +137,6 @@ export default {
       this.payloadAssingChurchService = { church_service_id: church_service_id, ministry: ministry }
       this.modalAssingChurchService = true
     },
-    allowedStep: (m) => m % 30 === 0,
-    // allowedDates: (val) => parseInt(val.split('-')[2], 10) % 2 === 0,
-
     newChurchService() {
       this.$repository.ChurchService.generate()
     },

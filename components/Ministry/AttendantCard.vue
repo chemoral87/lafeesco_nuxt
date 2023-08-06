@@ -14,14 +14,6 @@
           <div class="image-wrapper">
             <!-- <v-img class="image-cropper mr-1" aspect-ratio="1" :src="'data:image/jpeg;base64,' + attendantsBase64Images[attendant.id]"> -->
             <img class="image-cropper mr-1" aspect-ratio="1" :src="attendant.photo" />
-            <!-- <v-img class="image-cropper mr-1" aspect-ratio="1" :src="attendant.photo">
-              <template v-slot:placeholder>
-                <v-row class="fill-height ma-0" align="center" justify="center">
-                  <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                </v-row>
-              </template>
-            </v-img> -->
-            <!-- <img class="image-cropper mr-1" :src="'data:image/jpeg;base64,' + attendant.photo" :alt="attendant.name" /> -->
             {{ attendant.name }} {{ attendant.paternal_surname }}
           </div>
         </v-col>

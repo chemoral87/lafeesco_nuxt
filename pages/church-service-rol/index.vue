@@ -23,7 +23,7 @@
         ></v-switch>
       </v-col>
     </v-row>
-    <v-row dense ref="captureElement" v-if="range_view == 'card'">
+    <v-row dense ref="captureElement" v-if="range_view == 'service'">
       <v-col cols="12" sm="6" md="4" lg="3" class="px-1" v-for="service in church_services" :key="service.id">
         <v-card :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''">
           <ChurchServiceCardTitle :service="service" :show-church-service-hour="showHourChurchService" :show-diff-humanize="false" />
@@ -36,27 +36,89 @@
     <v-row dense ref="captureElement" v-else-if="range_view == 'text'">
       <v-col cols="12">
         <v-textarea rows="15" outlined readonly v-model="church_services_text" class="text-body-2"> </v-textarea>
-        <!-- {{ church_services }} -->
       </v-col>
+    </v-row>
+
+    <v-row dense ref="captureElement" v-else-if="range_view == 'attendant'">
+      <v-col cols="12" sm="6" md="4" v-for="person in attendant_ministry_events" :key="person.id">
+        <v-card class="pa-1">
+          <!-- <v-img :src="person.photo" height="200px"></v-img> -->
+          <v-card-title class="pa-1 text-body-2">
+            <v-avatar size="29" class="mr-1">
+              <img :src="person.photo" :alt="`${person.name} ${person.paternal_surname}`" />
+            </v-avatar>
+            {{ person.name }} {{ person.paternal_surname }}
+            <span class="px-2" v-if="person.ministries && person.ministries.length">
+              <v-chip x-small v-for="ministry in person.ministries" :key="ministry.id" :color="ministry.color" outlined class="mr-1 mb-1">
+                <strong> {{ ministry.name }}</strong>
+              </v-chip>
+            </span>
+          </v-card-title>
+          <v-card-text class="pa-1">
+            <v-chip
+              class="mr-1 mb-1 text--black black--text"
+              outlined
+              v-for="event_date_item in person.event_dates"
+              :key="event_date_item.event_date"
+              :color="event_date_item.ministry_color"
+            >
+              {{ event_date_item.event_date | moment('ddd DD MMMM') }}
+
+              <strong class="ml-1" :class="getServiceTextColor(event_date_item.event_date)">{{
+                getServiceNumber(event_date_item.event_date)
+              }}</strong>
+              <!-- <strong v-if="showChurchServiceHour"> {{ event_date_item.event_date | moment('hh:mm a') }}</strong> -->
+              <!-- <strong v-else> {{ getArriveDate(event_date_item.event_date) | moment('hh:mm a') }}</strong> -->
+            </v-chip>
+            <!-- <v-list>
+              <v-list-item v-for="ministry in person.ministries" :key="ministry.id">
+                <v-list-item-icon>
+                  <v-icon :color="ministry.color">mdi-account-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>{{ ministry.name }}</v-list-item-title>
+                  <v-list-item-subtitle v-for="date in ministry.event_dates" :key="date">
+                    {{ new Date(date).toLocaleString() }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list> -->
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <!-- <v-col cols="12">
+        <v-row v-for="attendant in attendant_ministry_events" :key="attendant.id">
+          <v-col class="pt-0 pb-1 my-0 text--primary d-flex align-center no-line-height" cols="auto">
+            <div class="image-wrapper">
+
+              <img class="image-cropper mr-1" aspect-ratio="1" :src="attendant.photo" />
+              {{ attendant.name }} {{ attendant.paternal_surname }}
+            </div>
+          </v-col>
+          <v-col cols="auto" v-for="ministry in attendant.ministries" :key="ministry.id + '-' + attendant.id"> {{ ministry.name }} </v-col>
+        </v-row>
+      </v-col> -->
     </v-row>
     {{ attendant_ministry_events }}
   </v-container>
 </template>
 <script>
 import domtoimage from 'dom-to-image'
+import churchService from '~/services/church-service'
 export default {
   props: {},
+  mixins: [churchService],
   data() {
     return {
       captureElement: null,
       range_items: [{ value: 'week', text: 'Próximos' }],
       range_display: 'week',
       range_views: [
-        { value: 'card', text: 'Servicios' },
+        { value: 'service', text: 'Servicios' },
         { value: 'text', text: 'Texto' },
-        { value: 'attendants', text: 'Servidor' }
+        { value: 'attendant', text: 'Servidor' }
       ],
-      range_view: 'card',
+      range_view: 'service',
       dialogChurchService: false,
       date: '2018-03-02',
       current: new Date(),
@@ -72,37 +134,26 @@ export default {
   computed: {
     attendant_ministry_events() {
       let attendant_list = []
-      this.church_services.forEach((service) => {
-        service.ministries.forEach((ministry) => {
-          ministry.attendants.forEach((attendant) => {
-            let _attendant = attendant_list.find((attendant_item) => attendant_item.id == attendant.id)
-            if (!_attendant) {
-              _attendant = Object.assign({}, attendant)
-              _attendant.ministries = []
-
-              let _ministry = Object.assign({}, ministry)
-              delete _ministry['attendants']
-              delete _ministry['pivot']
-              _ministry.event_dates = []
-
-              _ministry.event_dates.push(service.event_date)
-              _attendant.ministries.push(_ministry)
-              // _attendant.event_dates = []
-              // _attendant.event_dates.push(service.event_date)
-              attendant_list.push(_attendant)
-            } else {
-              let _ministry = _attendant.ministries.find((t_ministry) => t_ministry.id == ministry.id)
-              if (!_ministry) {
-                let _ministry = Object.assign({}, ministry)
-                delete _ministry['attendants']
-                delete _ministry['pivot']
-                _ministry.event_dates = []
-                _ministry.event_dates.push(service.event_date)
-                _attendant.ministries.push(_ministry)
-              } else {
-                _ministry.event_dates.push(service.event_date)
-              }
+      this.church_services.forEach(({ ministries, event_date }) => {
+        ministries.forEach(({ attendants, ...ministry }) => {
+          attendants.forEach((attendant) => {
+            let attendant_item = attendant_list.find((item) => item.id === attendant.id)
+            if (!attendant_item) {
+              attendant_item = { ...attendant, ministries: [], event_dates: [] }
+              attendant_list.push(attendant_item)
             }
+
+            let ministry_item = attendant_item.ministries.find((item) => item.id === ministry.id)
+            if (!ministry_item) {
+              ministry_item = { ...ministry, event_dates: [event_date] }
+              delete ministry_item.attendants
+              delete ministry_item.pivot
+              attendant_item.ministries.push(ministry_item)
+            } else {
+              ministry_item.event_dates.push(event_date)
+            }
+
+            attendant_item.event_dates.push({ event_date, ministry_color: ministry.color })
           })
         })
       })
@@ -140,13 +191,6 @@ export default {
           })
         }
 
-        // service.ministries.forEach((ministry) => {
-        //   text_format += '*' + ministry.name + '*\r\n'
-        //   ministry.attendants.forEach((attendant) => {
-        //     text_format += attendant.name + ' ' + attendant.paternal_surname + '\r\n'
-        //   })
-        // })
-
         text_format += '\r\n'
         // text_format += `${service.event_date} ${service.event_time} ${service.ministries.map((ministry) => ministry.name).join(', ')}\n`
       })
@@ -159,23 +203,23 @@ export default {
     }
   },
   methods: {
-    getServiceNumber(date) {
-      let hours = this.$moment(date).hours()
-      let minutes = this.$moment(date).minutes()
-      const time = `${hours}:${minutes}`
+    // getServiceNumber(date) {
+    //   let hours = this.$moment(date).hours()
+    //   let minutes = this.$moment(date).minutes()
+    //   const time = `${hours}:${minutes}`
 
-      switch (time) {
-        case '9:0':
-        case '19:30':
-          return '1º.'
-        case '11:30':
-          return '2º.'
-        case '18:0':
-          return '3º.'
-        default:
-          return '0º'
-      }
-    },
+    //   switch (time) {
+    //     case '9:0':
+    //     case '19:30':
+    //       return '1º.'
+    //     case '11:30':
+    //       return '2º.'
+    //     case '18:0':
+    //       return '3º.'
+    //     default:
+    //       return '0º'
+    //   }
+    // },
     isMobile() {
       if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         return true
@@ -242,30 +286,6 @@ export default {
         // start_date: this.start_date
       }
       this.church_services = await this.$repository.ChurchService.index(op).catch((e) => {})
-    },
-    isSunday(date) {
-      return this.$moment(date).day() === 0
-    },
-    getArriveDate(date) {
-      let _date = this.$moment(date)
-      return _date.subtract(40, 'minutes')
-    },
-    getServiceNumber(date) {
-      let hours = this.$moment(date).hours()
-      let minutes = this.$moment(date).minutes()
-      const time = `${hours}:${minutes}`
-
-      switch (time) {
-        case '9:0':
-        case '19:30':
-          return '1º.'
-        case '11:30':
-          return '2º.'
-        case '18:0':
-          return '3º.'
-        default:
-          return '0º'
-      }
     },
 
     assignAttendant(service_id, ministry) {
@@ -345,3 +365,19 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.image-wrapper {
+  display: flex;
+  align-items: center;
+}
+.no-line-height {
+  line-height: 14px;
+}
+.image-cropper {
+  border-radius: 50%;
+  display: inline;
+  width: 30px;
+  height: 30px;
+}
+</style>
