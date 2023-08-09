@@ -24,9 +24,9 @@
       </v-col>
     </v-row>
     <v-row dense ref="captureElement" v-if="range_view == 'service'">
-      <v-col cols="12" sm="6" md="4" lg="3" class="px-1" v-for="service in church_services" :key="service.id">
+      <v-col cols="12" sm="6" md="4" lg="3" class="px-1" v-for="service in church_services_filtered" :key="service.id">
         <v-card :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''">
-          <ChurchServiceCardTitle :service="service" :show-church-service-hour="showHourChurchService" :show-diff-humanize="false" />
+          <ChurchServiceCardTitle :service="service" :show-diff-humanize="false" />
 
           <MinistryAttendantCard :selectedMinistries="selectedMinistries" :service_ministries="service.ministries" />
         </v-card>
@@ -99,7 +99,10 @@
         </v-row>
       </v-col> -->
     </v-row>
-    {{ attendant_ministry_events }}
+    {{ church_services_filtered }} ad
+
+    {{ selectedMinistries }}
+    <!-- {{ attendant_ministry_events }} -->
   </v-container>
 </template>
 <script>
@@ -132,6 +135,17 @@ export default {
     }
   },
   computed: {
+    church_services_filtered() {
+      let showHourChurchService = this.showHourChurchService
+      let church_s = this.church_services.map((service) => ({
+        ...service,
+        event_name: this.getServiceNumber(service.event_date),
+        event_name_color: this.getServiceTextColor(service.event_date),
+        event_date: showHourChurchService == true ? service.event_date : this.getArriveDate(service.event_date),
+        ministries: service.ministries.filter((ministry) => this.selectedMinistries.includes(ministry.id))
+      }))
+      return church_s
+    },
     attendant_ministry_events() {
       let attendant_list = []
       this.church_services.forEach(({ ministries, event_date }) => {

@@ -8,5 +8,6 @@
     "amplify/backend/amplify-meta.json": true,
     "amplify/backend/awscloudformation": true
   },
-  "task.allowAutomaticTasks": "on"
+  "task.allowAutomaticTasks": "on",
+  "vue3snippets.enable-compile-vue-file-on-did-save-code": true
 }
