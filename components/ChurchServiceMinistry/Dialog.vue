@@ -3,9 +3,10 @@
   <v-dialog :value="true" class="ma-1" :fullscreen="canFullScreen" :max-width="dialogMaxWidth" persistent scrollable>
     <v-card :max-width="600">
       <v-card-title class="px-2 py-0 text-subtitle-1 text--primary">
-        {{ church_service.event_date | moment('ddd DD MMM YYYY -') }}
-        <strong v-if="showChurchService"> {{ church_service.event_date | moment('hh:mm a') }}</strong>
-        <strong v-else> {{ getArriveDate(church_service.event_date) | moment('hh:mm a') }}</strong>
+        {{ church_service.event_date | moment('ddd DD MMM YYYY') }} &nbsp;
+        <strong :class="church_service.event_name_color">{{ church_service.event_name }}</strong>
+        <strong>{{ church_service.event_date | moment('hh:mma') }}</strong>
+
         <v-spacer></v-spacer>
         <v-icon @click.native="close">$delete</v-icon>
       </v-card-title>
@@ -74,7 +75,7 @@
 </template>
 <script>
 export default {
-  props: ['payload', 'showChurchService'],
+  props: ['payload', 'showHourChurchService'],
   data() {
     return {
       church_service: {
@@ -94,7 +95,11 @@ export default {
     },
     async saveChurchServiceAttendant() {
       this.clearErrors()
-      let payload = { attendant_ids: this.attendant_ids, ministry_id: this.ministry_id, church_service_id: this.church_service_id }
+      let payload = {
+        attendant_ids: this.attendant_ids,
+        ministry_id: this.ministry_id,
+        church_service_id: this.church_service_id
+      }
       await this.$repository.ChurchServiceAttendant.update(this.church_service_id, payload)
         .then((res) => {
           this.$emit('setChurchService', res.church_service)
@@ -154,13 +159,19 @@ export default {
   },
   mounted() {
     let me = this
-    console.log(this.payload)
-    this.church_service_id = this.payload.church_service_id
+
+    let church_service = this.payload.church_service
+    this.church_service_id = church_service.id
     this.ministry_id = this.payload.ministry.id
     this.ministry_name = this.payload.ministry.name
-    this.$repository.ChurchService.show(this.church_service_id)
+    this.$repository.ChurchService.show(church_service.id)
       .then((res) => {
-        this.church_service = res
+        this.church_service = {
+          ...res,
+          event_name: church_service.event_name,
+          event_name_color: church_service.event_name_color,
+          event_date: church_service.event_date
+        }
         let ministry = this.church_service.ministries.find((x) => x.id == this.ministry_id)
         this.attendants = ministry?.attendants || []
       })

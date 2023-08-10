@@ -52,12 +52,9 @@
         <v-card
           :color="isSunday(service.event_date) == false ? 'light-blue lighten-5' : ''"
         >
-          <ChurchServiceCardTitle :service="service" :show-diff-humanize="false" />
+          <ChurchServiceCardTitle :service="service" />
 
-          <MinistryAttendantCard
-            :selectedMinistries="selectedMinistries"
-            :service_ministries="service.ministries"
-          />
+          <MinistryAttendantCard :service_ministries="service.ministries" />
         </v-card>
       </v-col>
     </v-row>
@@ -113,9 +110,9 @@
               :key="ix + '-' + event_date_item.event_date"
               :color="event_date_item.ministry_color"
             >
-              {{ event_date_item.event_date | moment("ddd DD MMM") }}
+              {{ event_date_item.event_date | moment("ddd DD MMM") }} &nbsp;
 
-              <strong class="ml-1" :class="event_date_item.event_name_color">{{
+              <strong :class="event_date_item.event_name_color">{{
                 event_date_item.event_name
               }}</strong>
               <strong> {{ event_date_item.event_date | moment("hh:mma") }}</strong>
@@ -287,7 +284,7 @@ export default {
       navigator.clipboard
         .writeText(this.church_services_text)
         .then(() => {
-          console.log("Text copied to clipboard");
+
           me.$store.dispatch("notify", { success: "Texto Copiado" });
         })
         .catch((err) => {

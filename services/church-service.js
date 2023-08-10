@@ -1,7 +1,5 @@
 export default {
-  created() {
-    // console.log('Mixin created')
-  },
+  created() {},
   methods: {
     isSunday(date) {
       return this.$moment(date).day() === 0

@@ -18,8 +18,8 @@
       <v-col cols="6" sm="auto">
         <v-switch
           hide-details
-          v-model="showChurchService"
-          :label="!showChurchService ? 'Hra. LLegada' : 'Hra. Servicio'"
+          v-model="showHourChurchService"
+          :label="!showHourChurchService ? 'Hra. LLegada' : 'Hra. Servicio'"
         ></v-switch>
       </v-col>
     </v-row>
@@ -40,7 +40,7 @@
                   :color="lead.ministry.color"
                   class="white--text"
                   small
-                  @click="openChurchService(service.id, lead.ministry)"
+                  @click="openChurchService(service, lead.ministry)"
                 >
                   <v-icon>mdi-pencil</v-icon>
                   {{ lead.ministry.name }}
@@ -48,10 +48,7 @@
               </v-col>
             </v-row>
           </v-card-text>
-          <ChurchServiceCardTitle
-            :service="service"
-            :show-church-service-hour="showChurchService"
-          />
+          <ChurchServiceCardTitle :service="service" />
 
           <MinistryAttendantCard :service_ministries="service.ministries" />
         </v-card>
@@ -106,7 +103,7 @@
     </v-dialog> -->
     <ChurchServiceMinistryDialog
       :payload="payloadAssingChurchService"
-      :showChurchService="showChurchService"
+      :showHourChurchService="showHourChurchService"
       v-if="modalAssingChurchService"
       @close="modalAssingChurchService = false"
       @setChurchService="setChurchService"
@@ -130,7 +127,7 @@ export default {
       church_service: {},
       myLeaders: [],
       start_date: "2020-01-01",
-      showChurchService: false,
+      showHourChurchService: false,
       modalAssingChurchService: false,
       payloadAssingChurchService: {},
       ministries: [],
@@ -170,10 +167,10 @@ export default {
     assignAttendant(service_id, ministry) {
       this.$router.push(`/church-service/assign/${service_id}/${ministry.id}`);
     },
-    openChurchService(church_service_id, ministry) {
+    openChurchService(church_service, ministry) {
       this.payloadAssingChurchService = {
-        church_service_id: church_service_id,
-        ministry: ministry,
+        church_service,
+        ministry,
       };
       this.modalAssingChurchService = true;
     },
