@@ -27,6 +27,13 @@ Vue.filter('daysDiffFromNow', function (value) {
   const date = moment(value).startOf('day')
   return now.diff(date, 'days')
 })
+
+Vue.filter('hoursDiffFromNow', function (value) {
+  if (!value) return ''
+  const now = moment().startOf('day')
+  const date = moment(value).startOf('day')
+  return now.diff(date, 'hours')
+})
 // Vue.filter("currency", function(value) {
 //   // tanks @li-x for his simple formating function
 //   return value.toLocaleString("es-MX", { style: "currency", currency: "MXN" });

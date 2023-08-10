@@ -1,9 +1,11 @@
 <template>
   <v-card-text class="px-1 pt-1 pb-0">
     <v-row dense v-for="ministry in service_ministries" :key="ministry.id + 'min'">
-      <template v-if="displayFromSelectedMinistry(ministry.id)">
-        <v-col cols="12" class="pt-0 pb-0 my-0" v-if="selectedMinistries.length != 1">
-          <v-chip x-small outlined :color="ministry.color">{{ ministry.name | uppercase }} </v-chip>
+      <template>
+        <v-col cols="12" class="pt-0 pb-0 my-0">
+          <v-chip x-small outlined :color="ministry.color"
+            >{{ ministry.name | uppercase }}
+          </v-chip>
         </v-col>
         <v-col
           class="pt-0 pb-1 my-0 text--primary d-flex align-center no-line-height"
@@ -23,49 +25,47 @@
 </template>
 <script>
 export default {
-  props: ['service_ministries', 'selectedMinistries'],
+  props: ["service_ministries"],
   data() {
-    return { attendantsBase64Images: {} }
+    return { attendantsBase64Images: {} };
   },
   methods: {
     async getImageAsBase64(url) {
-      console.log(url)
+      console.log(url);
       const response = await fetch(url, {
         // mode: 'no-cors'
-      })
-      const blob = await response.blob()
+      });
+      const blob = await response.blob();
 
       return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onloadend = () => resolve(reader.result)
-        reader.onerror = reject
-        reader.readAsDataURL(blob)
-      })
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
     },
 
-    displayFromSelectedMinistry(ministry_id) {
-      if (this.selectedMinistries.length == 0) return true
-      else if (this.selectedMinistries.indexOf(ministry_id) > -1) return true
-      return false
-    },
-    async loadImages() {
-      for (let ministry of this.service_ministries) {
-        for (let attendant of ministry.attendants) {
-          if (attendant.photo) {
-            const base64Image = await this.getImageAsBase64(attendant.photo)
-            this.attendantsBase64Images = { ...this.attendantsBase64Images, [attendant.id]: base64Image }
-          }
-        }
-      }
-    }
+    // async loadImages() {
+    //   for (let ministry of this.service_ministries) {
+    //     for (let attendant of ministry.attendants) {
+    //       if (attendant.photo) {
+    //         const base64Image = await this.getImageAsBase64(attendant.photo);
+    //         this.attendantsBase64Images = {
+    //           ...this.attendantsBase64Images,
+    //           [attendant.id]: base64Image,
+    //         };
+    //       }
+    //     }
+    //   }
+    // },
   },
   async created() {
     // await this.loadImages()
   },
   mounted() {
-    let me = this
-  }
-}
+    let me = this;
+  },
+};
 </script>
 <style scoped>
 .image-wrapper {

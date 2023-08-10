@@ -7,7 +7,7 @@
           v-model="selectedMinistries"
         ></MinistrySelect>
       </v-col>
-      <v-col cols="5" sm="3" md="2">
+      <v-col cols="6" sm="3" md="2">
         <v-select
           :items="range_items"
           item-text="text"
@@ -16,7 +16,7 @@
           v-model="range_display"
         ></v-select>
       </v-col>
-      <v-col cols="4" sm="3" md="2">
+      <v-col cols="6" sm="3" md="2">
         <v-select
           :items="range_views"
           item-text="text"
@@ -25,17 +25,18 @@
           v-model="range_view"
         ></v-select>
       </v-col>
-      <v-col cols="auto">
-        <v-btn @click="share()" fab color="primary">
-          <v-icon>mdi-share-variant</v-icon>
-        </v-btn>
-      </v-col>
+
       <v-col cols="6" sm="auto">
         <v-switch
           hide-details
           v-model="showHourChurchService"
           :label="!showHourChurchService ? 'Hra. LLegada' : 'Hra. Servicio'"
         ></v-switch>
+      </v-col>
+      <v-col cols="auto">
+        <v-btn @click="share()" fab color="primary">
+          <v-icon>mdi-share-variant</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
     <v-row dense ref="captureElement" v-if="range_view == 'service'">
@@ -80,7 +81,7 @@
         sm="6"
         md="4"
         v-for="person in attendant_ministry_events"
-        :key="person.id"
+        :key="person.id + 'attx'"
       >
         <v-card class="pa-1">
           <v-card-title class="pa-1 text-body-2">
@@ -95,7 +96,7 @@
               <v-chip
                 x-small
                 v-for="ministry in person.ministries"
-                :key="ministry.id"
+                :key="ministry.id + 'minx'"
                 :color="ministry.color"
                 outlined
                 class="mr-1 mb-1"
@@ -108,37 +109,21 @@
             <v-chip
               class="mr-1 mb-1 text--black black--text"
               outlined
-              v-for="event_date_item in person.events"
-              :key="event_date_item.event_date"
+              v-for="(event_date_item, ix) in person.events"
+              :key="ix + '-' + event_date_item.event_date"
               :color="event_date_item.ministry_color"
             >
-              {{ event_date_item.event_date | moment("ddd DD MMMM") }}
+              {{ event_date_item.event_date | moment("ddd DD MMM") }}
 
               <strong class="ml-1" :class="event_date_item.event_name_color">{{
                 event_date_item.event_name
               }}</strong>
-              <strong> {{ event_date_item.event_date | moment("hh:mm a") }}</strong>
-              <!-- <strong v-if="showChurchServiceHour"> {{ event_date_item.event_date | moment('hh:mm a') }}</strong> -->
-              <!-- <strong v-else> {{ getArriveDate(event_date_item.event_date) | moment('hh:mm a') }}</strong> -->
+              <strong> {{ event_date_item.event_date | moment("hh:mma") }}</strong>
             </v-chip>
-            <!-- <v-list>
-              <v-list-item v-for="ministry in person.ministries" :key="ministry.id">
-                <v-list-item-icon>
-                  <v-icon :color="ministry.color">mdi-account-circle</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ ministry.name }}</v-list-item-title>
-                  <v-list-item-subtitle v-for="date in ministry.event_dates" :key="date">
-                    {{ new Date(date).toLocaleString() }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list> -->
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
-    {{ attendant_ministry_events }}
   </v-container>
 </template>
 <script>
@@ -172,20 +157,11 @@ export default {
   },
   computed: {
     church_services_filtered() {
-      let showHourChurchService = this.showHourChurchService;
-      let church_s = this.church_services.map((service) => ({
-        ...service,
-        event_name: this.getServiceNumber(service.event_date),
-        event_name_color: this.getServiceTextColor(service.event_date),
-        event_date:
-          showHourChurchService == true
-            ? service.event_date
-            : this.getArriveDate(service.event_date),
-        ministries: service.ministries.filter((ministry) =>
-          this.selectedMinistries.includes(ministry.id)
-        ),
-      }));
-      return church_s;
+      return this.getChuchServiceFiltered(
+        this.church_services,
+        this.selectedMinistries,
+        this.showHourChurchService
+      );
     },
     attendant_ministry_events() {
       let attendant_list = [];
@@ -232,6 +208,15 @@ export default {
           });
         }
       );
+
+      // sort by name and paternal_surname
+      attendant_list.sort((a, b) => {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        if (a.paternal_surname < b.paternal_surname) return -1;
+        if (a.paternal_surname > b.paternal_surname) return 1;
+        return 0;
+      });
       return attendant_list;
     },
     church_services_text() {
@@ -291,7 +276,7 @@ export default {
       }
     },
     async share() {
-      if (this.range_view == "card") {
+      if (["attendant", "service"].includes(this.range_view)) {
         this.exportImg2();
       } else if (this.range_view == "text") {
         this.exportText();
@@ -352,31 +337,6 @@ export default {
         op
       ).catch((e) => {});
     },
-
-    assignAttendant(service_id, ministry) {
-      this.$router.push(`/church-service/assign/${service_id}/${ministry.id}`);
-    },
-    allowedStep: (m) => m % 30 === 0,
-    // allowedDates: (val) => parseInt(val.split('-')[2], 10) % 2 === 0,
-    allowedDates(val) {
-      let day = this.$moment(val).day();
-      //0 is sunday
-      if ([0, 3].indexOf(day) > -1) return true;
-      return false;
-    },
-    newChurchService() {
-      this.dialogChurchService = true;
-    },
-    async saveChurchService() {
-      var churchService = { event_date: this.date + " " + this.time };
-
-      await this.$repository.ChurchService.create(churchService)
-        .then((res) => {
-          // this.$router.push('/church-service')
-          this.dialogChurchService = false;
-        })
-        .catch((e) => {});
-    },
   },
   mounted() {
     let me = this;
@@ -430,19 +390,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.image-wrapper {
-  display: flex;
-  align-items: center;
-}
-.no-line-height {
-  line-height: 14px;
-}
-.image-cropper {
-  border-radius: 50%;
-  display: inline;
-  width: 30px;
-  height: 30px;
-}
-</style>

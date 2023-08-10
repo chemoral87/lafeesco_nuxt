@@ -6,6 +6,15 @@ export default {
     isSunday(date) {
       return this.$moment(date).day() === 0
     },
+    getChuchServiceFiltered(church_services, selectedMinistries, showHourChurchService) {
+      return church_services.map((service) => ({
+        ...service,
+        event_name: this.getServiceNumber(service.event_date),
+        event_name_color: this.getServiceTextColor(service.event_date),
+        event_date: showHourChurchService == true ? service.event_date : this.getArriveDate(service.event_date),
+        ministries: service.ministries.filter((ministry) => selectedMinistries.length == 0 || selectedMinistries.includes(ministry.id))
+      }))
+    },
     getServiceColor(date) {
       let hours = this.$moment(date).hours()
       let minutes = this.$moment(date).minutes()
