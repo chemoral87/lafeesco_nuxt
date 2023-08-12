@@ -1,7 +1,7 @@
 ☐ generar los siguientes servicios POST
-☐ export a nivel servidor
 ☐ generar qr para niños
 ☐ registro de tutores y niños
+✔ export a nivel servidor @done(23-08-11 21:06)
 ✔ exportar a texto en el visor de asignación @done(23-08-02 19:46)
 ✔ select para ver en texto o tarjetas @done(23-08-02 19:46)
 ✔ Agregar switch de horario en el visor @done(23-07-22 14:17)

@@ -2,13 +2,13 @@
   <v-container fluid class="pa-2">
     <v-row dense>
       <v-col cols="12" sm="6" md="3">
-        <MinistrySelect :ministries="ministries" v-model="selectedMinistries"></MinistrySelect>
+        <MinistrySelect :ministries="ministries" v-model="selectedMinistries" />
       </v-col>
       <v-col cols="6" sm="3" md="2">
-        <v-select :items="range_items" item-text="text" item-value="value" label="Rango" v-model="range_display"></v-select>
+        <v-select :items="range_items" item-text="text" item-value="value" label="Rango" v-model="range_display"> </v-select>
       </v-col>
       <v-col cols="6" sm="3" md="2">
-        <v-select :items="range_views" item-text="text" item-value="value" label="Vista" v-model="range_view"></v-select>
+        <v-select :items="range_views" item-text="text" item-value="value" label="Vista" v-model="range_view"> </v-select>
       </v-col>
 
       <v-col cols="6" sm="auto">

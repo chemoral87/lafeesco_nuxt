@@ -2,10 +2,18 @@
   <v-container fluid class="pa-2">
     <v-row dense>
       <v-col cols="12" sm="6" md="3">
-        <MinistrySelect :ministries="ministries" v-model="selectedMinistries"></MinistrySelect>
+        <MinistrySelect
+          :ministries="ministries"
+          v-model="selectedMinistries"
+        ></MinistrySelect>
       </v-col>
       <v-col cols="6" sm="auto">
-        <my-datepicker hide-details outlined label="Fecha Inicio" v-model="start_date"></my-datepicker>
+        <my-datepicker
+          hide-details
+          outlined
+          label="Fecha Inicio"
+          v-model="start_date"
+        ></my-datepicker>
       </v-col>
       <v-col cols="6" sm="auto">
         <v-switch
@@ -16,12 +24,24 @@
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="12" sm="6" md="4" lg="3" v-for="(service, ix) in church_services_filtered" :key="service.id">
+      <v-col
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+        v-for="(service, ix) in church_services_filtered"
+        :key="service.id"
+      >
         <v-card :color="getServiceColor(service.event_date)">
           <v-card-text class="pa-1">
             <v-row dense>
               <v-col cols="auto" v-for="lead in myLeaders" :key="lead.id">
-                <v-btn :color="lead.ministry.color" class="white--text" small @click="openChurchService(service, lead.ministry)">
+                <v-btn
+                  :color="lead.ministry.color"
+                  class="white--text"
+                  small
+                  @click="openChurchService(service, lead.ministry)"
+                >
                   <v-icon>mdi-pencil</v-icon>
                   {{ lead.ministry.name }}
                 </v-btn>
@@ -91,7 +111,7 @@
   </v-container>
 </template>
 <script>
-import churchService from '~/services/church-service'
+import churchService from "~/services/church-service";
 export default {
   mixins: [churchService],
   props: {},
@@ -99,105 +119,113 @@ export default {
     return {
       modalNewChurchService: false,
       selectedMinistries: [],
-      date: '2018-03-02',
+      date: "2018-03-02",
       current: new Date(),
       modal2: false,
       time: null,
       church_services: [],
       church_service: {},
       myLeaders: [],
-      start_date: '2020-01-01',
+      start_date: "2020-01-01",
       showHourChurchService: false,
       modalAssingChurchService: false,
       payloadAssingChurchService: {},
-      ministries: []
-    }
+      ministries: [],
+    };
   },
   watch: {
     start_date() {
-      this.getChurchService()
-    }
+      this.getChurchService();
+    },
   },
   computed: {
     church_services_filtered() {
-      return this.getChuchServiceFiltered(this.church_services, this.selectedMinistries, this.showHourChurchService)
-    }
+      return this.getChuchServiceFiltered(
+        this.church_services,
+        this.selectedMinistries,
+        this.showHourChurchService
+      );
+    },
   },
   methods: {
     setChurchService(new_service) {
-      this.church_services = this.church_services.map((service) => (service.id === new_service.id ? new_service : service))
+      this.church_services = this.church_services.map((service) =>
+        service.id === new_service.id ? new_service : service
+      );
     },
     async getChurchService() {
       let op = {
-        sortBy: ['event_date'],
+        sortBy: ["event_date"],
         sortDesc: [false],
         itemsPerPage: 50,
-        start_date: this.start_date
-      }
-      this.church_services = await this.$repository.ChurchService.index(op).catch((e) => {})
+        start_date: this.start_date,
+      };
+      this.church_services = await this.$repository.ChurchService.index(
+        op
+      ).catch((e) => {});
     },
     assignAttendant(service_id, ministry) {
-      this.$router.push(`/church-service/assign/${service_id}/${ministry.id}`)
+      this.$router.push(`/church-service/assign/${service_id}/${ministry.id}`);
     },
     openChurchService(church_service, ministry) {
       this.payloadAssingChurchService = {
         church_service,
-        ministry
-      }
-      this.modalAssingChurchService = true
+        ministry,
+      };
+      this.modalAssingChurchService = true;
     },
     newChurchService() {
-      this.$repository.ChurchService.generate()
+      this.$repository.ChurchService.generate();
     },
     async saveChurchService() {
-      var churchService = { event_date: this.date + ' ' + this.time }
+      var churchService = { event_date: this.date + " " + this.time };
 
       await this.$repository.ChurchService.create(churchService)
         .then((res) => {
-          this.modalNewChurchService = false
+          this.modalNewChurchService = false;
         })
-        .catch((e) => {})
-    }
+        .catch((e) => {});
+    },
   },
-  middleware: ['authenticated'],
+  middleware: ["authenticated"],
   validate({ store, error }) {
-    if (store.getters.permissions.includes('attendant-index')) return true
-    else throw error({ statusCode: 403 })
+    if (store.getters.permissions.includes("attendant-index")) return true;
+    else throw error({ statusCode: 403 });
   },
   mounted() {
-    let me = this
-    this.date = this.$moment().format('YYYY-MM-DD')
-    this.current = this.$moment().format('YYYY-MM-DD')
+    let me = this;
+    this.date = this.$moment().format("YYYY-MM-DD");
+    this.current = this.$moment().format("YYYY-MM-DD");
     // this.ministry_id_combo = (this.myLeaders && this.myLeaders[0].ministry_id) || null
-    this.selectedMinistries = this.myLeaders.map((x) => x.ministry_id)
-    this.getChurchService()
+    this.selectedMinistries = this.myLeaders.map((x) => x.ministry_id);
+    this.getChurchService();
   },
   async asyncData({ $axios, app }) {
     let op = {
-      sortBy: ['event_date'],
+      sortBy: ["event_date"],
       sortDesc: [false],
-      itemsPerPage: 30
-    }
-    let start_date = app.$moment().format('YYYY-MM-DD')
+      itemsPerPage: 30,
+    };
+    let start_date = app.$moment().format("YYYY-MM-DD");
     const ministries = await app.$repository.Ministry.index({
-      sortBy: ['name'],
+      sortBy: ["name"],
       sortDesc: [false],
-      itemsPerPage: 50
-    })
-    const myLeaders = await app.$repository.MinistryLeader.my().catch((e) => {})
+      itemsPerPage: 50,
+    });
+    const myLeaders = await app.$repository.MinistryLeader.my().catch((e) => {});
     // const church_services = await app.$repository.ChurchService.index(op).catch((e) => {})
     return {
       ministries: ministries.data,
       myLeaders: myLeaders,
       options: op,
-      start_date: start_date
-    }
+      start_date: start_date,
+    };
   },
   created() {
-    this.$nuxt.$emit('setNavBar', {
-      title: 'Servicios Generales',
-      icon: 'church'
-    })
-  }
-}
+    this.$nuxt.$emit("setNavBar", {
+      title: "Servicios Generales",
+      icon: "church",
+    });
+  },
+};
 </script>
