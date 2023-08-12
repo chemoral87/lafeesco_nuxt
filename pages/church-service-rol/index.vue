@@ -284,7 +284,6 @@ export default {
       navigator.clipboard
         .writeText(this.church_services_text)
         .then(() => {
-
           me.$store.dispatch("notify", { success: "Texto Copiado" });
         })
         .catch((err) => {
