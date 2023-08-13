@@ -7,52 +7,22 @@
             <span class="">Tutores</span>
           </v-card-title>
           <v-card-text>
-            <v-row
-              dense
-              v-for="(parent, ix) in parents"
-              :key="ix"
-              :class="{ 'light-blue lighten-5': isOdd(ix) }"
-            >
-              <v-col cols="6" sm="12" md="4">
-                <v-text-field
-                  v-model="parent.name"
-                  label="Nombre"
-                  outlined
-                  dense
-                ></v-text-field>
+            <v-row dense v-for="(parent, ix) in parents" :key="`${ix}-parent`" :class="{ 'light-blue lighten-5': isOdd(ix) }">
+              <v-col cols="6" sm="3" md="2">
+                <v-text-field v-model="parent.name" label="Nombre" outlined dense />
               </v-col>
-              <v-col cols="6" sm="12" md="4">
-                <v-text-field
-                  v-model="parent.paternal_surname"
-                  label="Apellido Paterno"
-                  outlined
-                  dense
-                ></v-text-field>
+              <v-col cols="6" sm="3" md="2">
+                <v-text-field v-model="parent.paternal_surname" label="Apellido Paterno" outlined dense />
               </v-col>
-              <v-col cols="6" sm="12" md="4">
-                <v-text-field
-                  v-model="parent.maternal_surname"
-                  label="Apellido Materno"
-                  outlined
-                  dense
-                ></v-text-field>
+              <v-col cols="6" sm="3" md="2">
+                <v-text-field v-model="parent.maternal_surname" label="Apellido Materno" outlined dense />
               </v-col>
 
-              <v-col cols="6" sm="12" md="4">
-                <v-text-field
-                  v-model="parent.cellphone"
-                  label="Celular"
-                  outlined
-                  dense
-                ></v-text-field>
+              <v-col cols="6" sm="3" md="2">
+                <v-text-field v-model="parent.cellphone" label="Celular" outlined dense />
               </v-col>
-              <v-col cols="12" sm="12" md="4">
-                <v-text-field
-                  v-model="parent.email"
-                  label="Correo Electrónico"
-                  outlined
-                  dense
-                ></v-text-field>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field v-model="parent.email" label="Correo Electrónico" outlined dense />
               </v-col>
               <!-- <v-col cols="12" sm="12" md="4">
                   <v-text-field
@@ -83,52 +53,22 @@
             <span class="">Sky kids</span>
           </v-card-title>
           <v-card-text>
-            <v-row
-              dense
-              v-for="(parent, ix) in parents"
-              :key="ix"
-              :class="{ 'lime lighten-5': isOdd(ix) }"
-            >
+            <v-row dense v-for="(kid, ix) in kids" :key="`${ix}-kid`" :class="{ 'lime lighten-5': isOdd(ix) }">
               <v-col cols="6" sm="12" md="4">
-                <v-text-field
-                  v-model="parent.name"
-                  label="Nombre"
-                  outlined
-                  dense
-                ></v-text-field>
+                <v-text-field v-model="kid.name" label="Nombre" outlined dense></v-text-field>
               </v-col>
               <v-col cols="6" sm="12" md="4">
-                <v-text-field
-                  v-model="parent.paternal_surname"
-                  label="Apellido Paterno"
-                  outlined
-                  dense
-                ></v-text-field>
+                <v-text-field v-model="kid.paternal_surname" label="Apellido Paterno" outlined dense></v-text-field>
               </v-col>
               <v-col cols="6" sm="12" md="4">
-                <v-text-field
-                  v-model="parent.maternal_surname"
-                  label="Apellido Materno"
-                  outlined
-                  dense
-                ></v-text-field>
+                <v-text-field v-model="kid.maternal_surname" label="Apellido Materno" outlined dense></v-text-field>
               </v-col>
 
               <v-col cols="6" sm="12" md="4">
-                <v-text-field
-                  v-model="parent.cellphone"
-                  label="Celular"
-                  outlined
-                  dense
-                ></v-text-field>
+                <v-text-field v-model="kid.cellphone" label="Celular" outlined dense></v-text-field>
               </v-col>
               <v-col cols="12" sm="12" md="4">
-                <v-text-field
-                  v-model="parent.email"
-                  label="Correo Electrónico"
-                  outlined
-                  dense
-                ></v-text-field>
+                <v-text-field v-model="kid.email" label="Correo Electrónico" outlined dense> </v-text-field>
               </v-col>
               <!-- <v-col cols="12" sm="12" md="4">
                   <v-text-field
@@ -149,11 +89,11 @@
                 </v-btn>
               </v-col>
             </v-row>
-          </v-card-text></v-card
-        ></v-col
-      >
-    </v-row></v-container
-  >
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <script>
 export default {
@@ -165,9 +105,21 @@ export default {
           name: "",
           paternal_surname: "",
           maternal_surname: "",
-          cellphone: "",
-          email: "",
-          photo: "",
+          birthdate: "",
+          allergies: "",
+          notes: "",
+          room: "",
+        },
+      ],
+      kids: [
+        {
+          name: "",
+          paternal_surname: "",
+          maternal_surname: "",
+          birthdate: "",
+          allergies: "",
+          notes: "",
+          room: "",
         },
       ],
     };
