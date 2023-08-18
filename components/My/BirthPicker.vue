@@ -17,11 +17,10 @@ export default {
     },
   },
   data() {
-    console.log(this.value);
     let [year, month, day] = (this.value || "").split("-");
     let months = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
     month = month ? months[+month - 1] : null;
-    console.log("tomasi", day, year);
+
     return {
       selectedDay: Number(day) || null,
       selectedMonth: month || null,

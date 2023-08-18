@@ -10,7 +10,7 @@ import AgroEventRepository from '../AgroEventRepository'
 import TemplateGeneratorRepository from '../TemplateGeneratorRepository'
 import MinistryLeaderRepository from '../MinistryLeaderRepository'
 import UserRepository from '../UserRepository'
-import ForgotPasswordRepository from '../ForgotPasswordRepository'
+// import SkyRegistrationRepository from '../SkyRegistrationRepository'
 
 export default ($axios) => ({
   Role: CommonRepository($axios)('/roles'),
@@ -33,6 +33,7 @@ export default ($axios) => ({
   MinistryLeader: MinistryLeaderRepository($axios)('/ministry-leader'),
   Bible: CommonRepository($axios)('/bible'),
   ChurchService: CommonRepository($axios)('/church-service'),
-  ChurchServiceAttendant: CommonRepository($axios)('/church-service-attendant')
+  ChurchServiceAttendant: CommonRepository($axios)('/church-service-attendant'),
+  SkyRegistration: CommonRepository($axios)('/sky-registration'),
   // ForgotPasswordRepository: ForgotPasswordRepository($axios)('/forgot-password')
 })

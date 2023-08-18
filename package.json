@@ -49,6 +49,7 @@
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.12.3",
+    "@vue/runtime-dom": "^3.3.4",
     "cross-env": "^7.0.3",
     "eslint": "^8.35.0",
     "eslint-config-prettier": "^8.6.0",
