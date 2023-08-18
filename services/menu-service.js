@@ -103,15 +103,16 @@ export class MenuService {
           to: '/ministry'
         })
         menu.push({
-          icon: 'mdi-church',
-          title: 'Servicio General',
-          to: '/church-service'
-        })
-        menu.push({
           icon: 'mdi-teddy-bear',
           title: 'Sky kids Registro',
           to: '/sky-kids-registration'
         })
+        menu.push({
+          icon: 'mdi-church',
+          title: 'Servicio General',
+          to: '/church-service'
+        })
+
         menu.push({
           icon: 'mdi-church',
           title: 'Visor Servicio G.',

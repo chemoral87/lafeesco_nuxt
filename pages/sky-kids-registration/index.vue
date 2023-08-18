@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row dense>
-      <v-col cols="12" sm="12" md="12">
+      <v-col cols="12">
         <v-card>
           <v-card-title>
             <span class="">Tutores</span>
@@ -47,28 +47,36 @@
         ></v-col
       >
 
-      <v-col cols="12" sm="12" md="12">
+      <v-col cols="12">
         <v-card>
           <v-card-title>
             <span class="">Sky kids</span>
           </v-card-title>
+          {{ kids }}
           <v-card-text>
             <v-row dense v-for="(kid, ix) in kids" :key="`${ix}-kid`" :class="{ 'lime lighten-5': isOdd(ix) }">
-              <v-col cols="6" sm="12" md="4">
+              <v-col cols="6" sm="3" md="2">
                 <v-text-field v-model="kid.name" label="Nombre" outlined dense></v-text-field>
               </v-col>
-              <v-col cols="6" sm="12" md="4">
+              <v-col cols="6" sm="3" md="2">
                 <v-text-field v-model="kid.paternal_surname" label="Apellido Paterno" outlined dense></v-text-field>
               </v-col>
-              <v-col cols="6" sm="12" md="4">
+              <v-col cols="6" sm="3" md="2">
                 <v-text-field v-model="kid.maternal_surname" label="Apellido Materno" outlined dense></v-text-field>
               </v-col>
 
-              <v-col cols="6" sm="12" md="4">
-                <v-text-field v-model="kid.cellphone" label="Celular" outlined dense></v-text-field>
+              <v-col cols="6" sm="4" md="3">
+                <my-birth-picker v-model="kid.birthdate" outlined dense />
+                <!-- <v-text-field v-model="kid.birthdate" label="Cumpleaños" outlined dense></v-text-field> -->
               </v-col>
-              <v-col cols="12" sm="12" md="4">
-                <v-text-field v-model="kid.email" label="Correo Electrónico" outlined dense> </v-text-field>
+              <v-col cols="12" sm="3" md="2">
+                <v-text-field v-model="kid.allergies" label="Alergias" outlined dense> </v-text-field>
+              </v-col>
+              <v-col cols="12" sm="3" md="2">
+                <v-text-field v-model="kid.notes" label="Notas" outlined dense> </v-text-field>
+              </v-col>
+              <v-col cols="12" sm="3" md="2">
+                <v-select label="Salón" :items="kid_rooms" v-model="kid.room" outlined dense></v-select>
               </v-col>
               <!-- <v-col cols="12" sm="12" md="4">
                   <v-text-field
@@ -100,6 +108,7 @@ export default {
   props: {},
   data() {
     return {
+      kid_rooms: ["Primarios", "Grandes"],
       parents: [
         {
           name: "",
@@ -113,12 +122,12 @@ export default {
       ],
       kids: [
         {
-          name: "",
-          paternal_surname: "",
+          name: "Tomasin",
+          paternal_surname: "Perez",
           maternal_surname: "",
-          birthdate: "",
-          allergies: "",
-          notes: "",
+          birthdate: "2021-02-01",
+          allergies: "mocos",
+          notes: "no le gusta venir",
           room: "",
         },
       ],
