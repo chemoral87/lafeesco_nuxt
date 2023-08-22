@@ -66,7 +66,11 @@
                   <v-text-field v-model="kid.maternal_surname" label="Apellido Materno" outlined dense></v-text-field>
                 </v-col>
 
-                <v-col cols="6" sm="4" md="3">
+                <v-col cols="6" sm="3" md="2">
+                  <v-select label="Salón" :items="kid_rooms" v-model="kid.room" outlined dense :rules="[requiredRule]"></v-select>
+                </v-col>
+
+                <v-col cols="8" sm="4" md="3">
                   <my-birth-picker v-model="kid.birthdate" outlined dense :rules="[requiredRule]" />
                   <!-- <v-text-field v-model="kid.birthdate" label="Cumpleaños" outlined dense></v-text-field> -->
                 </v-col>
@@ -76,9 +80,7 @@
                 <v-col cols="12" sm="3" md="2">
                   <v-text-field v-model="kid.notes" label="Notas" outlined dense> </v-text-field>
                 </v-col>
-                <v-col cols="12" sm="3" md="2">
-                  <v-select label="Salón" :items="kid_rooms" v-model="kid.room" outlined dense :rules="[requiredRule]"></v-select>
-                </v-col>
+
                 <!-- <v-col cols="12" sm="12" md="4">
                   <v-text-field
                     v-model="parent.photo"
