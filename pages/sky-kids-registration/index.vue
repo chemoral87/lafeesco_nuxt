@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-form ref="form" @submit.prevent="saveSkyRegistration">
+    <v-form ref="form" @submit.prevent="saveSkyRegistration" v-if="qr_url == ''">
       <v-row dense>
         <v-col cols="12">
           <v-card>
@@ -111,6 +111,24 @@
         </v-col>
       </v-row>
     </v-form>
+    {{ response }}
+    <v-row dense v-if="qr_url != ''">
+      <v-col cols="12">
+        <v-card>
+          <v-card-title>
+            <span class="">QR de Registro</span>
+          </v-card-title>
+
+          <v-card-text>
+            <v-row dense>
+              <v-col cols="12">
+                <img :src="qr_url" />
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script>
@@ -119,6 +137,8 @@ export default {
   data() {
     return {
       requiredRule: (v) => !!v || "Requerido",
+      response: {},
+      qr_url: "https://lafeescobedo-bucket.s3.us-east-2.amazonaws.com/local/skykids/20230820/e76a89837c2f42519e6812d046454bd3.jpg",
       kid_rooms: ["Primarios", "Grandes"],
       parents: [
         {
@@ -160,7 +180,7 @@ export default {
   },
   methods: {
     async saveSkyRegistration() {
-      console.log("saveSkyRegistration");
+      let me = this;
       if (!this.$refs.form.validate()) return;
 
       let payload = {
@@ -168,7 +188,10 @@ export default {
         kids: this.kids,
       };
       await this.$repository.SkyRegistration.create(payload)
-        .then((res) => {})
+        .then((res) => {
+          me.response = res;
+          me.qr_url = res.qr_url;
+        })
         .catch((e) => {
           alert(e);
         });
