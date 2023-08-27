@@ -126,6 +126,11 @@
               </v-col>
             </v-row>
           </v-card-text>
+          <v-card-action>
+            <v-btn @click="share()" fab color="primary">
+              <v-icon>mdi-share-variant</v-icon>
+            </v-btn>
+          </v-card-action>
         </v-card>
       </v-col>
     </v-row>
@@ -138,14 +143,14 @@ export default {
     return {
       requiredRule: (v) => !!v || "Requerido",
       response: {},
-      qr_url: "https://lafeescobedo-bucket.s3.us-east-2.amazonaws.com/local/skykids/20230820/e76a89837c2f42519e6812d046454bd3.jpg",
+      qr_url: "", //"https://lafeescobedo-bucket.s3.us-east-2.amazonaws.com/local/skykids/20230820/e76a89837c2f42519e6812d046454bd3.jpg",
       kid_rooms: ["Primarios", "Grandes"],
       parents: [
         {
-          name: "",
-          paternal_surname: "",
+          name: "ABC",
+          paternal_surname: "DCF",
           maternal_surname: "",
-          cellphone: "",
+          cellphone: "81-2022-1172",
           email: "",
           photo: "",
         },
@@ -155,7 +160,7 @@ export default {
           name: "Tomasin",
           paternal_surname: "Perez",
           maternal_surname: "",
-          birthdate: "",
+          birthdate: "2020-01-01",
           allergies: "mocos",
           notes: "no le gusta venir",
           room: "",
@@ -179,6 +184,26 @@ export default {
     }
   },
   methods: {
+    share() {
+      // share image
+      if (navigator.share) {
+        navigator
+          .share({
+            title: "Sky Kids",
+            text: "Registro",
+            url: this.qr_url,
+          })
+          .then(() => console.log("Successful share"))
+          .catch((error) => console.log("Error sharing", error));
+      } else {
+        let link = document.createElement("a");
+        link.href = this.qr_url;
+        link.download = "sky_kids.png";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    },
     async saveSkyRegistration() {
       let me = this;
       if (!this.$refs.form.validate()) return;
