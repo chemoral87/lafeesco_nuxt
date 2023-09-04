@@ -184,16 +184,32 @@ export default {
   methods: {
     share() {
       // share image
+      let me = this;
       if (navigator.share) {
-        navigator
-          .share({
-            title: "Sky Kids",
-            text: "Registro Sky Kids",
-            url: this.qr_url,
-            type: "image",
+        fetch(this.qr_url)
+          .then(function (response) {
+            return response.blob();
           })
-          .then(() => console.log("Successful share"))
-          .catch((error) => console.log("Error sharing", error));
+          .then(function (blob) {
+            let file = new File([blob], "qr_skykids.jpg", { type: "image/jpeg" });
+            let filesArray = [file];
+
+            navigator.share({
+              title: "QR Sky Kids",
+              text: "Registro Sky Kids",
+              files: filesArray,
+              url: me.qr_url,
+            });
+          });
+        // navigator
+        //   .share({
+        //     title: "Sky Kids",
+        //     text: "Registro Sky Kids",
+        //     url: this.qr_url,
+        //     type: "image",
+        //   })
+        //   .then(() => console.log("Successful share"))
+        //   .catch((error) => console.log("Error sharing", error));
       } else {
         let link = document.createElement("a");
         link.href = this.qr_url;
