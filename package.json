@@ -39,7 +39,7 @@
     "vue-html2pdf": "^1.8.0",
     "vue-image-crop-upload": "^3.0.3",
     "vue-moment": "^4.1.0",
-    "vue-qrcode-reader": "^5.3.4",
+
     "vue-the-mask": "^0.11.1",
     "vue-youtube-embed": "^2.2.2",
     "vue2-google-maps": "^0.10.7",
