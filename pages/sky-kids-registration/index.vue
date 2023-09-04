@@ -188,8 +188,9 @@ export default {
         navigator
           .share({
             title: "Sky Kids",
-            text: "Registro",
+            text: "Registro Sky Kids",
             url: this.qr_url,
+            type: "image",
           })
           .then(() => console.log("Successful share"))
           .catch((error) => console.log("Error sharing", error));
