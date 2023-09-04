@@ -44,7 +44,7 @@ export default {
         case '18:0':
           return 'green--text'
         default:
-          return '0º'
+          return ''
       }
     },
     getServiceNumber(date) {
@@ -61,7 +61,7 @@ export default {
         case '18:0':
           return '3º.'
         default:
-          return '0º'
+          return ''
       }
     },
     getArriveDate(date) {

@@ -111,26 +111,24 @@
         </v-col>
       </v-row>
     </v-form>
-    {{ response }}
+
     <v-row dense v-if="qr_url != ''">
       <v-col cols="12">
         <v-card>
           <v-card-title>
-            <span class="">QR de Registro</span>
+            <span class="">QR SkyKids</span>
           </v-card-title>
-
-          <v-card-text>
+          <v-card-text class="py-1"> Registro guardado con éxito, presione el botón compartir </v-card-text>
+          <v-card-text class="py-1">
             <v-row dense>
               <v-col cols="12">
                 <img :src="qr_url" />
               </v-col>
             </v-row>
           </v-card-text>
-          <v-card-action>
-            <v-btn @click="share()" fab color="primary">
-              <v-icon>mdi-share-variant</v-icon>
-            </v-btn>
-          </v-card-action>
+          <v-card-actions>
+            <v-btn @click="share()" color="primary"> <v-icon>mdi-share-variant</v-icon> Compartir </v-btn>
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
@@ -143,7 +141,7 @@ export default {
     return {
       requiredRule: (v) => !!v || "Requerido",
       response: {},
-      qr_url: "", //"https://lafeescobedo-bucket.s3.us-east-2.amazonaws.com/local/skykids/20230820/e76a89837c2f42519e6812d046454bd3.jpg",
+      qr_url: "", // "https://lafeescobedo-bucket.s3.us-east-2.amazonaws.com/local/skykids/20230820/e76a89837c2f42519e6812d046454bd3.jpg",
       kid_rooms: ["Primarios", "Grandes"],
       parents: [
         {
