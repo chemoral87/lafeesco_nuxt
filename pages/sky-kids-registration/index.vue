@@ -137,31 +137,45 @@
 <script>
 export default {
   props: {},
+  layout: "no_login",
   data() {
     return {
       requiredRule: (v) => !!v || "Requerido",
       response: {},
-      qr_url: "", // "https://lafeescobedo-bucket.s3.us-east-2.amazonaws.com/local/skykids/20230820/e76a89837c2f42519e6812d046454bd3.jpg",
+      qr_url: "https://lafeescobedo-bucket.s3.us-east-2.amazonaws.com/local/skykids/20230904/e98b7b7954ff475fade7a37e623aacff.jpg",
       kid_rooms: ["Primarios", "Grandes"],
       parents: [
         {
-          name: "ABC",
-          paternal_surname: "DCF",
+          name: "",
+          paternal_surname: "",
           maternal_surname: "",
-          cellphone: "81-2022-1172",
+          cellphone: "",
           email: "",
           photo: "",
+          // name: "ABC",
+          // paternal_surname: "DCF",
+          // maternal_surname: "",
+          // cellphone: "81-2022-1172",
+          // email: "",
+          // photo: "",
         },
       ],
       kids: [
         {
-          name: "Tomasin",
-          paternal_surname: "Perez",
+          name: "",
+          paternal_surname: "Peez",
           maternal_surname: "",
-          birthdate: "2020-01-01",
-          allergies: "mocos",
-          notes: "no le gusta venir",
+          birthdate: "",
+          allergies: "",
+          notes: "",
           room: "",
+          // name: "Tomasin",
+          // paternal_surname: "Perez",
+          // maternal_surname: "",
+          // birthdate: "2020-01-01",
+          // allergies: "mocos",
+          // notes: "no le gusta venir",
+          // room: "",
         },
       ],
     };
@@ -198,7 +212,7 @@ export default {
               title: "QR Sky Kids",
               text: "Registro Sky Kids",
               files: filesArray,
-              url: me.qr_url,
+              // url: me.qr_url,
             });
           });
         // navigator

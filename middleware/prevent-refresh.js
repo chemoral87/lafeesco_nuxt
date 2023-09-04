@@ -3,7 +3,7 @@ export default function (context) {
   if (process.client) {
     window.addEventListener('beforeunload', (event) => {
       event.preventDefault();
-      event.returnValue = '';
+      event.returnValue = 'Realmente desea salir?';
       // return 'Pressing the Back button may result in your payment being processed again and your order not being processed properly.';
     });
   }
