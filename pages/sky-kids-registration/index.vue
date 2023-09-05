@@ -112,26 +112,22 @@
       </v-row>
     </v-form>
 
-    <v-row dense v-if="qr_url != ''">
-      <v-col cols="12">
-        <v-card>
-          <v-card-title>
-            <span class="">QR SkyKids</span>
-          </v-card-title>
-          <v-card-text class="py-1"> Registro guardado con éxito, presione el botón compartir </v-card-text>
-          <v-card-text class="py-1">
-            <v-row dense>
-              <v-col cols="12">
-                <img :src="qr_url" />
-              </v-col>
-            </v-row>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn @click="share()" color="primary"> <v-icon>mdi-share-variant</v-icon> Compartir </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
+    <v-card v-if="qr_url != ''">
+      <v-card-title>
+        <span class="">QR SkyKids</span>
+      </v-card-title>
+      <v-card-text class="py-1"> Registro guardado con éxito, presione el botón compartir </v-card-text>
+      <v-card-text class="py-1">
+        <v-row dense>
+          <v-col cols="12">
+            <img :src="qr_url" style="max-width: 320px" />
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn @click="share()" color="primary"> <v-icon>mdi-share-variant</v-icon> Compartir </v-btn>
+      </v-card-actions>
+    </v-card>
   </v-container>
 </template>
 <script>
@@ -199,7 +195,7 @@ export default {
     share() {
       // share image
       let me = this;
-      if (navigator.share) {
+      if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
         fetch(this.qr_url)
           .then(function (response) {
             return response.blob();
@@ -215,15 +211,6 @@ export default {
               // url: me.qr_url,
             });
           });
-        // navigator
-        //   .share({
-        //     title: "Sky Kids",
-        //     text: "Registro Sky Kids",
-        //     url: this.qr_url,
-        //     type: "image",
-        //   })
-        //   .then(() => console.log("Successful share"))
-        //   .catch((error) => console.log("Error sharing", error));
       } else {
         let link = document.createElement("a");
         link.href = this.qr_url;
