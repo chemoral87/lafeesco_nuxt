@@ -23,6 +23,7 @@
     "core-js": "^3.26.0",
     "dom-to-image": "^2.6.0",
     "hchs-vue-charts": "^1.2.8",
+    "html5-qrcode": "^2.3.8",
     "jspdf": "^2.5.1",
     "nuxt": "^2.15.8",
     "nuxt-gmaps": "^1.2.10",
@@ -39,7 +40,6 @@
     "vue-html2pdf": "^1.8.0",
     "vue-image-crop-upload": "^3.0.3",
     "vue-moment": "^4.1.0",
-
     "vue-the-mask": "^0.11.1",
     "vue-youtube-embed": "^2.2.2",
     "vue2-google-maps": "^0.10.7",
