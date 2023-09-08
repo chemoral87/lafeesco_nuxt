@@ -2,7 +2,7 @@
   <div>
     <div v-if="enable_camera" id="reader"></div>
     <div v-else>
-      <v-btn @click="enable_camera = true" color="primary"> <v-icon class="mr-1">mdi-camera</v-icon> Activar Cámara </v-btn>
+      <v-btn dealer-id="34" @click="enable_camera = true" color="primary"> <v-icon class="mr-1">mdi-camera</v-icon> Activar Cámara </v-btn>
     </div>
     <div>{{ content }}</div>
     <div>{{ error_interface }}</div>
