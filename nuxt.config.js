@@ -4,7 +4,7 @@
 let env
 
 let title
-let dateStamp = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+// let dateStamp = new Date().toISOString().slice(0, 10).replace(/-/g, '')
 if (process.env.NODE_ENV == 'production') {
   env = require('dotenv').config({ path: '.env.production' })
   title = process.env.APP_NAME
@@ -42,13 +42,10 @@ export default {
     ],
     link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }]
   },
-
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ['~/assets/styles/main.css'],
-
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    
     './plugins/mixins/user.js',
     './plugins/mixins/utils.js',
     './plugins/mixins/validation.js',
@@ -56,18 +53,14 @@ export default {
     './plugins/filters.js',
     './plugins/i18n.js',
     './plugins/repository.js',
-
-    './plugins/vue2-google-maps.js',
+    './plugins/vue2-google-maps.js', 
     './plugins/vue-advanced-cropper.js',
     './plugins/vue-the-mask.js',
     './plugins/trading-vue.js',
+    
     // './plugins/vue-gtag.js',
     { src: './plugins/vue-gtag.js', mode: 'client' },
-    './plugins/youtube'
-
-    // "./plugins/vue-image-crop-upload.js",
-    // "./plugins/vue-mask.js"
-    // { src: "./plugins/geolocation.js", ssr: false, mode: "client" }
+    './plugins/youtube',
   ],
   ignore: ['pages/country*.vue'],
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -99,7 +92,7 @@ export default {
   },
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    // https://go.nuxtjs.dev/axios
+  
 
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
@@ -230,24 +223,19 @@ export default {
     filenames: {
       chunk: ({ isDev }) => (isDev ? '[name].js' : '[id].[contenthash].js')
     },
-    postcss: {
-      // Add plugin names as key and arguments as value
-      // Install them before as dependencies with npm or yarn
-      postcssOptions: {
-        plugins: {
-          // Disable a plugin by passing false as value
-          'postcss-url': false
-          // 'postcss-nested': {},
-          // 'postcss-responsive-type': {},
-          // 'postcss-hexrgba': {}
-        }
-      },
-      preset: {
-        // Change the postcss-preset-env settings
-        autoprefixer: {
-          grid: true
-        }
-      }
-    }
+    // postcss: {
+    //   // Add plugin names as key and arguments as value
+    //   // Install them before as dependencies with npm or yarn
+    //   postcssOptions: {
+    //     plugins: {
+    //       'postcss-url': false
+    //     }
+    //   },
+    //   preset: {
+    //     autoprefixer: {
+    //       grid: true
+    //     }
+    //   }
+    // }
   }
 }
