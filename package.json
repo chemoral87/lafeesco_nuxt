@@ -25,7 +25,7 @@
     "hchs-vue-charts": "^1.2.8",
     "html5-qrcode": "^2.3.8",
     "jspdf": "^2.5.1",
-    "nuxt": "^2.15.8",
+    "nuxt": "^2.17.1",
     "nuxt-gmaps": "^1.2.10",
     "nuxt-webpack-optimisations": "^2.2.8",
     "three": "^0.147.0",
