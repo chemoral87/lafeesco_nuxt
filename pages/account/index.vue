@@ -23,14 +23,15 @@
         <!-- {{permissions}} -->
       </v-col>
     </v-row>
-    <UserDialogPassword v-if="dialogPassword" @close="dialogPassword = false" @save="changePassword($event)"></UserDialogPassword>
+    <UserDialogPassword v-if="dialogPassword" @close="dialogPassword = false" @save="changePassword($event)">
+    </UserDialogPassword>
   </v-container>
 </template>
 
 <script>
 export default {
   created() {
-    this.$nuxt.$emit('setNavBar', { title: 'Perfil', icon: 'account' })
+    this.$nuxt.$emit("setNavBar", { title: "Perfil", icon: "account" });
   },
   methods: {
     async changePassword(payload) {
@@ -38,14 +39,14 @@ export default {
         .then((res) => {
           // me.getUsers();
           // me.userDialog = false;
-          this.$auth.logout()
+          this.$auth.logout();
         })
-        .catch((e) => {})
-    }
+        .catch((e) => { });
+    },
   },
 
   data: () => ({
-    dialogPassword: false
-  })
-}
+    dialogPassword: false,
+  }),
+};
 </script>

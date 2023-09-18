@@ -9,18 +9,21 @@
             </v-card-title>
 
             <v-card-text>
-              <v-row dense v-for="(parent, ix) in parents" :key="`${ix}-parent`" :class="{ 'light-blue lighten-5': isOdd(ix) }">
+              <v-row dense v-for="(parent, ix) in parents" :key="`${ix}-parent`"
+                :class="{ 'light-blue lighten-5': isOdd(ix) }">
                 <v-col cols="6" sm="3" md="2">
                   <v-text-field v-model="parent.name" label="Nombre" outlined dense :rules="[requiredRule]" />
                 </v-col>
                 <v-col cols="6" sm="3" md="2">
-                  <v-text-field v-model="parent.paternal_surname" label="Apellido Paterno" outlined dense :rules="[requiredRule]" />
+                  <v-text-field v-model="parent.paternal_surname" label="Apellido Paterno" outlined dense
+                    :rules="[requiredRule]" />
                 </v-col>
                 <v-col cols="6" sm="3" md="2">
                   <v-text-field v-model="parent.maternal_surname" label="Apellido Materno" outlined dense />
                 </v-col>
                 <v-col cols="6" sm="3" md="2">
-                  <v-text-field v-model="parent.cellphone" label="Celular" outlined dense v-mask="'##-####-####'" :rules="[requiredRule]" />
+                  <v-text-field v-model="parent.cellphone" label="Celular" outlined dense v-mask="'##-####-####'"
+                    :rules="[requiredRule]" />
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field v-model="parent.email" label="Correo Electrónico" outlined dense />
@@ -60,14 +63,16 @@
                   <v-text-field v-model="kid.name" label="Nombre" outlined dense :rules="[requiredRule]"></v-text-field>
                 </v-col>
                 <v-col cols="6" sm="3" md="2">
-                  <v-text-field v-model="kid.paternal_surname" label="Apellido Paterno" outlined dense :rules="[requiredRule]"></v-text-field>
+                  <v-text-field v-model="kid.paternal_surname" label="Apellido Paterno" outlined dense
+                    :rules="[requiredRule]"></v-text-field>
                 </v-col>
                 <v-col cols="6" sm="3" md="2">
                   <v-text-field v-model="kid.maternal_surname" label="Apellido Materno" outlined dense></v-text-field>
                 </v-col>
 
                 <v-col cols="6" sm="3" md="2">
-                  <v-select label="Salón" :items="kid_rooms" v-model="kid.room" outlined dense :rules="[requiredRule]"></v-select>
+                  <v-select label="Salón" :items="kid_rooms" v-model="kid.room" outlined dense
+                    :rules="[requiredRule]"></v-select>
                 </v-col>
 
                 <v-col cols="8" sm="4" md="3">
@@ -274,7 +279,7 @@ export default {
 
   created() {
     this.$nuxt.$emit("setNavBar", {
-      title: "Sky kids Registro",
+      title: "SkyKids Registro",
       icon: "teddy-bear",
     });
   },
