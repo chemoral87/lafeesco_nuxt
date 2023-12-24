@@ -21,10 +21,10 @@ export default {
     },
     verify(result) {
       this.$emit("verify", result);
-    },
+    }
   },
   mounted() {
     let me = this;
-  },
+  }
 };
 </script>

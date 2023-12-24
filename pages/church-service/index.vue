@@ -130,13 +130,13 @@ export default {
       showHourChurchService: false,
       modalAssingChurchService: false,
       payloadAssingChurchService: {},
-      ministries: [],
+      ministries: []
     };
   },
   watch: {
     start_date() {
       this.getChurchService();
-    },
+    }
   },
   computed: {
     church_services_filtered() {
@@ -145,7 +145,7 @@ export default {
         this.selectedMinistries,
         this.showHourChurchService
       );
-    },
+    }
   },
   methods: {
     setChurchService(new_service) {
@@ -158,7 +158,7 @@ export default {
         sortBy: ["event_date"],
         sortDesc: [false],
         itemsPerPage: 50,
-        start_date: this.start_date,
+        start_date: this.start_date
       };
       this.church_services = await this.$repository.ChurchService.index(
         op
@@ -170,7 +170,7 @@ export default {
     openChurchService(church_service, ministry) {
       this.payloadAssingChurchService = {
         church_service,
-        ministry,
+        ministry
       };
       this.modalAssingChurchService = true;
     },
@@ -185,7 +185,7 @@ export default {
           this.modalNewChurchService = false;
         })
         .catch((e) => {});
-    },
+    }
   },
   middleware: ["authenticated"],
   validate({ store, error }) {
@@ -204,13 +204,13 @@ export default {
     let op = {
       sortBy: ["event_date"],
       sortDesc: [false],
-      itemsPerPage: 30,
+      itemsPerPage: 30
     };
     let start_date = app.$moment().format("YYYY-MM-DD");
     const ministries = await app.$repository.Ministry.index({
       sortBy: ["name"],
       sortDesc: [false],
-      itemsPerPage: 50,
+      itemsPerPage: 50
     });
     const myLeaders = await app.$repository.MinistryLeader.my().catch((e) => {});
     // const church_services = await app.$repository.ChurchService.index(op).catch((e) => {})
@@ -218,14 +218,14 @@ export default {
       ministries: ministries.data,
       myLeaders: myLeaders,
       options: op,
-      start_date: start_date,
+      start_date: start_date
     };
   },
   created() {
     this.$nuxt.$emit("setNavBar", {
       title: "Servicios Generales",
-      icon: "church",
+      icon: "church"
     });
-  },
+  }
 };
 </script>
