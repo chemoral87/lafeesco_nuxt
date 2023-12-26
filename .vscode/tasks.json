@@ -7,7 +7,7 @@
     {
       "label": "Run DEV",
       "type": "shell",
-      "command": "rm -rf node_modules/.cache && npm run dev",
+      "command": "rm -rf node_modules/.cache && npm run dev ",
       "windows": {
         "command": "rm -rf node_modules/.cache && npm run dev"
       },
