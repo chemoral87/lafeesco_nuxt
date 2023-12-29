@@ -14,14 +14,23 @@
       <v-col cols="12">
         <v-btn @click="getChords()" color="primary"> Generar </v-btn>
         <template v-if="frequency > 0">{{ frequency | price }} Hz</template>
-
         {{ note }}
+
+        <!-- {{ last_array_notes }}
+        common:
+        {{ common_note }} -->
       </v-col>
       <v-col cols="12">
         <v-simple-table>
           <tbody>
             <tr v-for="(chord, ix) in chords_table" :key="ix">
-              <td v-for="(note, ixs) in chord" :key="ix + 'x' + ixs">{{ note }}</td>
+              <td
+                v-for="(not, ixs) in chord"
+                :key="ix + 'x' + ixs"
+                :class="{ 'bg-green-1': not.note == common_note }"
+              >
+                {{ not.letter }}
+              </td>
             </tr>
           </tbody>
         </v-simple-table>
@@ -60,8 +69,25 @@ export default {
       frequency: 0,
       audioContext: null,
       analyser: null,
-      note: ""
+      note: "",
+
+      last_array_notes: [],
+      max_array_notes: 23
     };
+  },
+  computed: {
+    // get the value in last_array_notes
+    common_note() {
+      let counts = {};
+      if (this.last_array_notes.length == 0) {
+        return "";
+      }
+      this.last_array_notes.forEach((x) => {
+        counts[x] = (counts[x] || 0) + 1;
+      });
+      let max = Object.keys(counts).reduce((a, b) => (counts[a] > counts[b] ? a : b));
+      return max;
+    }
   },
   methods: {
     updateFrequency() {
@@ -72,7 +98,19 @@ export default {
       this.analyser.getFloatTimeDomainData(buffer);
       const autoCorrelateValue = this.autoCorrelate(buffer, this.audioContext.sampleRate);
       this.frequency = autoCorrelateValue || 0;
-      this.note = this.notes[this.noteFromPitch(this.frequency) % 12];
+
+      if (this.frequency == -1) {
+        this.last_array_notes.push(-1);
+      } else {
+        let note_ = this.noteFromPitch(this.frequency) % 12;
+        this.note = this.notes[note_];
+        // FIFO last_array_notes
+        this.last_array_notes.push(note_);
+      }
+
+      if (this.last_array_notes.length > this.max_array_notes) {
+        this.last_array_notes.shift();
+      }
     },
     noteFromPitch(frequency) {
       var noteNum = 12 * (Math.log(frequency / 440) / Math.log(2));
@@ -161,6 +199,7 @@ export default {
       return sampleRate / T0;
     },
     getChords() {
+      this.audioContext.resume();
       this.chords_table = [];
       //   console.log(this.selected_chord);
       if (this.selected_chord == 1) {
@@ -178,9 +217,9 @@ export default {
           c = (c + 1) % 12;
         }
       } else if (this.selected_chord == 2) {
-        let a = 1;
-        let b = 4;
-        let c = 8;
+        let a = 0;
+        let b = 3;
+        let c = 7;
         while (a < 12) {
           this.chords_table.push([a, b, c]);
           if (a == 11) {
@@ -195,7 +234,7 @@ export default {
 
       this.chords_table = this.chords_table.map((chord) => {
         return chord.map((note) => {
-          return this.notes[note];
+          return { letter: this.notes[note], note };
         });
       });
     }
@@ -220,6 +259,16 @@ export default {
       .catch((err) => {
         console.error("Error accessing microphone:", err);
       });
+    // necesarry
+    // nexttick
+    this.$nextTick(() => {
+      this.audioContext.resume();
+    });
   }
 };
 </script>
+<style scoped>
+.bg-green-1 {
+  background-color: #4caf50 !important;
+}
+</style>
