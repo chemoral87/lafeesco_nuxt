@@ -46,33 +46,35 @@ export default {
     // this.initi();
     return {
       chords: [
-        { id: 0, name: "Mayor" },
-        { id: 1, name: "Menor" },
-        { id: 2, name: "Mayor Completa" },
-        { id: 3, name: "Mayor Completa" }
+        { id: 1, name: "Mayor" },
+        { id: 2, name: "Menor" },
+        { id: 3, name: "Mayor Completa" },
+        { id: 4, name: "Mayor Completa" }
       ],
       chords_table: [],
-      notes: [
-        "C",
-        "C# / Db",
-        "D",
-        "D# / Eb",
-        "E",
-        "F",
-        "F# / Gb",
-        "G",
-        "G# / Ab",
-        "A",
-        "A# / Bb",
-        "B"
-      ],
+      notes: {
+        0: "C",
+        1: "C# / Db",
+        2: "D",
+        3: "D# / Eb",
+        4: "E",
+        5: "F",
+        6: "F# / Gb",
+        7: "G",
+        8: "G# / Ab",
+        9: "A",
+        10: "A# / Bb",
+        11: "B"
+      },
+      item: {},
       selected_chord: 1,
       frequency: 0,
-      note: "",
-      last_array_notes: [],
-      max_array_notes: 23,
       audioContext: null,
-      analyser: null
+      analyser: null,
+      note: "",
+
+      last_array_notes: [],
+      max_array_notes: 23
     };
   },
   computed: {
@@ -201,80 +203,62 @@ export default {
     getChords() {
       this.audioContext.resume();
       this.chords_table = [];
+      //   console.log(this.selected_chord);
+      if (this.selected_chord == 1) {
+        let a = 0;
+        let b = 4;
+        let c = 7;
+        while (a < 12) {
+          this.chords_table.push([a, b, c]);
+          if (a == 11) {
+            break;
+          }
 
-      const chordConfig = [
-        [0, 4, 7],
-        [0, 3, 7],
-        [0, 2, 4, 5, 7, 9, 11]
-      ];
-
-      const selectedChord = this.selected_chord;
-      const chord = chordConfig[selectedChord];
-      let a = 0;
-      while (a < 12) {
-        this.chords_table.push(chord.map((note) => ({ letter: this.notes[note], note })));
-        if (a === 11) break;
-        chord.forEach((_, index) => (chord[index] = (chord[index] + 1) % 12));
-        a = a + 1;
-        console.log(a);
+          a = (a + 1) % 12;
+          b = (b + 1) % 12;
+          c = (c + 1) % 12;
+        }
+      } else if (this.selected_chord == 2) {
+        let a = 0;
+        let b = 3;
+        let c = 7;
+        while (a < 12) {
+          this.chords_table.push([a, b, c]);
+          if (a == 11) {
+            break;
+          }
+          a = (a + 1) % 12;
+          b = (b + 1) % 12;
+          c = (c + 1) % 12;
+        }
+      } else if (this.selected_chord == 3) {
+        let a = 0;
+        let b = 2;
+        let c = 4;
+        let d = 5;
+        let e = 7;
+        let f = 9;
+        let g = 11;
+        while (a < 12) {
+          this.chords_table.push([a, b, c, d, e, f, g]);
+          if (a == 11) {
+            break;
+          }
+          a = (a + 1) % 12;
+          b = (b + 1) % 12;
+          c = (c + 1) % 12;
+          d = (d + 1) % 12;
+          e = (e + 1) % 12;
+          f = (f + 1) % 12;
+          g = (g + 1) % 12;
+        }
       }
 
-      // this.chords_table = this.chords_table.map((chord) => {
-      //   return chord.map((note) => {
-      //     return { letter: this.notes[note], note };
-      //   });
-      // });
-
-      // //   console.log(this.selected_chord);
-      // if (this.selected_chord == 1) {
-      //   let a = 0;
-      //   let b = 4;
-      //   let c = 7;
-      //   while (a < 12) {
-      //     this.chords_table.push([a, b, c]);
-      //     if (a == 11) {
-      //       break;
-      //     }
-
-      //     a = (a + 1) % 12;
-      //     b = (b + 1) % 12;
-      //     c = (c + 1) % 12;
-      //   }
-      // } else if (this.selected_chord == 2) {
-      //   let a = 0;
-      //   let b = 3;
-      //   let c = 7;
-      //   while (a < 12) {
-      //     this.chords_table.push([a, b, c]);
-      //     if (a == 11) {
-      //       break;
-      //     }
-      //     a = (a + 1) % 12;
-      //     b = (b + 1) % 12;
-      //     c = (c + 1) % 12;
-      //   }
-      // } else if (this.selected_chord == 3) {
-      //   let a = 0;
-      //   let b = 2;
-      //   let c = 4;
-      //   let d = 5;
-      //   let e = 7;
-      //   let f = 9;
-      //   let g = 11;
-      //   while (a < 12) {
-      //     this.chords_table.push([a, b, c, d, e, f, g]);
-      //     if (a == 11) {
-      //       break;
-      //     }
-      //     a = (a + 1) % 12;
-      //     b = (b + 1) % 12;
-      //     c = (c + 1) % 12;
-      //     d = (d + 1) % 12;
-      //     e = (e + 1) % 12;
-      //     f = (f + 1) % 12;
-      //     g = (g + 1) % 12;
-      //   }
-      // }
+      this.chords_table = this.chords_table.map((chord) => {
+        return chord.map((note) => {
+          return { letter: this.notes[note], note };
+        });
+      });
     }
   },
   created() {

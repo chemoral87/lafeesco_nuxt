@@ -19,7 +19,7 @@ export default {
       blob: null,
       file: null,
       maxSize: 750, // max size for image upload after transform
-      filename: "",
+      filename: ""
     };
   },
   watch: {
@@ -36,7 +36,7 @@ export default {
         this.file = null;
         this.filename = "";
       }
-    },
+    }
   },
   methods: {
     dataURItoBlob(dataURI) {
@@ -68,13 +68,9 @@ export default {
         let _URL = window.URL || window.webkitURL;
         let imgLoader = new Image();
         imgLoader.onload = function () {
-          let ration = Math.sqrt(
-            (this.width * this.height) / (me.maxSize * me.maxSize)
-          );
+          let ration = Math.sqrt((this.width * this.height) / (me.maxSize * me.maxSize));
           let _maxSize =
-            this.width > this.height
-              ? this.width / ration
-              : this.height / ration;
+            this.width > this.height ? this.width / ration : this.height / ration;
           _maxSize = Math.round(_maxSize);
 
           loadImage(
@@ -94,18 +90,18 @@ export default {
               maxWidth: _maxSize,
               maxHeight: _maxSize,
               orientation: true,
-              canvas: true,
+              canvas: true
             } // Options
           );
         };
         var objectUrl = _URL.createObjectURL(this.image);
         imgLoader.src = objectUrl;
       }
-    },
+    }
   },
   mounted() {
     let me = this;
     this.maxSize = this.size ? this.size : this.maxSize;
-  },
+  }
 };
 </script>

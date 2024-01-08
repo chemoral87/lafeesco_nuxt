@@ -44,13 +44,34 @@
         <v-col cols="6" md="3" lg="2">
           <v-text-field outlined label="Longitud" v-model="item.lng" />
         </v-col>
+        <v-col cols="6" md="2">
+          <my-uploadimage-crop
+            :photo="item.host_photo"
+            v-model="item.host_photo_blob"
+            label="Anfitrión"
+            :size="750"
+            max-height="95px"
+            placeholder="Seleccione imagen"
+          />
+        </v-col>
+        <v-col cols="6" md="2">
+          <my-uploadimage-crop
+            :photo="item.exhibitor_photo"
+            v-model="item.exhibitor_photo_blob"
+            label="Expositor"
+            :size="750"
+            max-height="95px"
+            placeholder="Seleccione imagen"
+          />
+        </v-col>
+        <v-col cols="6" md="3" lg="2">
+          <MyDatepicker outlined label="Fecha Fin" v-model="item.end_date" />
+        </v-col>
       </v-row>
 
       <v-row dense>
         <v-spacer />
-        <v-btn @click="cancel" outlined color="primary" class="mr-3"
-          >Cancelar</v-btn
-        >
+        <v-btn @click="cancel" outlined color="primary" class="mr-3">Cancelar</v-btn>
         <v-btn type="submit" color="primary" class="mr-4">Guardar</v-btn>
       </v-row>
     </v-form>
@@ -68,7 +89,7 @@
         streetViewControl: false,
         rotateControl: false,
         fullscreenControl: false,
-        disableDefaultUi: false,
+        disableDefaultUi: false
       }"
       :zoom="map.zoom"
       @center_changed="updateCenter"
@@ -96,13 +117,11 @@ export default {
   created() {
     this.$nuxt.$emit("setNavBar", {
       title: "Editar Casa de Fe",
-      icon: "home",
+      icon: "home"
     });
   },
   async asyncData({ $axios, app, params }) {
-    const item = await app.$repository.FaithHouse.show(params.id).catch(
-      (e) => {}
-    );
+    const item = await app.$repository.FaithHouse.show(params.id).catch((e) => {});
     return { item, id: params.id };
   },
 
@@ -121,8 +140,8 @@ export default {
         zoom: 17,
         locati: "",
         bound_lat: 300,
-        bound_lng: 300,
-      },
+        bound_lng: 300
+      }
     };
   },
   methods: {
@@ -151,18 +170,47 @@ export default {
       this.$router.push("/faith-house");
     },
     async saveFaithHouse() {
-      await this.$repository.FaithHouse.update(this.item.id, this.item)
+      let formData = new FormData();
+      let {
+        name,
+        host,
+        host_phone,
+        exhibitor,
+        exhibitor_phone,
+        schedule,
+        address,
+        lat,
+        lng,
+        host_photo_blob,
+        exhibitor_photo_blob,
+        end_date
+      } = this.item;
+      formData.append("_method", "PUT");
+      formData.append("name", name);
+      formData.append("host", host);
+      formData.append("host_phone", host_phone);
+      formData.append("exhibitor", exhibitor);
+      formData.append("exhibitor_phone", exhibitor_phone);
+      formData.append("schedule", schedule);
+      formData.append("address", address);
+      formData.append("lat", lat);
+      formData.append("lng", lng);
+      host_photo_blob && formData.append("host_photo", host_photo_blob);
+      exhibitor_photo_blob && formData.append("exhibitor_photo", exhibitor_photo_blob);
+      formData.append("end_date", end_date);
+
+      await this.$repository.FaithHouse.updateForm(this.item.id, formData)
         .then((res) => {
           this.$router.push("/faith-house");
         })
         .catch((e) => {});
-    },
+    }
   },
   mounted() {
     let me = this;
     let { lat, lng } = this.item;
     this.center = { lat: parseFloat(lat), lng: parseFloat(lng) };
     this.marker = this.center;
-  },
+  }
 };
 </script>

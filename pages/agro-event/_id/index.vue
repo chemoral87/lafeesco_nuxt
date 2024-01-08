@@ -14,7 +14,7 @@ export default {
   props: {},
   data() {
     return {
-      agroEvent: {},
+      agroEvent: {}
     };
   },
   methods: {
@@ -42,24 +42,22 @@ export default {
 
     cancel() {
       this.$router.push("/agro-event");
-    },
+    }
   },
   created() {
     this.$nuxt.$emit("setNavBar", {
       title: "Agro Evento",
-      icon: "sprout",
+      icon: "sprout"
     });
   },
   async asyncData({ $axios, app, params }) {
-    const agroEvent = await app.$repository.AgroEvent.show(params.id).catch(
-      (e) => {}
-    );
+    const agroEvent = await app.$repository.AgroEvent.show(params.id).catch((e) => {});
     return { agroEvent, id: params.id };
   },
   mounted() {
     let { lat, lng } = this.agroEvent;
     this.marker = this.center = { lat: parseFloat(lat), lng: parseFloat(lng) };
   },
-  components: { My, AgroEvent },
+  components: { My, AgroEvent }
 };
 </script>

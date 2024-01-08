@@ -32,22 +32,44 @@
             v-model="item.exhibitor_phone"
           />
         </v-col>
+        <v-col cols="6" md="3" lg="2">
+          <v-text-field outlined label="Horario" v-model="item.schedule" />
+        </v-col>
         <v-col cols="6" md="3">
           <v-text-field outlined label="Domicilio" v-model="item.address" />
         </v-col>
+
         <v-col cols="6" md="3">
           <v-text-field outlined label="Latitud" v-model="item.lat" />
         </v-col>
         <v-col cols="6" md="3">
           <v-text-field outlined label="Longitud" v-model="item.lng" />
         </v-col>
+        <v-col cols="6" md="2">
+          <my-uploadimage-crop
+            :photo="item.host_photo"
+            v-model="item.host_photo_blob"
+            label="Anfitrión"
+            :size="750"
+            max-height="95px"
+            placeholder="Seleccione imagen"
+          />
+        </v-col>
+        <v-col cols="6" md="2">
+          <my-uploadimage-crop
+            :photo="item.exhibitor_photo"
+            v-model="item.exhibitor_photo_blob"
+            label="Expositor"
+            :size="750"
+            max-height="95px"
+            placeholder="Seleccione imagen"
+          />
+        </v-col>
       </v-row>
 
       <v-row dense>
         <v-spacer />
-        <v-btn @click="cancel" outlined color="primary" class="mr-3"
-          >Cancelar</v-btn
-        >
+        <v-btn @click="cancel" outlined color="primary" class="mr-3">Cancelar</v-btn>
         <v-btn type="submit" color="primary" class="mr-4">Guardar</v-btn>
       </v-row>
     </v-form>
@@ -65,7 +87,7 @@
         streetViewControl: false,
         rotateControl: false,
         fullscreenControl: false,
-        disableDefaultUi: false,
+        disableDefaultUi: false
       }"
       :zoom="map.zoom"
       @center_changed="updateCenter"
@@ -93,17 +115,10 @@ export default {
   created() {
     this.$nuxt.$emit("setNavBar", {
       title: "Nueva Casa de Fe",
-      icon: "home",
+      icon: "home"
     });
   },
-  async asyncData({ $axios, app, store }) {
-    // var marital_statuses = await store.dispatch(
-    //   "catalogs/fetchMaritalStatuses"
-    // );
-    // var member_groups = await store.dispatch("catalogs/fetchMemberCategories");
-    // var member_sources = await store.dispatch("catalogs/fetchMemberSources");
-    // return { marital_statuses, member_groups, member_sources };
-  },
+  async asyncData({ $axios, app, store }) {},
   props: {},
   data() {
     return {
@@ -119,8 +134,8 @@ export default {
         zoom: 12,
         locati: "",
         bound_lat: 300,
-        bound_lng: 300,
-      },
+        bound_lng: 300
+      }
     };
   },
   methods: {
@@ -143,23 +158,49 @@ export default {
       this.marker = { lat, lng };
       this.item.lat = lat;
       this.item.lng = lng;
-      // this.map.locati = this.center.lat + " " + this.center.lng;
     },
     cancel() {
       this.$router.push("/faith-house");
     },
     async saveFaithHouse() {
       if (!this.$refs.form.validate()) return;
-      await this.$repository.FaithHouse.create(this.item)
+      let formData = new FormData();
+      let {
+        name,
+        host,
+        host_phone,
+        host_photo_blob,
+        exhibitor,
+        exhibitor_phone,
+        exhibitor_photo_blob,
+        address,
+        schedule,
+        lat,
+        lng
+      } = this.item;
+
+      formData.append("name", name);
+      formData.append("host", host);
+      formData.append("host_phone", host_phone);
+      formData.append("exhibitor", exhibitor);
+      formData.append("exhibitor_phone", exhibitor_phone);
+      formData.append("schedule", schedule);
+      formData.append("address", address);
+      formData.append("lat", lat);
+      formData.append("lng", lng);
+      host_photo_blob && formData.append("host_photo", host_photo_blob);
+      exhibitor_photo_blob && formData.append("exhibitor_photo", exhibitor_photo_blob);
+
+      await this.$repository.FaithHouse.createForm(formData)
         .then((res) => {
           this.$router.push("/faith-house");
         })
         .catch((e) => {});
-    },
+    }
   },
   mounted() {
     let me = this;
     this.marker = this.center;
-  },
+  }
 };
 </script>

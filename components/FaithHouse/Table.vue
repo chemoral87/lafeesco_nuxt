@@ -1,6 +1,8 @@
 <template>
   <div>
     <v-data-table
+      fixed-header
+      height="300px"
       dense
       mobile-breakpoint="0"
       @update:sort-by="sortTable"
@@ -20,13 +22,13 @@
       </template>
       <template v-slot:[`item.next_call_date`]="{ item }">
         <div v-if="item.next_call_date">
-          {{ item.next_call_date | moment('DD MMM YYYY') }} |
+          {{ item.next_call_date | moment("DD MMM YYYY") }} |
           <strong>{{ item.next_call_type }}</strong>
         </div>
       </template>
       <template v-slot:[`item.last_call_date`]="{ item }">
         <div v-if="item.last_call_date">
-          {{ item.last_call_date | moment('DD MMM YYYY HH:mm') }} |
+          {{ item.last_call_date | moment("DD MMM YYYY HH:mm") }} |
           <strong>{{ item.last_call_type }}</strong>
         </div>
       </template>
@@ -39,13 +41,32 @@
         </span>
       </template>
       <template v-slot:[`item.created_at`]="{ item }">
-        {{ item.created_at | moment('DD MMM YYYY/hh:mma') }}
+        {{ item.created_at | moment("DD MMM YYYY/hh:mma") }}
+      </template>
+      <template v-slot:[`item.end_date`]="{ item }">
+        {{ item.end_date | moment("DD MMM YYYY") }}
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn title="Editar" class="ma-1" color="primary" outlined fab small @click="emitAction('edit', item)">
+        <v-btn
+          title="Editar"
+          class="ma-1"
+          color="primary"
+          outlined
+          fab
+          small
+          @click="emitAction('edit', item)"
+        >
           <v-icon> mdi-pencil </v-icon>
         </v-btn>
-        <v-btn title="Ver" class="ma-1" color="info" outlined fab small @click="emitAction('focus', item)">
+        <v-btn
+          title="Ver"
+          class="ma-1"
+          color="info"
+          outlined
+          fab
+          small
+          @click="emitAction('focus', item)"
+        >
           <v-icon> mdi-eye </v-icon>
         </v-btn>
         <v-btn @click="confirmDelete(item)" fab small color="error">
@@ -58,7 +79,7 @@
       :dialog="dialogDeleteProp"
       @ok="
         (item) => {
-          $emit('delete', item)
+          $emit('delete', item);
         }
       "
       @close="$emit('update:dialogDelete', false)"
@@ -67,7 +88,7 @@
 </template>
 <script>
 export default {
-  props: ['dialogDelete', 'response', 'options', 'tableHeaders'],
+  props: ["dialogDelete", "response", "options", "tableHeaders"],
   data() {
     return {
       dialogDeleteProp: {},
@@ -78,76 +99,78 @@ export default {
       sortDesc: false,
       headers: [
         {
-          text: 'Acción',
-          value: 'actions'
+          text: "Acción",
+          value: "actions"
         },
         {
-          text: 'Nombre ',
-          value: 'name'
+          text: "Nombre ",
+          value: "name"
         },
-        { text: 'Anfitrión', value: 'host', sortable: true },
-        { text: 'Anfitrión Cel.', value: 'host_phone', sortable: false },
-        { text: 'Expositor', value: 'exhibitor', sortable: true },
-        { text: 'Expositor Cel.', value: 'exhibitor_phone', sortable: false },
+        { text: "Anfitrión", value: "host", sortable: true },
+        { text: "Anfitrión Cel.", value: "host_phone", sortable: false },
+        { text: "Expositor", value: "exhibitor", sortable: true },
+
+        { text: "Expositor Cel.", value: "exhibitor_phone", sortable: false },
+        { text: "Fecha Fin", value: "end_date", sortable: true },
 
         {
-          text: 'Horario',
-          value: 'schedule'
+          text: "Horario",
+          value: "schedule"
         },
         {
-          text: 'Dirección',
-          value: 'address',
+          text: "Dirección",
+          value: "address",
           sortable: true
         }
       ]
-    }
+    };
   },
   computed: {
     total() {
-      if (this.response) return this.response.total
-      else return 0
+      if (this.response) return this.response.total;
+      else return 0;
     },
     items() {
-      if (this.response) return this.response.data
-      else return []
+      if (this.response) return this.response.data;
+      else return [];
     }
   },
   methods: {
     confirmDelete(item) {
       this.dialogDeleteProp = {
-        text: 'Desea eliminar la Casa de Fe ',
+        text: "Desea eliminar la Casa de Fe ",
         strong: item.name,
         payload: item
-      }
-      this.$emit('update:dialogDelete', true)
+      };
+      this.$emit("update:dialogDelete", true);
     },
     sortTable(columnName) {
       if (this.flagSetOption) {
-        this.flagSetOption = false
+        this.flagSetOption = false;
       } else {
-        let head = this.headers.find((x) => x.value == columnName)
-        if (head.firstSortDesc) this.optionsTable.sortDesc[0] = true
+        let head = this.headers.find((x) => x.value == columnName);
+        if (head.firstSortDesc) this.optionsTable.sortDesc[0] = true;
       }
     },
     emitAction(action, payload) {
-      this.$emit(action, payload)
+      this.$emit(action, payload);
     }
   },
   mounted() {
-    let me = this
-    this.optionsTable = this.options
+    let me = this;
+    this.optionsTable = this.options;
     if (this)
       me.$nextTick(() => {
         me.options_watch = me.$watch(
-          'optionsTable',
+          "optionsTable",
           function () {
-            this.$emit('sorting', this.optionsTable)
+            this.$emit("sorting", this.optionsTable);
           },
           {
             immediate: false
           }
-        )
-      })
+        );
+      });
   }
-}
+};
 </script>
