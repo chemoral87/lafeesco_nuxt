@@ -199,7 +199,33 @@ export default {
       return sampleRate / T0;
     },
     getChords() {
-      this.audioContext.resume();
+      // if audioContext not exist create it
+      // get audioContext state and resume if is suspended+
+      console.log(this.audioContext.state);
+      if (this.audioContext.state === "suspended") {
+        this.audioContext.resume();
+        navigator.mediaDevices
+          .getUserMedia({ audio: true })
+          .then((stream) => {
+            const source = this.audioContext.createMediaStreamSource(stream);
+            source.connect(this.analyser);
+            // source.connect(this.audioContext.destination);
+            this.updateFrequency();
+          })
+          .catch((err) => {
+            console.error("Error accessing microphone:", err);
+          });
+      }
+
+      // console.log(this.audioContext);
+      // if (!this.audioContext) {
+      //   this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      //   console.log("no existe");
+      // } else {
+      //   console.log("resume");
+      //   this.audioContext.resume();
+      // }
+
       this.chords_table = [];
 
       const chordConfig = [
@@ -216,7 +242,6 @@ export default {
         if (a === 11) break;
         chord.forEach((_, index) => (chord[index] = (chord[index] + 1) % 12));
         a = a + 1;
-        console.log(a);
       }
 
       // this.chords_table = this.chords_table.map((chord) => {
