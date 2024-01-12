@@ -7,7 +7,7 @@
         :key="faith_house.id + 'pxr'"
       >
         <v-card class="fill-height">
-          <v-card-title class="py-2 d-flex justify-center">
+          <v-card-title class="py-2 d-flex justify-center primary white--text">
             {{ ix + 1 }}. {{ faith_house.name }}
           </v-card-title>
 
@@ -108,5 +108,10 @@ export default {
 
 .list-subtitle i {
   margin-right: 3px; /* Adjust the margin based on your preference */
+}
+
+.custom-title {
+  background-color: $vuetify.colors.primary.base;
+  color: white; /* Replace with your desired color code or name */
 }
 </style>
