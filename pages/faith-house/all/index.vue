@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row dense>
       <v-col
-        cols="3"
+        cols="4"
         v-for="(faith_house, ix) in response.data"
         :key="faith_house.id + 'pxr'"
       >
@@ -29,7 +29,7 @@
                 <v-icon>mdi-account</v-icon>
                 {{ faith_house.host }}
               </v-card-text>
-              <v-card-text class="py-1">
+              <v-card-text class="py-1" v-if="faith_house.host_phone">
                 <v-icon>mdi-phone</v-icon>
                 {{ faith_house.host_phone }}
               </v-card-text></v-col
@@ -37,7 +37,7 @@
             <v-col cols="4">
               <img
                 class="image-cropper"
-                style="width: 95%"
+                style="width: 96%"
                 :src="faith_house.host_photo"
               />
             </v-col>
@@ -50,7 +50,7 @@
                 <v-icon>mdi-account</v-icon>
                 {{ faith_house.exhibitor }}
               </v-card-text>
-              <v-card-text class="py-1">
+              <v-card-text class="py-1" v-if="faith_house.exhibitor_phone">
                 <v-icon>mdi-phone</v-icon>
                 {{ faith_house.exhibitor_phone }}
               </v-card-text></v-col
@@ -58,7 +58,7 @@
             <v-col cols="4">
               <img
                 class="image-cropper"
-                style="width: 95%"
+                style="width: 96%"
                 :src="faith_house.exhibitor_photo"
               />
             </v-col>
