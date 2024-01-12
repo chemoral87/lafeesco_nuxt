@@ -51,6 +51,7 @@
       :style="{ maxHeight: computedMaxHeight }"
       :src="displayedImage"
     />
+    
   </div>
 </template>
 <script>
