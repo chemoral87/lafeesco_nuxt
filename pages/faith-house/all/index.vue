@@ -22,7 +22,7 @@
           <v-row dense>
             <v-col cols="8">
               <v-card-text class="py-2">
-                <strong v-if="exhibitor"> ANFITRIÓN</strong>
+                <strong v-if="faith_house.exhibitor"> ANFITRIÓN</strong>
                 <strong v-else> ANFITRIÓN y EXPOSITOR</strong>
               </v-card-text>
               <v-card-text class="py-1">
@@ -43,7 +43,7 @@
             </v-col>
           </v-row>
 
-          <v-row dense v-if="exhibitor">
+          <v-row dense v-if="faith_house.exhibitor">
             <v-col cols="8">
               <v-card-text class="py-2"><strong> EXPOSITOR</strong> </v-card-text>
               <v-card-text class="py-1">
