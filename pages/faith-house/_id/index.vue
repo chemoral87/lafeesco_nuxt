@@ -189,8 +189,8 @@ export default {
       formData.append("name", name);
       formData.append("host", host);
       formData.append("host_phone", host_phone);
-      formData.append("exhibitor", exhibitor);
-      formData.append("exhibitor_phone", exhibitor_phone);
+      exhibitor && formData.append("exhibitor", exhibitor);
+      exhibitor_phone && formData.append("exhibitor_phone", exhibitor_phone);
       formData.append("schedule", schedule);
       formData.append("address", address);
       formData.append("lat", lat);
