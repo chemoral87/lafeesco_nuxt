@@ -7,12 +7,15 @@
         :key="faith_house.id + 'pxr'"
       >
         <v-card class="fill-height">
-          <v-card-title class="py-2"> {{ ix + 1 }}. {{ faith_house.name }} </v-card-title>
-          <v-card-text class="py-1">
+          <v-card-title class="py-2 d-flex justify-center">
+            {{ ix + 1 }}. {{ faith_house.name }}
+          </v-card-title>
+
+          <v-card-text class="py-1 list-subtitle">
             <v-icon>mdi-map-marker</v-icon>
             {{ faith_house.address }}
           </v-card-text>
-          <v-card-text class="py-1">
+          <v-card-text class="py-1 list-subtitle">
             <v-icon>mdi-clock</v-icon>
             {{ faith_house.schedule }}
           </v-card-text>
@@ -97,5 +100,13 @@ export default {
 <style scoped>
 .image-cropper {
   border-radius: 50% !important;
+}
+.list-subtitle {
+  display: flex;
+  align-items: center;
+}
+
+.list-subtitle i {
+  margin-right: 3px; /* Adjust the margin based on your preference */
 }
 </style>
