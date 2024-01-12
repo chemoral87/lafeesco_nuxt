@@ -75,7 +75,7 @@ export default {
     let options = {
       sortBy: ["name"],
       sortDesc: [true],
-      itemsPerPage: 20,
+      itemsPerPage: 40,
       active_faith_house
     };
     const response = await app.$repository.FaithHouse.index(options).catch((e) => {});
@@ -108,10 +108,5 @@ export default {
 
 .list-subtitle i {
   margin-right: 3px; /* Adjust the margin based on your preference */
-}
-
-.custom-title {
-  background-color: $vuetify.colors.primary.base;
-  color: white; /* Replace with your desired color code or name */
 }
 </style>

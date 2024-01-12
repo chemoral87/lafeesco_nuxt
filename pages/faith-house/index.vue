@@ -82,7 +82,7 @@ export default {
     let options = {
       sortBy: ["name"],
       sortDesc: [true],
-      itemsPerPage: 20,
+      itemsPerPage: 40,
       active_faith_house
     };
     const response = await app.$repository.FaithHouse.index(options).catch((e) => {});

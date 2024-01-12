@@ -32,7 +32,9 @@
 .xwidth1500 .v-data-table__wrapper table {
   min-width: 1500px !important;
 }
-
+.xwidth1600 .v-data-table__wrapper table {
+  min-width: 1600px !important;
+}
 .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
   padding: 0 7px !important;
 }

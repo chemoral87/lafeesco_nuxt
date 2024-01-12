@@ -14,7 +14,7 @@
       :footer-props="{
         'items-per-page-options': [10, 20, 30, 40, 50]
       }"
-      class="elevation-1 xwidth1500"
+      class="elevation-1 xwidth1600"
     >
       <!-- https://stackoverflow.com/questions/61344980/v-slot-directive-doesnt-support-any-modifier -->
       <template v-slot:[`item.full_name`]="{ item }">
