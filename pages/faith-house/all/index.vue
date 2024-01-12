@@ -73,8 +73,8 @@ export default {
   async asyncData({ $axios, app }) {
     let active_faith_house = true;
     let options = {
-      sortBy: ["name"],
-      sortDesc: [true],
+      sortBy: ["schedule", "name"],
+      sortDesc: [true, true],
       itemsPerPage: 40,
       active_faith_house
     };
