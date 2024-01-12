@@ -197,7 +197,7 @@ export default {
       formData.append("lng", lng);
       host_photo_blob && formData.append("host_photo", host_photo_blob);
       exhibitor_photo_blob && formData.append("exhibitor_photo", exhibitor_photo_blob);
-      formData.append("end_date", end_date);
+      end_date && formData.append("end_date", end_date);
 
       await this.$repository.FaithHouse.updateForm(this.item.id, formData)
         .then((res) => {
