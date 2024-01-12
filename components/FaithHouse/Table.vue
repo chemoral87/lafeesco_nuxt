@@ -55,6 +55,7 @@
           fab
           small
           @click="emitAction('edit', item)"
+          @contextmenu.prevent="emitAction('editContext', item)"
         >
           <v-icon> mdi-pencil </v-icon>
         </v-btn>

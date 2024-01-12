@@ -32,6 +32,7 @@
           :options="options"
           :response="response"
           @edit="editItem"
+          @editContext="editContext"
           @delete="deleteItem"
           @focus="focusItem"
           :dialogDelete.sync="dialogDelete"
@@ -129,6 +130,10 @@ export default {
     },
     editItem(item) {
       this.$router.push(`/faith-house/${item.id}`);
+    },
+    editContext(item) {
+      //open in new tab
+      window.open(`/faith-house/${item.id}`, "_blank");
     },
 
     async deleteItem(item) {
