@@ -6,7 +6,7 @@
         v-for="(faith_house, ix) in response.data"
         :key="faith_house.id + 'pxr'"
       >
-        <v-card>
+        <v-card class="fill-height">
           <v-card-title class="py-2"> {{ ix + 1 }}. {{ faith_house.name }} </v-card-title>
           <v-card-text class="py-1">
             <v-icon>mdi-map-marker</v-icon>
@@ -34,7 +34,7 @@
             <v-col cols="4">
               <img
                 class="image-cropper"
-                style="width: 90%"
+                style="width: 95%"
                 :src="faith_house.host_photo"
               />
             </v-col>
@@ -55,7 +55,7 @@
             <v-col cols="4">
               <img
                 class="image-cropper"
-                style="width: 90%"
+                style="width: 95%"
                 :src="faith_house.exhibitor_photo"
               />
             </v-col>
