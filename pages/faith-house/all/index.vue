@@ -22,10 +22,10 @@
           <v-row dense>
             <v-col cols="8">
               <v-card-text class="py-2">
-                <strong v-if="faith_house.exhibitor"> ANFITRIÓN</strong>
-                <strong v-else> ANFITRIÓN y EXPOSITOR</strong>
+                <strong v-if="faith_house.exhibitor">ANFITRIÓN</strong>
+                <strong v-else>ANFITRIÓN y EXPOSITOR</strong>
               </v-card-text>
-              <v-card-text class="py-1">
+              <v-card-text class="py-1 list-subtitle">
                 <v-icon>mdi-account</v-icon>
                 {{ faith_house.host }}
               </v-card-text>
@@ -45,8 +45,8 @@
 
           <v-row dense v-if="faith_house.exhibitor">
             <v-col cols="8">
-              <v-card-text class="py-2"><strong> EXPOSITOR</strong> </v-card-text>
-              <v-card-text class="py-1">
+              <v-card-text class="py-2"> <strong>EXPOSITOR</strong> </v-card-text>
+              <v-card-text class="py-1 list-subtitle">
                 <v-icon>mdi-account</v-icon>
                 {{ faith_house.exhibitor }}
               </v-card-text>
