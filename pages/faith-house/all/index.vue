@@ -70,7 +70,7 @@
     <v-row dense class="justify-center">
       <v-col cols="4">
         <div class="d-flex justify-center">
-          <img style="width: 230px" alt="Logo" src="/logo.png" />
+          <img style="width: 230px" alt="Logo" src="/logo_casas_fe2.png" />
         </div>
       </v-col>
       <v-col cols="4" v-for="(organizer, ix) in Organizers" :key="organizer.id + 'pxz'">
@@ -105,7 +105,11 @@
           </v-row>
         </v-card>
       </v-col>
-      <v-col cols="4"></v-col>
+      <v-col cols="4">
+        <div class="d-flex justify-center">
+          <img style="width: 230px" alt="Logo" src="/logo.png" />
+        </div>
+      </v-col>
     </v-row>
   </v-container>
 </template>
