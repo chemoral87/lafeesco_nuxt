@@ -1,41 +1,6 @@
 <template>
   <v-container fluid>
     <v-row dense class="justify-center">
-      <v-col cols="4" v-for="(organizer, ix) in Organizers" :key="organizer.id + 'pxz'">
-        <v-card class="fill-height">
-          <v-card-title class="py-2 d-flex justify-center primary white--text">
-            {{ organizer.name }}
-          </v-card-title>
-          <v-row dense class="pt-2">
-            <v-col cols="7">
-              <v-card-text class="py-1 list-subtitle">
-                <v-icon>mdi-account</v-icon>
-                {{ organizer.host }}
-              </v-card-text>
-              <v-card-text class="py-1" v-if="organizer.host_phone">
-                <v-icon>mdi-phone</v-icon>
-                {{ organizer.host_phone }}
-              </v-card-text>
-              <br />
-
-              <v-card-text class="py-1 list-subtitle">
-                <v-icon>mdi-account</v-icon>
-                {{ organizer.exhibitor }}
-              </v-card-text>
-              <v-card-text class="py-1" v-if="organizer.exhibitor_phone">
-                <v-icon>mdi-phone</v-icon>
-                {{ organizer.exhibitor_phone }}
-              </v-card-text>
-            </v-col>
-            <v-col cols="5">
-              <img class="image-cropper" style="width: 96%" :src="organizer.host_photo" />
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-col>
-    </v-row>
-
-    <v-row dense class="justify-center">
       <v-col
         cols="4"
         v-for="(faith_house, ix) in FaithHouses"
@@ -100,6 +65,47 @@
           </v-row>
         </v-card>
       </v-col>
+    </v-row>
+
+    <v-row dense class="justify-center">
+      <v-col cols="4">
+        <div class="d-flex justify-center">
+          <img style="width: 230px" alt="Logo" src="/logo.png" />
+        </div>
+      </v-col>
+      <v-col cols="4" v-for="(organizer, ix) in Organizers" :key="organizer.id + 'pxz'">
+        <v-card class="fill-height">
+          <v-card-title class="py-2 d-flex justify-center primary white--text">
+            {{ organizer.name }}
+          </v-card-title>
+          <v-row dense class="pt-2">
+            <v-col cols="7">
+              <v-card-text class="py-1 list-subtitle">
+                <v-icon>mdi-account</v-icon>
+                {{ organizer.host }}
+              </v-card-text>
+              <v-card-text class="py-1" v-if="organizer.host_phone">
+                <v-icon>mdi-phone</v-icon>
+                {{ organizer.host_phone }}
+              </v-card-text>
+              <br />
+
+              <v-card-text class="py-1 list-subtitle">
+                <v-icon>mdi-account</v-icon>
+                {{ organizer.exhibitor }}
+              </v-card-text>
+              <v-card-text class="py-1" v-if="organizer.exhibitor_phone">
+                <v-icon>mdi-phone</v-icon>
+                {{ organizer.exhibitor_phone }}
+              </v-card-text>
+            </v-col>
+            <v-col cols="5">
+              <img class="image-cropper" style="width: 96%" :src="organizer.host_photo" />
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+      <v-col cols="4"></v-col>
     </v-row>
   </v-container>
 </template>
