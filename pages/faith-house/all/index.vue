@@ -115,6 +115,8 @@
 </template>
 <script>
 export default {
+  //laoyout none
+  layout: "none",
   async asyncData({ $axios, app }) {
     let active_faith_house = true;
     let options = {
