@@ -79,70 +79,75 @@
           <v-spacer /> <v-btn color="primary" large type="submit">Enviar</v-btn>
         </v-card-actions>
       </v-form>
+      <v-row dense>
+        <v-col
+          cols="12"
+          sm="6"
+          lg="3"
+          v-for="(faith_house, ix) in match"
+          :key="faith_house.id + 'pxr'"
+        >
+          <v-card class="fill-height">
+            <v-card-title class="py-2 d-flex justify-center primary white--text">
+              {{ ix + 1 }}. {{ faith_house.name }}
+            </v-card-title>
+
+            <v-card-text class="py-1 list-subtitle">
+              <v-icon>mdi-map-marker</v-icon>
+              {{ faith_house.address }}
+            </v-card-text>
+            <v-card-text class="py-1 list-subtitle">
+              <v-icon>mdi-clock</v-icon>
+              {{ faith_house.schedule }}
+            </v-card-text>
+            <v-row dense>
+              <v-col cols="8">
+                <v-card-text class="py-1">
+                  <strong v-if="faith_house.exhibitor">ANFITRIÓN</strong>
+                  <strong v-else>ANFITRIÓN y EXPOSITOR</strong>
+                </v-card-text>
+                <v-card-text class="py-1 list-subtitle">
+                  <v-icon>mdi-account</v-icon>
+                  {{ faith_house.host }}
+                </v-card-text>
+                <v-card-text class="py-1" v-if="faith_house.host_phone">
+                  <v-icon>mdi-phone</v-icon>
+                  {{ faith_house.host_phone }}
+                </v-card-text></v-col
+              >
+              <v-col cols="4">
+                <img
+                  class="image-cropper"
+                  style="width: 96%"
+                  :src="faith_house.host_photo"
+                />
+              </v-col>
+            </v-row>
+
+            <v-row dense v-if="faith_house.exhibitor">
+              <v-col cols="8">
+                <v-card-text class="py-1"> <strong>EXPOSITOR</strong> </v-card-text>
+                <v-card-text class="py-1 list-subtitle">
+                  <v-icon>mdi-account</v-icon>
+                  {{ faith_house.exhibitor }}
+                </v-card-text>
+                <v-card-text class="py-1" v-if="faith_house.exhibitor_phone">
+                  <v-icon>mdi-phone</v-icon>
+                  {{ faith_house.exhibitor_phone }}
+                </v-card-text></v-col
+              >
+              <v-col cols="4">
+                <img
+                  class="image-cropper"
+                  style="width: 96%"
+                  :src="faith_house.exhibitor_photo"
+                />
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-card>
-
-    <v-col
-      cols="12"
-      sm="6"
-      md="4"
-      v-for="(faith_house, ix) in match"
-      :key="faith_house.id + 'pxr'"
-    >
-      <v-card class="fill-height">
-        <v-card-title class="py-2 d-flex justify-center primary white--text">
-          {{ ix + 1 }}. {{ faith_house.name }}
-        </v-card-title>
-
-        <v-card-text class="py-1 list-subtitle">
-          <v-icon>mdi-map-marker</v-icon>
-          {{ faith_house.address }}
-        </v-card-text>
-        <v-card-text class="py-1 list-subtitle">
-          <v-icon>mdi-clock</v-icon>
-          {{ faith_house.schedule }}
-        </v-card-text>
-        <v-row dense>
-          <v-col cols="8">
-            <v-card-text class="py-1">
-              <strong v-if="faith_house.exhibitor">ANFITRIÓN</strong>
-              <strong v-else>ANFITRIÓN y EXPOSITOR</strong>
-            </v-card-text>
-            <v-card-text class="py-1 list-subtitle">
-              <v-icon>mdi-account</v-icon>
-              {{ faith_house.host }}
-            </v-card-text>
-            <v-card-text class="py-1" v-if="faith_house.host_phone">
-              <v-icon>mdi-phone</v-icon>
-              {{ faith_house.host_phone }}
-            </v-card-text></v-col
-          >
-          <v-col cols="4">
-            <img class="image-cropper" style="width: 96%" :src="faith_house.host_photo" />
-          </v-col>
-        </v-row>
-
-        <v-row dense v-if="faith_house.exhibitor">
-          <v-col cols="8">
-            <v-card-text class="py-1"> <strong>EXPOSITOR</strong> </v-card-text>
-            <v-card-text class="py-1 list-subtitle">
-              <v-icon>mdi-account</v-icon>
-              {{ faith_house.exhibitor }}
-            </v-card-text>
-            <v-card-text class="py-1" v-if="faith_house.exhibitor_phone">
-              <v-icon>mdi-phone</v-icon>
-              {{ faith_house.exhibitor_phone }}
-            </v-card-text></v-col
-          >
-          <v-col cols="4">
-            <img
-              class="image-cropper"
-              style="width: 96%"
-              :src="faith_house.exhibitor_photo"
-            />
-          </v-col>
-        </v-row>
-      </v-card>
-    </v-col>
   </v-container>
 </template>
 <script>
