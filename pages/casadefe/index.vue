@@ -69,9 +69,9 @@
             <p>
               Gracias por tu interés.
               <template v-if="match.length > 0">
-                A continuación le mostramos la casa de fe cerca de su domicilio</template
-              >
-              <template v-else> 0"> Nos pondremos en contacto contigo.</template>
+                A continuación le mostramos la Casa de Fe cerca de su domicilio
+              </template>
+              <template v-else> Nos pondremos en contacto contigo.</template>
             </p>
           </div>
         </v-card-text>
