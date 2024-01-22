@@ -2,11 +2,15 @@
   <v-container fluid style="max-width: 800px">
     <v-card>
       <v-img src="banner_casa_fe2.png"></v-img>
-      <v-card-title>¿Quieres asistir a una casa de fe?</v-card-title>
+      <v-card-title class="py-1">Casas de Fe</v-card-title>
+      <v-card-subtitle class="py-1">Castillo del Rey La Fe Escobedo</v-card-subtitle>
+      <v-card-text class="py-1">
+        LLene el formularo para asistir a una casa de Fe, y presione Enviar
+      </v-card-text>
       <v-form ref="form" @submit.prevent="submit">
         <v-card-text>
           <v-row dense>
-            <v-col cols="6">
+            <v-col cols="9" md="4">
               <v-text-field
                 label="Nombre Completo"
                 v-model="item.name"
@@ -14,10 +18,10 @@
                 :readonly="submitted"
               ></v-text-field>
             </v-col>
-            <v-col cols="2">
+            <v-col cols="3">
               <v-text-field label="Edad" v-mask="'##'" v-model="item.age"></v-text-field>
             </v-col>
-            <v-col cols="4">
+            <v-col cols="6">
               <v-text-field
                 label="Teléfono"
                 v-model="item.phone"
@@ -26,7 +30,9 @@
                 :readonly="submitted"
               ></v-text-field>
             </v-col>
-            <v-col cols="3">
+          </v-row>
+          <v-row dense>
+            <v-col cols="8" md="3">
               <v-text-field
                 label="Calle"
                 v-model="item.street_address"
@@ -34,7 +40,7 @@
                 :readonly="submitted"
               ></v-text-field>
             </v-col>
-            <v-col cols="2">
+            <v-col cols="4" md="2">
               <v-text-field
                 label="Número"
                 v-model="item.house_number"
@@ -42,7 +48,7 @@
                 :readonly="submitted"
               ></v-text-field>
             </v-col>
-            <v-col cols="4">
+            <v-col cols="6">
               <v-text-field
                 label="Colonia"
                 v-model="item.neighborhood"
@@ -50,7 +56,7 @@
                 :readonly="submitted"
               ></v-text-field>
             </v-col>
-            <v-col cols="3">
+            <v-col cols="6">
               <v-text-field
                 label="Municipio"
                 v-model="item.municipality"
@@ -60,7 +66,13 @@
           </v-row>
 
           <div v-if="submitted">
-            <p>Gracias por tu interés. Nos pondremos en contacto contigo.</p>
+            <p>
+              Gracias por tu interés.
+              <template v-if="match.length > 0">
+                A continuación le mostramos la casa de fe cerca de su domicilio</template
+              >
+              <template v-else> 0"> Nos pondremos en contacto contigo.</template>
+            </p>
           </div>
         </v-card-text>
         <v-card-actions v-if="!submitted">
@@ -68,6 +80,69 @@
         </v-card-actions>
       </v-form>
     </v-card>
+
+    <v-col
+      cols="12"
+      sm="6"
+      md="4"
+      v-for="(faith_house, ix) in match"
+      :key="faith_house.id + 'pxr'"
+    >
+      <v-card class="fill-height">
+        <v-card-title class="py-2 d-flex justify-center primary white--text">
+          {{ ix + 1 }}. {{ faith_house.name }}
+        </v-card-title>
+
+        <v-card-text class="py-1 list-subtitle">
+          <v-icon>mdi-map-marker</v-icon>
+          {{ faith_house.address }}
+        </v-card-text>
+        <v-card-text class="py-1 list-subtitle">
+          <v-icon>mdi-clock</v-icon>
+          {{ faith_house.schedule }}
+        </v-card-text>
+        <v-row dense>
+          <v-col cols="8">
+            <v-card-text class="py-1">
+              <strong v-if="faith_house.exhibitor">ANFITRIÓN</strong>
+              <strong v-else>ANFITRIÓN y EXPOSITOR</strong>
+            </v-card-text>
+            <v-card-text class="py-1 list-subtitle">
+              <v-icon>mdi-account</v-icon>
+              {{ faith_house.host }}
+            </v-card-text>
+            <v-card-text class="py-1" v-if="faith_house.host_phone">
+              <v-icon>mdi-phone</v-icon>
+              {{ faith_house.host_phone }}
+            </v-card-text></v-col
+          >
+          <v-col cols="4">
+            <img class="image-cropper" style="width: 96%" :src="faith_house.host_photo" />
+          </v-col>
+        </v-row>
+
+        <v-row dense v-if="faith_house.exhibitor">
+          <v-col cols="8">
+            <v-card-text class="py-1"> <strong>EXPOSITOR</strong> </v-card-text>
+            <v-card-text class="py-1 list-subtitle">
+              <v-icon>mdi-account</v-icon>
+              {{ faith_house.exhibitor }}
+            </v-card-text>
+            <v-card-text class="py-1" v-if="faith_house.exhibitor_phone">
+              <v-icon>mdi-phone</v-icon>
+              {{ faith_house.exhibitor_phone }}
+            </v-card-text></v-col
+          >
+          <v-col cols="4">
+            <img
+              class="image-cropper"
+              style="width: 96%"
+              :src="faith_house.exhibitor_photo"
+            />
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-col>
   </v-container>
 </template>
 <script>
@@ -95,7 +170,7 @@ export default {
       },
       full_adress: "",
       places: [],
-
+      match: [],
       submitted: false
     };
   },
@@ -127,7 +202,7 @@ export default {
           };
           this.item.lat = coordinates.lat;
           this.item.lng = coordinates.lng;
-          console.log("Selected Coordinates:", coordinates);
+          // console.log("Selected Coordinates:", coordinates);
           this.saveMembership();
           // get near faith house
         }
@@ -149,7 +224,9 @@ export default {
     },
     saveMembership() {
       let me = this;
-      me.$repository.FaithHouseMembership.create(me.item).then((res) => {});
+      me.$repository.FaithHouseMembership.create(me.item).then((res) => {
+        this.match = res.match;
+      });
     }
   },
   mounted() {
