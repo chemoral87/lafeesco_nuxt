@@ -58,6 +58,7 @@ export default {
     "./plugins/vue-advanced-cropper.js",
     "./plugins/vue-the-mask.js",
     "./plugins/trading-vue.js",
+    "./plugins/google-maps.js",
 
     // './plugins/vue-gtag.js',
     { src: "./plugins/vue-gtag.js", mode: "client" },

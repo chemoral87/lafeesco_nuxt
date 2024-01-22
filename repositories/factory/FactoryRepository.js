@@ -12,7 +12,7 @@ import MinistryLeaderRepository from "../MinistryLeaderRepository";
 import UserRepository from "../UserRepository";
 // import SkyRegistrationRepository from '../SkyRegistrationRepository'
 
-export default ($axios) => ({
+export default $axios => ({
   Role: CommonRepository($axios)("/roles"),
   Permission: CommonRepository($axios)("/permissions"),
   User: UserRepository($axios)("/users"),
@@ -25,6 +25,7 @@ export default ($axios) => ({
   MemberAddess: CommonRepository($axios)("/member-addresses"),
   MemberCall: MemberCallRepository($axios)("/member-calls"),
   FaithHouse: HouseFaithReposiotry($axios)("/faith-house"),
+  FaithHouseMembership: CommonRepository($axios)("/faith-house-membership"),
   AgroEvent: AgroEventRepository($axios)("/agro-event"),
   Attendant: CommonRepository($axios)("/attendant"),
   AttendantMinistry: CommonRepository($axios)("/attendant-ministry"),
@@ -35,6 +36,6 @@ export default ($axios) => ({
   ChurchService: CommonRepository($axios)("/church-service"),
   ChurchServiceAttendant: CommonRepository($axios)("/church-service-attendant"),
   SkyRegistration: CommonRepository($axios)("/sky-registration"),
-  SkyRoom: CommonRepository($axios)("/sky-room"),
+  SkyRoom: CommonRepository($axios)("/sky-room")
   // ForgotPasswordRepository: ForgotPasswordRepository($axios)('/forgot-password')
 });

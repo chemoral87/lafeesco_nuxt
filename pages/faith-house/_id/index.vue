@@ -67,6 +67,15 @@
         <v-col cols="6" md="3" lg="2">
           <MyDatepicker outlined label="Fecha Fin" v-model="item.end_date" />
         </v-col>
+        <v-col cols="6" md="3" lg="2">
+          <v-checkbox
+            v-model="item.allow_matching"
+            :true-value="1"
+            :false-value="0"
+            label="Permite match"
+          >
+          </v-checkbox>
+        </v-col>
       </v-row>
 
       <v-row dense>
@@ -76,6 +85,7 @@
       </v-row>
     </v-form>
     <gmap-autocomplete
+      style="background-color: yellow"
       size="40"
       @place_changed="setPlace"
       v-on:keydown.enter.prevent
@@ -144,6 +154,40 @@ export default {
       }
     };
   },
+  computed: {
+    formData() {
+      const formData = new FormData();
+      const fields = [
+        "name",
+        "host",
+        "host_phone",
+        "exhibitor",
+        "exhibitor_phone",
+        "schedule",
+        "address",
+        "allow_matching",
+        "lat",
+        "lng"
+      ];
+
+      fields.forEach((field) => {
+        const value = this.item[field];
+        if (value !== undefined && value !== null) {
+          formData.append(field, value);
+        }
+      });
+
+      if (this.item.host_photo_blob) {
+        formData.append("host_photo", this.item.host_photo_blob);
+      }
+
+      if (this.item.exhibitor_photo_blob) {
+        formData.append("exhibitor_photo", this.item.exhibitor_photo_blob);
+      }
+      formData.append("_method", "PUT");
+      return formData;
+    }
+  },
   methods: {
     updateCenter(center) {
       this.marker = { lat: center.lat(), lng: center.lng() };
@@ -170,36 +214,7 @@ export default {
       this.$router.push("/faith-house");
     },
     async saveFaithHouse() {
-      let formData = new FormData();
-      let {
-        name,
-        host,
-        host_phone,
-        exhibitor,
-        exhibitor_phone,
-        schedule,
-        address,
-        lat,
-        lng,
-        host_photo_blob,
-        exhibitor_photo_blob,
-        end_date
-      } = this.item;
-      formData.append("_method", "PUT");
-      formData.append("name", name);
-      formData.append("host", host);
-      formData.append("host_phone", host_phone);
-      exhibitor && formData.append("exhibitor", exhibitor);
-      exhibitor_phone && formData.append("exhibitor_phone", exhibitor_phone);
-      formData.append("schedule", schedule);
-      formData.append("address", address);
-      formData.append("lat", lat);
-      formData.append("lng", lng);
-      host_photo_blob && formData.append("host_photo", host_photo_blob);
-      exhibitor_photo_blob && formData.append("exhibitor_photo", exhibitor_photo_blob);
-      end_date && formData.append("end_date", end_date);
-
-      await this.$repository.FaithHouse.updateForm(this.item.id, formData)
+      await this.$repository.FaithHouse.updateForm(this.item.id, this.formData)
         .then((res) => {
           this.$router.push("/faith-house");
         })

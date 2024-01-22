@@ -46,6 +46,15 @@
       <template v-slot:[`item.end_date`]="{ item }">
         {{ item.end_date | moment("DD MMM YYYY") }}
       </template>
+      <template v-slot:[`item.allow_matching`]="{ item }">
+        <v-chip
+          :color="item.allow_matching ? 'success' : 'error'"
+          text-color="white"
+          small
+        >
+          {{ item.allow_matching ? "Si" : "No" }}
+        </v-chip>
+      </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn
           title="Editar"
@@ -117,6 +126,10 @@ export default {
         {
           text: "Horario",
           value: "schedule"
+        },
+        {
+          text: "Match",
+          value: "allow_matching"
         },
         {
           text: "Dirección",

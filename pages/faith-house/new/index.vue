@@ -65,6 +65,15 @@
             placeholder="Seleccione imagen"
           />
         </v-col>
+        <v-col cols="6" md="3" lg="2">
+          <v-checkbox
+            v-model="item.allow_matching"
+            label="Permite match"
+            :true-value="1"
+            :false-value="0"
+          >
+          </v-checkbox>
+        </v-col>
       </v-row>
 
       <v-row dense>
@@ -118,11 +127,47 @@ export default {
       icon: "home"
     });
   },
-  async asyncData({ $axios, app, store }) {},
+
   props: {},
+  computed: {
+    formData() {
+      const formData = new FormData();
+      const fields = [
+        "name",
+        "host",
+        "host_phone",
+        "exhibitor",
+        "exhibitor_phone",
+        "schedule",
+        "address",
+        "allow_matching",
+        "lat",
+        "lng"
+      ];
+
+      fields.forEach((field) => {
+        const value = this.item[field];
+        if (value !== undefined && value !== null) {
+          formData.append(field, value);
+        }
+      });
+
+      if (this.item.host_photo_blob) {
+        formData.append("host_photo", this.item.host_photo_blob);
+      }
+
+      if (this.item.exhibitor_photo_blob) {
+        formData.append("exhibitor_photo", this.item.exhibitor_photo_blob);
+      }
+
+      return formData;
+    }
+  },
   data() {
     return {
-      item: {},
+      item: {
+        allow_matching: true
+      },
       center: { lat: 25.7, lng: -100.3 },
       marker: {},
       map: {
@@ -164,34 +209,8 @@ export default {
     },
     async saveFaithHouse() {
       if (!this.$refs.form.validate()) return;
-      let formData = new FormData();
-      let {
-        name,
-        host,
-        host_phone,
-        host_photo_blob,
-        exhibitor,
-        exhibitor_phone,
-        exhibitor_photo_blob,
-        address,
-        schedule,
-        lat,
-        lng
-      } = this.item;
 
-      formData.append("name", name);
-      formData.append("host", host);
-      formData.append("host_phone", host_phone);
-      formData.append("exhibitor", exhibitor);
-      formData.append("exhibitor_phone", exhibitor_phone);
-      formData.append("schedule", schedule);
-      formData.append("address", address);
-      formData.append("lat", lat);
-      formData.append("lng", lng);
-      host_photo_blob && formData.append("host_photo", host_photo_blob);
-      exhibitor_photo_blob && formData.append("exhibitor_photo", exhibitor_photo_blob);
-
-      await this.$repository.FaithHouse.createForm(formData)
+      await this.$repository.FaithHouse.createForm(this.formData)
         .then((res) => {
           this.$router.push("/faith-house");
         })
