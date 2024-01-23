@@ -54,7 +54,7 @@
             :photo="attendant.photo"
             v-model="attendant.image_blob"
             label="Foto Servidor"
-            :size="180"
+            :size="150"
             placeholder="Seleccione imagen"
           />
         </v-col>

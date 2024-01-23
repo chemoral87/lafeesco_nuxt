@@ -54,7 +54,7 @@
             :url.sync="attendant.image_url"
             v-model="attendant.image_blob"
             label="Foto"
-            :size="180"
+            :size="150"
             placeholder="Seleccione imagen"
             @change="uploaded"
           ></my-uploadimage>

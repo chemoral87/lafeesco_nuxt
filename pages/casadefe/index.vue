@@ -31,7 +31,7 @@
               ></v-text-field>
             </v-col>
           </v-row>
-          <v-row dense>
+          <v-row dense v-if="match.length == 0">
             <v-col cols="8" md="3">
               <v-text-field
                 label="Calle"
@@ -69,10 +69,12 @@
           <div v-if="submitted">
             <p>
               Gracias por tu interés.
-              <template v-if="match.length > 0">
-                A continuación le mostramos la Casa de Fe cerca de su domicilio
-              </template>
-              <template v-else> Nos pondremos en contacto contigo.</template>
+              <strong>
+                <template v-if="match.length > 0">
+                  A continuación le mostramos la Casa de Fe cerca de su domicilio
+                </template>
+                <template v-else> Nos pondremos en contacto contigo.</template>
+              </strong>
             </p>
           </div>
         </v-card-text>
