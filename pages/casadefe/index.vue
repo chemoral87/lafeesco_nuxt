@@ -71,7 +71,7 @@
               Gracias por tu interés.
               <strong>
                 <template v-if="match.length > 0">
-                  A continuación le mostramos la Casa de Fe cerca de su domicilio
+                  Esta es la Casa de Fe cerca de usted.
                 </template>
                 <template v-else> Nos pondremos en contacto contigo.</template>
               </strong>
@@ -92,7 +92,7 @@
         >
           <v-card class="fill-height">
             <v-card-title class="py-2 d-flex justify-center primary white--text">
-              {{ ix + 1 }}. {{ faith_house.name }}
+              {{ faith_house.name }}
             </v-card-title>
 
             <v-card-text class="py-1 list-subtitle">
@@ -246,3 +246,8 @@ export default {
   }
 };
 </script>
+<style scoped>
+.image-cropper {
+  border-radius: 50% !important;
+}
+</style>
