@@ -1,0 +1,7 @@
+@for $i from 8 through 20 {
+    .xwidth#{$i * 100} {
+      .v-data-table__wrapper table {
+        min-width: #{$i * 100}px !important;
+      }
+    }
+  }

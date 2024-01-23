@@ -45,6 +45,7 @@ export default {
   },
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ["~/assets/styles/main.css"],
+
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     "./plugins/mixins/user.js",
@@ -212,7 +213,10 @@ export default {
 
     optionsPath: "./vuetify.options.js",
 
-    customVariables: ["~/assets/variables.scss"]
+    customVariables: [
+      "~/assets/variables.scss",
+      "~/assets/styles/width-styles.scss"
+    ]
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
