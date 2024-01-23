@@ -18,15 +18,15 @@
                 :readonly="submitted"
               ></v-text-field>
             </v-col>
-            <v-col cols="3">
+            <v-col cols="3" md="2">
               <v-text-field label="Edad" v-mask="'##'" v-model="item.age"></v-text-field>
             </v-col>
-            <v-col cols="6">
+            <v-col cols="6" md="3">
               <v-text-field
                 label="Teléfono"
                 v-model="item.phone"
-                v-mask="'##-####-####'"
-                :rules="[rules.required]"
+                v-mask="'##-####-#####'"
+                :rules="[rules.required, rules.min]"
                 :readonly="submitted"
               ></v-text-field>
             </v-col>
@@ -48,7 +48,7 @@
                 :readonly="submitted"
               ></v-text-field>
             </v-col>
-            <v-col cols="6">
+            <v-col cols="6" md="4">
               <v-text-field
                 label="Colonia"
                 v-model="item.neighborhood"
@@ -56,11 +56,12 @@
                 :readonly="submitted"
               ></v-text-field>
             </v-col>
-            <v-col cols="6">
+            <v-col cols="6" md="3">
               <v-text-field
                 label="Municipio"
                 v-model="item.municipality"
                 :readonly="submitted"
+                :rules="[rules.required]"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -83,7 +84,7 @@
         <v-col
           cols="12"
           sm="6"
-          lg="3"
+          lg="5"
           v-for="(faith_house, ix) in match"
           :key="faith_house.id + 'pxr'"
         >
@@ -134,8 +135,8 @@
                 <v-card-text class="py-1" v-if="faith_house.exhibitor_phone">
                   <v-icon>mdi-phone</v-icon>
                   {{ faith_house.exhibitor_phone }}
-                </v-card-text></v-col
-              >
+                </v-card-text>
+              </v-col>
               <v-col cols="4">
                 <img
                   class="image-cropper"
@@ -160,7 +161,9 @@ export default {
         required: (value) => {
           return !!value || "Requerido.";
         },
-        min: (v) => v.length >= 8 || "Min 8 characters"
+        min: (v) => {
+          return v.length >= 12 || "Teléfono 10 dígitos";
+        }
       },
       item: {
         name: "",
@@ -229,6 +232,8 @@ export default {
     },
     saveMembership() {
       let me = this;
+      // show loader
+
       me.$repository.FaithHouseMembership.create(me.item).then((res) => {
         this.match = res.match;
       });

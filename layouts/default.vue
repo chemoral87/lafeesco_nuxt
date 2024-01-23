@@ -71,30 +71,16 @@
       </v-btn>
 
       <!-- Usuario -->
-      <v-menu
-        v-if="authenticated"
-        v-model="menu"
-        offset-y
-        :close-on-content-click="true"
-      >
+      <v-menu v-if="authenticated" v-model="menu" offset-y :close-on-content-click="true">
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            class="ml-3"
-            small
-            fab
-            color="blue white--text"
-            v-bind="attrs"
-            v-on="on"
-          >
+          <v-btn class="ml-3" small fab color="blue white--text" v-bind="attrs" v-on="on">
             <v-icon>mdi-account</v-icon>
           </v-btn>
         </template>
         <v-list>
           <v-list-item :to="'/account'">
             <v-list-item-content>
-              <v-list-item-title
-                >{{ user.name }} {{ user.last_name }}</v-list-item-title
-              >
+              <v-list-item-title>{{ user.name }} {{ user.last_name }}</v-list-item-title>
               <v-list-item-subtitle>{{ user.email }} </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -132,13 +118,7 @@
         >
           <span class="text-subtitle-1 font-weight-bold">{{ snack.text }}</span>
           <template v-slot:action="{ attrs }">
-            <v-btn
-              color="grey"
-              v-bind="attrs"
-              fab
-              small
-              @click="snack.display = false"
-            >
+            <v-btn color="grey" v-bind="attrs" fab small @click="snack.display = false">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </template>
@@ -165,7 +145,7 @@ export default {
       icon: null,
       back: null,
       show_drawer: true,
-      show_login: true,
+      show_login: true
     };
   },
   computed: {
@@ -186,21 +166,15 @@ export default {
     },
     snacks() {
       return this.$store.getters.getSnackbars;
-    },
+    }
   },
   methods: {
     setNavBar(navbar) {
-      this.title = navbar.hasOwnProperty("title")
-        ? navbar.title
-        : "La Fe Escobedo";
+      this.title = navbar.hasOwnProperty("title") ? navbar.title : "La Fe Escobedo";
       this.icon = navbar.hasOwnProperty("icon") ? navbar.icon : null;
       this.back = navbar.hasOwnProperty("back") ? navbar.back : null;
-      this.show_drawer = navbar.hasOwnProperty("show_drawer")
-        ? navbar.show_drawer
-        : true;
-      this.show_login = navbar.hasOwnProperty("show_login")
-        ? navbar.show_login
-        : true;
+      this.show_drawer = navbar.hasOwnProperty("show_drawer") ? navbar.show_drawer : true;
+      this.show_login = navbar.hasOwnProperty("show_login") ? navbar.show_login : true;
     },
     closeDrawer() {
       this.drawer = false;
@@ -214,11 +188,11 @@ export default {
     logout() {
       this.menu = false;
       this.$auth.logout();
-    },
+    }
   },
   created() {
     this.$nuxt.$on("setNavBar", ($event) => this.setNavBar($event));
-  },
+  }
 };
 </script>
 <style>
