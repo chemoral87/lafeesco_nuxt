@@ -1,7 +1,7 @@
 <template>
   <v-container fluid style="max-width: 800px">
     <v-card>
-      <v-img src="banner_casa_fe2.png"></v-img>
+      <v-img src="banner_casa_fe2.min.png"></v-img>
       <v-card-title class="py-1">Casas de Fe</v-card-title>
       <v-card-subtitle class="py-1">Castillo del Rey La Fe Escobedo</v-card-subtitle>
       <v-card-text class="py-1">
