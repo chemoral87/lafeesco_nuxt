@@ -96,7 +96,7 @@
             </v-card-title>
             <v-card-text class="py-1 list-subtitle">
               <v-icon>mdi-map-marker</v-icon>
-              Col. {{ faith_house.neighborhood }}
+              Col. {{ faith_house.neighborhood }}, {{ faith_house.municipality }}
             </v-card-text>
             <!-- <v-card-text class="py-1 list-subtitle">
               <v-icon>mdi-map-marker</v-icon>
