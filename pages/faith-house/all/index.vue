@@ -10,11 +10,14 @@
           <v-card-title class="py-2 d-flex justify-center primary white--text">
             {{ ix + 1 }}. {{ faith_house.name }}
           </v-card-title>
-
           <v-card-text class="py-1 list-subtitle">
             <v-icon>mdi-map-marker</v-icon>
-            {{ faith_house.address }}
+            Col. {{ faith_house.neighborhood }}
           </v-card-text>
+          <!-- <v-card-text class="py-1 list-subtitle">
+            <v-icon>mdi-map-marker</v-icon>
+             {{ faith_house.address }}
+          </v-card-text> -->
           <v-card-text class="py-1 list-subtitle">
             <v-icon>mdi-clock</v-icon>
             {{ faith_house.schedule }}

@@ -29,6 +29,7 @@ export default $axios => ({
   AgroEvent: AgroEventRepository($axios)("/agro-event"),
   Attendant: CommonRepository($axios)("/attendant"),
   AttendantMinistry: CommonRepository($axios)("/attendant-ministry"),
+  Texting: CommonRepository($axios)("/texting"),
   TemplateGenerator: TemplateGeneratorRepository($axios)("/template-generator"),
   Ministry: CommonRepository($axios)("/ministry"),
   MinistryLeader: MinistryLeaderRepository($axios)("/ministry-leader"),

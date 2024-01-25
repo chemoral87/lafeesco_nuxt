@@ -7,7 +7,7 @@
       <v-card-text class="py-1">
         LLene el formularo para asistir a una casa de Fe, y presione Enviar
       </v-card-text>
-      <v-form ref="form" @submit.prevent="submit">
+      <v-form ref="form" @submit.prevent="submit" lazy-validation>
         <v-card-text>
           <v-row dense>
             <v-col cols="9" md="4">
@@ -94,11 +94,14 @@
             <v-card-title class="py-2 d-flex justify-center primary white--text">
               {{ faith_house.name }}
             </v-card-title>
-
             <v-card-text class="py-1 list-subtitle">
               <v-icon>mdi-map-marker</v-icon>
-              {{ faith_house.address }}
+              Col. {{ faith_house.neighborhood }}
             </v-card-text>
+            <!-- <v-card-text class="py-1 list-subtitle">
+              <v-icon>mdi-map-marker</v-icon>
+              {{ faith_house.address }}
+            </v-card-text> -->
             <v-card-text class="py-1 list-subtitle">
               <v-icon>mdi-clock</v-icon>
               {{ faith_house.schedule }}
