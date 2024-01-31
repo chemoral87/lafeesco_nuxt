@@ -13,6 +13,16 @@
       </v-col>
       <v-col cols="12">
         <v-btn @click="getChords()" color="primary"> Generar </v-btn>
+
+        <v-btn @click="toggleAudioContext()" :color="audioContextStateColor">
+          <v-icon>{{ audioContextIcon }}</v-icon>
+        </v-btn>
+        <!-- <v-btn
+          @click="offOn()"
+          :color="audioContext.state == 'suspended' ? 'primary' : 'error'"
+        >
+          <v-icon>mdi-record</v-icon>
+        </v-btn> -->
         <template v-if="frequency > 0">{{ frequency | price }} Hz</template>
         {{ note }}
 
@@ -45,6 +55,7 @@ export default {
   data() {
     // this.initi();
     return {
+      audioIsPlaying: false,
       chords: [
         { id: 0, name: "Mayor" },
         { id: 1, name: "Menor" },
@@ -70,7 +81,7 @@ export default {
       frequency: 0,
       note: "",
       last_array_notes: [],
-      max_array_notes: 23,
+      max_array_notes: 11,
       audioContext: null,
       analyser: null
     };
@@ -87,6 +98,12 @@ export default {
       });
       let max = Object.keys(counts).reduce((a, b) => (counts[a] > counts[b] ? a : b));
       return max;
+    },
+    audioContextStateColor() {
+      return this.audioIsPlaying == false ? "primary" : "error";
+    },
+    audioContextIcon() {
+      return this.audioIsPlaying == true ? "mdi-record" : "mdi-stop";
     }
   },
   methods: {
@@ -198,12 +215,10 @@ export default {
 
       return sampleRate / T0;
     },
-    getChords() {
-      // if audioContext not exist create it
-      // get audioContext state and resume if is suspended+
-      console.log(this.audioContext.state);
+    toggleAudioContext() {
       if (this.audioContext.state === "suspended") {
         this.audioContext.resume();
+        this.initAudioContext();
         navigator.mediaDevices
           .getUserMedia({ audio: true })
           .then((stream) => {
@@ -215,17 +230,37 @@ export default {
           .catch((err) => {
             console.error("Error accessing microphone:", err);
           });
+        this.audioIsPlaying = true;
+      } else {
+        this.audioContext.suspend();
+        this.audioIsPlaying = false;
+        // this.audioContext.suspend();
       }
-
-      // console.log(this.audioContext);
-      // if (!this.audioContext) {
-      //   this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      //   console.log("no existe");
-      // } else {
-      //   console.log("resume");
-      //   this.audioContext.resume();
-      // }
-
+    },
+    // offOn() {
+    //   console.log(this.audioContext.state);
+    //   if (this.audioContext.state === "suspended") {
+    //     this.audioContext.resume();
+    //     navigator.mediaDevices
+    //       .getUserMedia({ audio: true })
+    //       .then((stream) => {
+    //         const source = this.audioContext.createMediaStreamSource(stream);
+    //         source.connect(this.analyser);
+    //         // source.connect(this.audioContext.destination);
+    //         this.updateFrequency();
+    //       })
+    //       .catch((err) => {
+    //         console.error("Error accessing microphone:", err);
+    //       });
+    //   } else {
+    //     this.audioContext.suspend();
+    //   }
+    // },
+    initAudioContext() {
+      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      this.analyser = this.audioContext.createAnalyser();
+    },
+    getChords() {
       this.chords_table = [];
 
       const chordConfig = [
@@ -243,63 +278,6 @@ export default {
         chord.forEach((_, index) => (chord[index] = (chord[index] + 1) % 12));
         a = a + 1;
       }
-
-      // this.chords_table = this.chords_table.map((chord) => {
-      //   return chord.map((note) => {
-      //     return { letter: this.notes[note], note };
-      //   });
-      // });
-
-      // //   console.log(this.selected_chord);
-      // if (this.selected_chord == 1) {
-      //   let a = 0;
-      //   let b = 4;
-      //   let c = 7;
-      //   while (a < 12) {
-      //     this.chords_table.push([a, b, c]);
-      //     if (a == 11) {
-      //       break;
-      //     }
-
-      //     a = (a + 1) % 12;
-      //     b = (b + 1) % 12;
-      //     c = (c + 1) % 12;
-      //   }
-      // } else if (this.selected_chord == 2) {
-      //   let a = 0;
-      //   let b = 3;
-      //   let c = 7;
-      //   while (a < 12) {
-      //     this.chords_table.push([a, b, c]);
-      //     if (a == 11) {
-      //       break;
-      //     }
-      //     a = (a + 1) % 12;
-      //     b = (b + 1) % 12;
-      //     c = (c + 1) % 12;
-      //   }
-      // } else if (this.selected_chord == 3) {
-      //   let a = 0;
-      //   let b = 2;
-      //   let c = 4;
-      //   let d = 5;
-      //   let e = 7;
-      //   let f = 9;
-      //   let g = 11;
-      //   while (a < 12) {
-      //     this.chords_table.push([a, b, c, d, e, f, g]);
-      //     if (a == 11) {
-      //       break;
-      //     }
-      //     a = (a + 1) % 12;
-      //     b = (b + 1) % 12;
-      //     c = (c + 1) % 12;
-      //     d = (d + 1) % 12;
-      //     e = (e + 1) % 12;
-      //     f = (f + 1) % 12;
-      //     g = (g + 1) % 12;
-      //   }
-      // }
     }
   },
   created() {
@@ -307,21 +285,23 @@ export default {
       title: "Acordes",
       icon: "music"
     });
-    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    this.analyser = this.audioContext.createAnalyser();
+    // this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    // this.analyser = this.audioContext.createAnalyser();
+    this.initAudioContext();
   },
   mounted() {
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then((stream) => {
-        const source = this.audioContext.createMediaStreamSource(stream);
-        source.connect(this.analyser);
-        // source.connect(this.audioContext.destination);
-        this.updateFrequency();
-      })
-      .catch((err) => {
-        console.error("Error accessing microphone:", err);
-      });
+    this.initAudioContext();
+    // navigator.mediaDevices
+    //   .getUserMedia({ audio: true })
+    //   .then((stream) => {
+    //     const source = this.audioContext.createMediaStreamSource(stream);
+    //     source.connect(this.analyser);
+    //     // source.connect(this.audioContext.destination);
+    //     this.updateFrequency();
+    //   })
+    //   .catch((err) => {
+    //     console.error("Error accessing microphone:", err);
+    //   });
     // necesarry
     // nexttick
   }
