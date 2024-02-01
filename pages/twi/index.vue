@@ -13,7 +13,7 @@
             <v-btn @click="addContact" color="primary">Agregar</v-btn>
           </v-col>
         </v-row>
-        // USE A v-list-item to display all contacts and a v-btn to remove a contact
+
         <v-list-item-group>
           <v-list-item v-for="(contact, index) in item.contacts" :key="index" two-line>
             <v-list-item-content>
@@ -84,7 +84,7 @@ export default {
   created() {
     this.$nuxt.$emit("setNavBar", {
       title: "Notificaciones 1+4J",
-      icon: "qrcode-scan"
+      icon: "message-alert"
     });
   }
 };
