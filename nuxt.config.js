@@ -39,7 +39,11 @@ export default {
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1.0" },
       { hid: "description", name: "description", content: "" },
-      { name: "format-detection", content: "telephone=no" }
+      { name: "format-detection", content: "telephone=no" },
+      {
+        name: "facebook-domain-verification",
+        content: "hgrbrsl8g67s9ot1426gksguus13mu"
+      }
     ],
     link: [{ rel: "icon", type: "image/png", href: "/favicon.png" }]
   },
