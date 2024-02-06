@@ -166,7 +166,7 @@ export default {
   data() {
     return {
       item: {
-        allow_matching: true
+        allow_matching: 1
       },
       center: { lat: 25.7, lng: -100.3 },
       marker: {},

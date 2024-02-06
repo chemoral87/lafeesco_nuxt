@@ -10,7 +10,7 @@
           <v-card-title class="py-2 d-flex justify-center primary white--text">
             {{ ix + 1 }}. {{ faith_house.name }}
           </v-card-title>
-          <v-card-text class="py-1 list-subtitle">
+          <v-card-text class="py-1 list-subtitle" v-if="faith_house.neighborhood">
             <v-icon>mdi-map-marker</v-icon>
             Col. {{ faith_house.neighborhood }}, {{ faith_house.municipality }}
           </v-card-text>
@@ -18,14 +18,17 @@
             <v-icon>mdi-map-marker</v-icon>
              {{ faith_house.address }}
           </v-card-text> -->
-          <v-card-text class="py-1 list-subtitle">
+          <v-card-text class="py-1 list-subtitle" v-if="faith_house.schedule">
             <v-icon>mdi-clock</v-icon>
             {{ faith_house.schedule }}
           </v-card-text>
           <v-row dense>
             <v-col cols="8">
               <v-card-text class="py-1">
-                <strong v-if="faith_house.exhibitor">ANFITRIÓN</strong>
+                <strong v-if="faith_house.name.toLowerCase() == 'lideres'"
+                  >LIDERES</strong
+                >
+                <strong v-else-if="faith_house.exhibitor">ANFITRIÓN</strong>
                 <strong v-else>ANFITRIÓN y EXPOSITOR</strong>
               </v-card-text>
               <v-card-text class="py-1 list-subtitle">
@@ -39,7 +42,7 @@
             >
             <v-col cols="4">
               <img
-                class="image-cropper"
+                class="image-cropper py-2"
                 style="width: 96%"
                 :src="faith_house.host_photo"
               />
