@@ -10,20 +10,6 @@
           placeholder="Filtro"
         ></v-text-field>
       </v-col>
-      <v-col cols="auto">
-        <v-checkbox
-          hide-details
-          class="mt-1"
-          label="Solo Activas"
-          v-model="active_faith_house"
-        ></v-checkbox>
-      </v-col>
-      <v-spacer />
-      <v-col cols="auto">
-        <v-btn color="success" @click="$router.push('faith-house/new')" class="mb-1 mr-1">
-          <v-icon class="mr-1">mdi-account-plus</v-icon> Nuevo Casa Fe
-        </v-btn>
-      </v-col>
     </v-row>
     <v-row>
       <v-col cols="12">
@@ -31,48 +17,110 @@
           @sorting="index"
           :options="options"
           :response="response"
-          @edit="editItem"
-          @editContext="editContext"
+          @edit=""
+          @editContext=""
           @delete="deleteItem"
           @focus="focusItem"
           :dialogDelete.sync="dialogDelete"
         />
       </v-col>
     </v-row>
+    <v-dialog class="mx-1" v-model="modal" max-width="600px" persistent>
+      <v-card>
+        <v-card-title
+          >Casas de Fe
+          <v-spacer />
+          <v-icon @click="modal = false">$delete</v-icon>
+        </v-card-title>
+        <v-card-text>
+          <v-row dense>
+            <v-col
+              cols="12"
+              sm="6"
+              v-for="(faith_house, ix) in faith_houses"
+              :key="faith_house.id + 'pxr'"
+            >
+              <v-card class="fill-height">
+                <v-card-title class="py-2 d-flex justify-center primary white--text">
+                  {{ faith_house.name }}
+                </v-card-title>
+                <v-card-text class="py-1 list-subtitle">
+                  <v-icon>mdi-map-marker</v-icon>
+                  Col. {{ faith_house.neighborhood }}, {{ faith_house.municipality }}
+                </v-card-text>
+                <!-- <v-card-text class="py-1 list-subtitle">
+              <v-icon>mdi-map-marker</v-icon>
+              {{ faith_house.address }}
+            </v-card-text> -->
+                <v-card-text class="py-1 list-subtitle">
+                  <v-icon>mdi-clock</v-icon>
+                  {{ faith_house.schedule }}
+                </v-card-text>
+                <v-row dense>
+                  <v-col cols="8">
+                    <v-card-text class="py-1">
+                      <strong v-if="faith_house.exhibitor">ANFITRIÓN</strong>
+                      <strong v-else>ANFITRIÓN y EXPOSITOR</strong>
+                    </v-card-text>
+                    <v-card-text class="py-1 list-subtitle">
+                      <v-icon>mdi-account</v-icon>
+                      {{ faith_house.host }}
+                    </v-card-text>
+                    <v-card-text class="py-1" v-if="faith_house.host_phone">
+                      <v-btn class="green white--text" fab x-small>
+                        <v-icon @click="sendWhatsapp(faith_house.host_phone)">
+                          mdi-phone
+                        </v-icon>
+                      </v-btn>
 
-    <GmapMap
-      :center="center"
-      :options="{
-        zoomControl: true,
-        mapTypeControl: true,
-        scaleControl: true,
-        streetViewControl: false,
-        rotateControl: false,
-        fullscreenControl: false,
-        disableDefaultUi: false
-      }"
-      :zoom="zoom"
-      @center_changed="updateCenter"
-      @zoom_changed="updateZoom"
-      map-type-id="roadmap"
-      style="height: 610px"
-    >
-      <gmap-info-window
-        :opened="infoWindow"
-        :options="infoOptions"
-        :position="infoPosition"
-        @closeclick="infoWindow = false"
-        >{{ infoContent }}</gmap-info-window
-      >
-      <GmapMarker
-        @click="showInfo(item)"
-        v-for="(item, ix) in markers"
-        :key="ix"
-        :clickable="true"
-        :draggable="false"
-        :position="item"
-      />
-    </GmapMap>
+                      {{ faith_house.host_phone }}
+                    </v-card-text></v-col
+                  >
+                  <v-col cols="4">
+                    <img
+                      class="image-cropper"
+                      style="width: 96%"
+                      :src="faith_house.host_photo"
+                    />
+                  </v-col>
+                </v-row>
+
+                <v-row dense v-if="faith_house.exhibitor">
+                  <v-col cols="8">
+                    <v-card-text class="py-1"> <strong>EXPOSITOR</strong> </v-card-text>
+                    <v-card-text class="py-1 list-subtitle">
+                      <v-icon>mdi-account</v-icon>
+                      {{ faith_house.exhibitor }}
+                    </v-card-text>
+                    <v-card-text class="py-1" v-if="faith_house.exhibitor_phone">
+                      <v-btn class="green white--text" fab x-small>
+                        <v-icon @click="sendWhatsapp(faith_house.exhibitor_phone)">
+                          mdi-phone
+                        </v-icon>
+                      </v-btn>
+                      {{ faith_house.exhibitor_phone }}
+                    </v-card-text>
+                  </v-col>
+                  <v-col cols="4">
+                    <img
+                      class="image-cropper"
+                      style="width: 96%"
+                      :src="faith_house.exhibitor_photo"
+                    />
+                  </v-col>
+                </v-row>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="grey" class="mr-2" outlined @click="modal = false">
+            Cerrar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -81,9 +129,9 @@ export default {
   async asyncData({ $axios, app }) {
     let active_faith_house = true;
     let options = {
-      sortBy: ["name"],
+      sortBy: ["created_at"],
       sortDesc: [true],
-      itemsPerPage: 40,
+      itemsPerPage: 10,
       active_faith_house
     };
     const response = await app.$repository.FaithHouseMembership.index(
@@ -96,7 +144,7 @@ export default {
       let me = this;
       this.$store.dispatch("hideNextLoading");
       let op = Object.assign(me.options, { filter: value, page: 1 });
-      me.response = await me.$repository.FaithHouse.index(op).catch((e) => {});
+      me.response = await me.$repository.FaithHouseMembership.index(op).catch((e) => {});
     },
     active_faith_house: async function (val) {
       this.options.active_faith_house = val;
@@ -105,24 +153,31 @@ export default {
       ).catch((e) => {});
     }
   },
-  computed: {
-    markers() {
-      let faith_houses = this.response.data;
-      console.log(typeof faith_houses);
-      return faith_houses.map((x) => {
-        return { lat: parseFloat(x.lat), lng: parseFloat(x.lng), name: x.name };
-      });
-    }
-  },
+
   methods: {
-    showInfo(item) {
-      this.infoWindow = false;
-      this.$nextTick(() => {
-        this.infoWindow = true;
-        this.infoContent = item.name;
-        this.infoPosition = { lat: item.lat, lng: item.lng };
-      });
+    sendWhatsapp(to_number) {
+      // remove hypens
+      to_number = to_number.replace(/-/g, "");
+
+      const {
+        name,
+        age,
+        street_address,
+        house_number,
+        neighborhood,
+        municipality,
+        phone
+      } = this.faith_house_membership;
+      // include a text to api and add membership information in the text
+      let string = `Hola, estoy interesado en tu Casa de Fe. Nombre: *${name}*, Edad:  ${age} años, Domicilio: *${street_address} ${house_number}, ${neighborhood}, ${municipality}*, Teléfono: *${phone}*`;
+      let url = `https://api.whatsapp.com/send?phone=52${to_number}&text=${string}`;
+
+      //let url = `https://api.whatsapp.com/send?phone=52${number}&text=Hola, estoy interesado en tu casa de fe`;
+
+      //let url = `https://api.whatsapp.com/send?phone=52${number}`;
+      window.open(url, "_blank");
     },
+
     async index(options) {
       if (options) {
         this.options = options;
@@ -130,71 +185,34 @@ export default {
       let op = Object.assign({ filter: this.filter }, this.options);
       this.response = await this.$repository.FaithHouse.index(op);
     },
-    editItem(item) {
-      this.$router.push(`/faith-house/${item.id}`);
-    },
-    editContext(item) {
-      //open in new tab
-      window.open(`/faith-house/${item.id}`, "_blank");
-    },
 
     async deleteItem(item) {
-      await this.$repository.FaithHouse.delete(item.id)
-        .then((res) => {
-          this.dialogDelete = false;
-          this.index();
-        })
-        .catch((e) => {});
+      // await this.$repository.FaithHouse.delete(item.id)
+      //   .then((res) => {
+      //     this.dialogDelete = false;
+      //     this.index();
+      //   })
+      //   .catch((e) => {});
     },
     focusItem(item) {
-      this.center = { lat: parseFloat(item.lat), lng: parseFloat(item.lng) };
-      this.zoom = 17;
-    },
+      this.modal = true;
 
-    updateCenter(center) {
-      this.marker = { lat: center.lat(), lng: center.lng() };
-    },
-    updateZoom(zoom) {
-      this.zoom = zoom;
+      this.faith_houses = item.faith_houses;
+      this.faith_house_membership = item;
+      // this.center = { lat: parseFloat(item.lat), lng: parseFloat(item.lng) };
+      // this.zoom = 17;
     }
   },
   data() {
     return {
+      modal: false,
       filterFaithHouse: "",
-      active_faith_house: true,
-      infoWindow: false,
-      infoOptions: {
-        pixelOffset: {
-          width: 0,
-          height: -10
-        }
-      },
-      infoContent: "",
-      infoPosition: { lat: null, lng: null },
       dialogDelete: false,
-      center: { lat: 25.786, lng: -100.3044 },
-
-      zoom: 14,
-
       response: {},
       options: {},
-      currentLocation: {
-        lat: 25.788294135889345,
-        lng: -100.30426405190066
-      },
-      circleOptions: {},
-      mapStyle: [],
-      clusterStyle: [
-        {
-          url:
-            "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m1.png",
-          width: 56,
-          height: 56,
-          textColor: "#fff"
-        }
-      ],
       dialogDeleteProp: {},
-      dialogDelete: false
+      faith_houses: [],
+      faith_house_membership: {}
     };
   },
   middleware: ["authenticated"],
