@@ -67,7 +67,7 @@
                       {{ faith_house.host }}
                     </v-card-text>
                     <v-card-text class="py-1" v-if="faith_house.host_phone">
-                      <v-btn class="green white--text" fab x-small>
+                      <v-btn class="green white--text" fab small>
                         <v-icon @click="sendWhatsapp(faith_house.host_phone)">
                           mdi-phone
                         </v-icon>
@@ -169,7 +169,7 @@ export default {
         phone
       } = this.faith_house_membership;
       // include a text to api and add membership information in the text
-      let string = `Hola, estoy interesado en tu Casa de Fe. Nombre: *${name}*, Edad:  ${age} años, Domicilio: *${street_address} ${house_number}, ${neighborhood}, ${municipality}*, Teléfono: *${phone}*`;
+      let string = `Hola, estoy interesado en tu Casa de Fe. Nombre: *${name}*, Edad:  ${age} años, Domicilio: *${street_address} ${house_number}, Col. ${neighborhood}, ${municipality}*, Teléfono: *${phone}*`;
       let url = `https://api.whatsapp.com/send?phone=52${to_number}&text=${string}`;
 
       //let url = `https://api.whatsapp.com/send?phone=52${number}&text=Hola, estoy interesado en tu casa de fe`;
@@ -221,7 +221,7 @@ export default {
     else throw error({ statusCode: 403 });
   },
   created() {
-    this.$nuxt.$emit("setNavBar", { title: "Casas de Fe", icon: "home" });
+    this.$nuxt.$emit("setNavBar", { title: "CF Membresías", icon: "home" });
   }
 };
 </script>

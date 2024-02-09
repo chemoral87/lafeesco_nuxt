@@ -57,10 +57,12 @@ export default {
     return {
       audioIsPlaying: false,
       chords: [
-        { id: 0, name: "Mayor" },
-        { id: 1, name: "Menor" },
-        { id: 2, name: "Mayor Completa" },
-        { id: 3, name: "Mayor Completa" }
+        { id: 0, name: "Acorde Mayor" },
+        { id: 1, name: "Acorde Menor" },
+        { id: 2, name: "Escala Mayor" },
+        { id: 3, name: "Escala Menor" },
+        { id: 4, name: "Escala Pentatónica Mayor" },
+        { id: 5, name: "Escala Pentatónica Menor" }
       ],
       chords_table: [],
       notes: [
@@ -266,7 +268,10 @@ export default {
       const chordConfig = [
         [0, 4, 7],
         [0, 3, 7],
-        [0, 2, 4, 5, 7, 9, 11]
+        [0, 2, 4, 5, 7, 9, 11],
+        [0, 2, 3, 5, 7, 8, 10],
+        [0, 2, 4, 7, 9],
+        [0, 3, 5, 7, 10]
       ];
 
       const selectedChord = this.selected_chord;
@@ -291,19 +296,6 @@ export default {
   },
   mounted() {
     this.initAudioContext();
-    // navigator.mediaDevices
-    //   .getUserMedia({ audio: true })
-    //   .then((stream) => {
-    //     const source = this.audioContext.createMediaStreamSource(stream);
-    //     source.connect(this.analyser);
-    //     // source.connect(this.audioContext.destination);
-    //     this.updateFrequency();
-    //   })
-    //   .catch((err) => {
-    //     console.error("Error accessing microphone:", err);
-    //   });
-    // necesarry
-    // nexttick
   }
 };
 </script>

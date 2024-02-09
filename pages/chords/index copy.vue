@@ -46,10 +46,12 @@ export default {
     // this.initi();
     return {
       chords: [
-        { id: 1, name: "Mayor" },
-        { id: 2, name: "Menor" },
-        { id: 3, name: "Mayor Completa" },
-        { id: 4, name: "Mayor Completa" }
+        { id: 1, name: "Acorde Mayor" },
+        { id: 2, name: "Acorde Menor" },
+        { id: 3, name: "Escala Mayor" },
+        { id: 4, name: "Escala Menor" },
+        { id: 3, name: "Escala Pentatónica Mayor" },
+        { id: 4, name: "Escala Pentatónica Menor" }
       ],
       chords_table: [],
       notes: {
@@ -239,6 +241,26 @@ export default {
         let e = 7;
         let f = 9;
         let g = 11;
+        while (a < 12) {
+          this.chords_table.push([a, b, c, d, e, f, g]);
+          if (a == 11) {
+            break;
+          }
+          a = (a + 1) % 12;
+          b = (b + 1) % 12;
+          c = (c + 1) % 12;
+          d = (d + 1) % 12;
+          e = (e + 1) % 12;
+          f = (f + 1) % 12;
+          g = (g + 1) % 12;
+        }
+      } else if (this.selected_chord == 4) {
+        let a = 0;
+        let b = 2;
+        let c = 4;
+        let d = 7;
+        let e = 9;
+
         while (a < 12) {
           this.chords_table.push([a, b, c, d, e, f, g]);
           if (a == 11) {
