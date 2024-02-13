@@ -25,8 +25,8 @@
           <v-row dense>
             <v-col cols="8">
               <v-card-text class="py-1">
-                <strong v-if="faith_house.name.toLowerCase() == 'lideres'"
-                  >LIDERES</strong
+                <strong v-if="faith_house.name.toLowerCase() == 'supervisores' "
+                  >SUPERVISORES </strong
                 >
                 <strong v-else-if="faith_house.exhibitor">ANFITRIÓN</strong>
                 <strong v-else>ANFITRIÓN y EXPOSITOR</strong>
