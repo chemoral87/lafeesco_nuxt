@@ -7,7 +7,10 @@
         :key="faith_house.id + 'pxr'"
       >
         <v-card class="fill-height">
-          <v-card-title class="py-2 d-flex justify-center primary white--text">
+          <v-card-title
+            class="py-2 d-flex justify-center white--text"
+            :class="getFlaggedMatching(faith_house.allow_matching)"
+          >
             {{ ix + 1 }}. {{ faith_house.name }}
           </v-card-title>
           <v-card-text class="py-1 list-subtitle" v-if="faith_house.neighborhood">
@@ -25,9 +28,9 @@
           <v-row dense>
             <v-col cols="8">
               <v-card-text class="py-1">
-                <strong v-if="faith_house.name.toLowerCase() == 'supervisores' "
-                  >SUPERVISORES </strong
-                >
+                <strong v-if="faith_house.name.toLowerCase() == 'supervisores'">
+                  SUPERVISORES
+                </strong>
                 <strong v-else-if="faith_house.exhibitor">ANFITRIÓN</strong>
                 <strong v-else>ANFITRIÓN y EXPOSITOR</strong>
               </v-card-text>
@@ -123,35 +126,37 @@
 export default {
   //laoyout none
   layout: "none",
-  async asyncData({ $axios, app }) {
+  async asyncData({ $axios, app, route }) {
     let active_faith_house = true;
     let options = {
-      sortBy: ["schedule", "name"],
-      sortDesc: [true, true],
+      sortBy: ["order", "name"],
+      sortDesc: [false, true],
       itemsPerPage: 40,
       active_faith_house
     };
     const response = await app.$repository.FaithHouse.index(options).catch((e) => {});
-    return { response, options, active_faith_house };
+    return { response, options, active_faith_house, flagged: route.query.flagged };
   },
   props: {},
   data() {
     return {
+      flagged: null,
       response: {}
     };
   },
-  methods: {},
+  methods: {
+    getFlaggedMatching(allow_matching) {
+      if (this.flagged == undefined) return "primary";
+      return allow_matching ? "primary" : "error";
+    }
+  },
   computed: {
     Organizers() {
-      return this.response.data.filter(
-        (item) => item.name.toLowerCase() == "coordinadores"
-      );
+      return this.response.data.filter((item) => item.order == 0);
     },
     FaithHouses() {
       // remove the item that name is null
-      return this.response.data.filter(
-        (item) => item.name.toLowerCase() !== "coordinadores"
-      );
+      return this.response.data.filter((item) => item.order !== 0);
     }
   },
   mounted() {

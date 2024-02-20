@@ -45,6 +45,9 @@ export default {
         content: "hgrbrsl8g67s9ot1426gksguus13mu"
       }
     ],
+    htmlAttrs: {
+      lang: "es"
+    },
     link: [{ rel: "icon", type: "image/png", href: "/favicon.png" }]
   },
   // Global CSS: https://go.nuxtjs.dev/config-css

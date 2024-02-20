@@ -38,6 +38,9 @@
         <v-col cols="6" md="3">
           <v-text-field outlined label="Domicilio" v-model="item.address" />
         </v-col>
+        <v-col cols="6" md="3" lg="2">
+          <v-text-field outlined label="Orden" v-model="item.order" />
+        </v-col>
 
         <v-col cols="6" md="3">
           <v-text-field outlined label="Latitud" v-model="item.lat" />
@@ -140,6 +143,7 @@ export default {
         "exhibitor_phone",
         "schedule",
         "address",
+        "order",
         "allow_matching",
         "lat",
         "lng"

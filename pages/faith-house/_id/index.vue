@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-form ref="form" @submit.prevent="saveFaithHouse">
       <v-row dense>
-        <v-col cols="12" md="3" lg="2">
+        <v-col cols="6" md="3" lg="2">
           <v-text-field
             outlined
             label="Nombre"
@@ -10,7 +10,7 @@
             :rules="[(v) => !!v || 'Campo requerido']"
           />
         </v-col>
-        <v-col cols="6" md="3" lg="2">
+        <!-- <v-col cols="6" md="3" lg="2">
           <v-text-field outlined label="Anfitrión" v-model="item.host" />
         </v-col>
         <v-col cols="6" md="3" lg="2">
@@ -31,20 +31,23 @@
             v-mask="'##-####-####'"
             v-model="item.exhibitor_phone"
           />
-        </v-col>
+        </v-col> -->
         <v-col cols="6" md="3" lg="2">
           <v-text-field outlined label="Horario" v-model="item.schedule" />
         </v-col>
         <v-col cols="12" md="3" lg="4">
           <v-text-field outlined label="Domicilio" v-model="item.address" />
         </v-col>
-        <v-col cols="6" md="3" lg="2">
+        <v-col cols="2" md="1">
+          <v-text-field outlined label="Orden" v-model="item.order" />
+        </v-col>
+        <v-col cols="4" md="3" lg="2">
           <v-text-field outlined label="Latitud" v-model="item.lat" />
         </v-col>
-        <v-col cols="6" md="3" lg="2">
+        <v-col cols="4" md="3" lg="2">
           <v-text-field outlined label="Longitud" v-model="item.lng" />
         </v-col>
-        <v-col cols="6" md="2">
+        <!-- <v-col cols="6" md="2">
           <my-uploadimage-crop
             :photo="item.host_photo"
             v-model="item.host_photo_blob"
@@ -63,11 +66,11 @@
             max-height="95px"
             placeholder="Seleccione imagen"
           />
-        </v-col>
-        <v-col cols="6" md="3" lg="2">
+        </v-col> -->
+        <v-col cols="4" md="3" lg="2">
           <MyDatepicker outlined label="Fecha Fin" v-model="item.end_date" />
         </v-col>
-        <v-col cols="6" md="3" lg="2">
+        <v-col cols="4" md="3" lg="2">
           <v-checkbox
             v-model="item.allow_matching"
             :true-value="1"
@@ -78,43 +81,48 @@
         </v-col>
       </v-row>
 
+      <v-row>
+        <v-col cols="12" md="6"></v-col>
+        <v-col cols="12" md="6">
+          <gmap-autocomplete
+            style="background-color: yellow"
+            size="40"
+            @place_changed="setPlace"
+            v-on:keydown.enter.prevent
+          ></gmap-autocomplete>
+          <GmapMap
+            :center="center"
+            :options="{
+              zoomControl: true,
+              mapTypeControl: true,
+              scaleControl: true,
+              streetViewControl: false,
+              rotateControl: false,
+              fullscreenControl: false,
+              disableDefaultUi: false
+            }"
+            :zoom="map.zoom"
+            @center_changed="updateCenter"
+            @zoom_changed="updateZoom"
+            map-type-id="roadmap"
+            style="height: 610px"
+          >
+            <GmapMarker
+              :clickable="true"
+              :draggable="false"
+              :position="marker"
+              @click="center = marker.position"
+            />
+          </GmapMap>
+        </v-col>
+      </v-row>
+
       <v-row dense>
         <v-spacer />
         <v-btn @click="cancel" outlined color="primary" class="mr-3">Cancelar</v-btn>
         <v-btn type="submit" color="primary" class="mr-4">Guardar</v-btn>
       </v-row>
     </v-form>
-    <gmap-autocomplete
-      style="background-color: yellow"
-      size="40"
-      @place_changed="setPlace"
-      v-on:keydown.enter.prevent
-    ></gmap-autocomplete>
-    <GmapMap
-      :center="center"
-      :options="{
-        zoomControl: true,
-        mapTypeControl: true,
-        scaleControl: true,
-        streetViewControl: false,
-        rotateControl: false,
-        fullscreenControl: false,
-        disableDefaultUi: false
-      }"
-      :zoom="map.zoom"
-      @center_changed="updateCenter"
-      @zoom_changed="updateZoom"
-      map-type-id="roadmap"
-      style="height: 610px"
-    >
-      <GmapMarker
-        :clickable="true"
-        :draggable="false"
-        :position="marker"
-        @click="center = marker.position"
-      />
-    </GmapMap>
-    {{ marker }}
   </v-container>
 </template>
 <script>
@@ -165,6 +173,7 @@ export default {
         "exhibitor_phone",
         "schedule",
         "address",
+        "order",
         "allow_matching",
         "lat",
         "lng"

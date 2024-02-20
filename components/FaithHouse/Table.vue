@@ -132,6 +132,11 @@ export default {
           value: "allow_matching"
         },
         {
+          text: "Orden",
+          value: "order",
+          sortable: true
+        },
+        {
           text: "Dirección",
           value: "address",
           sortable: true
