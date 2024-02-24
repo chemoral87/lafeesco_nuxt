@@ -84,7 +84,10 @@
       </v-col>
       <v-col cols="4" v-for="(organizer, ix) in Organizers" :key="organizer.id + 'pxz'">
         <v-card class="fill-height">
-          <v-card-title class="py-2 d-flex justify-center primary white--text">
+          <v-card-title
+            class="py-2 d-flex justify-center white--text"
+            :class="getFlaggedMatching(faith_house.allow_matching)"
+          >
             {{ organizer.name }}
           </v-card-title>
           <v-row dense class="pt-2">
