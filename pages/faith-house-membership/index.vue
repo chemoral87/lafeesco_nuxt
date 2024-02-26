@@ -183,16 +183,16 @@ export default {
         this.options = options;
       }
       let op = Object.assign({ filter: this.filter }, this.options);
-      this.response = await this.$repository.FaithHouse.index(op);
+      this.response = await this.$repository.FaithHouseMembership.index(op);
     },
 
     async deleteItem(item) {
-      // await this.$repository.FaithHouse.delete(item.id)
-      //   .then((res) => {
-      //     this.dialogDelete = false;
-      //     this.index();
-      //   })
-      //   .catch((e) => {});
+      await this.$repository.FaithHouseMembership.delete(item.id)
+        .then((res) => {
+          this.dialogDelete = false;
+          this.index();
+        })
+        .catch((e) => {});
     },
     focusItem(item) {
       this.modal = true;

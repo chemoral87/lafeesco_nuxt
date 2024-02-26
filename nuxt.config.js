@@ -225,7 +225,6 @@ export default {
       "~/assets/styles/width-styles.scss"
     ]
   },
-
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     // maxChunkSize: 900000,

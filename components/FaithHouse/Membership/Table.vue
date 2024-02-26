@@ -102,7 +102,7 @@ export default {
   methods: {
     confirmDelete(item) {
       this.dialogDeleteProp = {
-        text: "Desea eliminar la Casa de Fe ",
+        text: "Desea eliminar la solicitud de membresía ",
         strong: item.name,
         payload: item
       };
