@@ -10,7 +10,7 @@ export default {
     let me = this;
     //redirect to home if user is already logged in
 
-    this.$router.push({ path: "/casadefe" });
+    this.$router.push({ path: "/casadefe?source=qr" });
   }
 };
 </script>

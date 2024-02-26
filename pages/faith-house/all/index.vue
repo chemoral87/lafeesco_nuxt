@@ -9,7 +9,7 @@
         <v-card class="fill-height">
           <v-card-title
             class="py-2 d-flex justify-center white--text"
-            :class="getFlaggedMatching(faith_house.allow_matching)"
+            :class="getFlaggedMatching(faith_house)"
           >
             {{ ix + 1 }}. {{ faith_house.name }}
           </v-card-title>
@@ -86,7 +86,7 @@
         <v-card class="fill-height">
           <v-card-title
             class="py-2 d-flex justify-center white--text"
-            :class="getFlaggedMatching(faith_house.allow_matching)"
+            :class="getFlaggedMatching(organizer.allow_matching)"
           >
             {{ organizer.name }}
           </v-card-title>

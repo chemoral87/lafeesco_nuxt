@@ -204,6 +204,7 @@ export default {
         lat: "",
         lng: ""
       },
+      source: "",
       full_adress: "",
       places: [],
       match: [],
@@ -261,7 +262,7 @@ export default {
     saveMembership() {
       let me = this;
       // show loader
-
+      me.item.source = this.source;
       me.$repository.FaithHouseMembership.create(me.item).then((res) => {
         this.match = res.match;
       });
@@ -269,6 +270,7 @@ export default {
   },
   mounted() {
     let me = this;
+    this.source = this.$route.query.source;
   }
 };
 </script>

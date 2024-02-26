@@ -84,6 +84,7 @@ export default {
         { text: "Edad", value: "age", sortable: false },
         { text: "Teléfono", value: "phone", sortable: false },
         { text: "Domicilio", value: "full_address", sortable: false },
+        { text: "Origen", value: "source" },
         { text: "Fecha Captura", value: "created_at" }
       ]
     };
