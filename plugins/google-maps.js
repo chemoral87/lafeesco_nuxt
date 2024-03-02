@@ -10,7 +10,7 @@ export default ({ app }, inject) => {
 
   script.onload = () => {
     // Initialize and inject the AutocompleteService
-    const autocompleteService = new google.maps.places.AutocompleteService();
-    inject("autocompleteService", autocompleteService);
+    // const autocompleteService = new google.maps.places.AutocompleteService();
+    // inject("autocompleteService", autocompleteService);
   };
 };

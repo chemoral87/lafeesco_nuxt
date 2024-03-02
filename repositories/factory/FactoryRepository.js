@@ -1,11 +1,13 @@
 import CommonRepository from "../CommonRepository";
+import ParentRepository from "../ParentRepository";
+
 import InvestmentRepository from "../InvestmentRepository";
 import InvestorRepository from "../InvestorRepository";
 import InvestorProfileRepository from "../InvestorProfileRepository";
 import CreditRepository from "../CreditRepository";
 import MemberRepository from "../MemberRepository";
 import MemberCallRepository from "../MemberCallRepository";
-import HouseFaithReposiotry from "../CommonRepository";
+
 import AgroEventRepository from "../AgroEventRepository";
 import TemplateGeneratorRepository from "../TemplateGeneratorRepository";
 import MinistryLeaderRepository from "../MinistryLeaderRepository";
@@ -24,7 +26,8 @@ export default $axios => ({
   Member: MemberRepository($axios)("/members"),
   MemberAddess: CommonRepository($axios)("/member-addresses"),
   MemberCall: MemberCallRepository($axios)("/member-calls"),
-  FaithHouse: HouseFaithReposiotry($axios)("/faith-house"),
+  FaithHouse: CommonRepository($axios)("/faith-house"),
+  FaithHouseContact: ParentRepository($axios)("/faith-house-contact"),
   FaithHouseMembership: CommonRepository($axios)("/faith-house-membership"),
   AgroEvent: AgroEventRepository($axios)("/agro-event"),
   Attendant: CommonRepository($axios)("/attendant"),

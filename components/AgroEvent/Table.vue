@@ -44,7 +44,7 @@
         }
       "
       @close="$emit('update:dialogDelete', false)"
-    ></DialogDelete>
+    />
   </div>
 </template>
 <script>
@@ -57,14 +57,14 @@ export default {
         {
           text: "Nombre",
           sortable: false,
-          value: "name",
+          value: "name"
         },
         { text: "Descripción", value: "description" },
         { text: "#Imágenes", value: "images" },
         { text: "Tipo", value: "type_id" },
         { text: "Fecha", value: "created_at" },
-        { text: "Acción", value: "action" },
-      ],
+        { text: "Acción", value: "action" }
+      ]
     };
   },
   methods: {
@@ -72,7 +72,7 @@ export default {
       this.dialogDeleteProp = {
         text: "Desea eliminar el Evento ",
         strong: item.name,
-        payload: item,
+        payload: item
       };
       this.$emit("update:dialogDelete", true);
     },
@@ -81,10 +81,10 @@ export default {
         1: "Report",
         2: "Alarma",
         3: "Defecto",
-        4: "Reparación",
+        4: "Reparación"
       };
       return type[id];
-    },
-  },
+    }
+  }
 };
 </script>

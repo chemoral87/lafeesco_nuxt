@@ -12,7 +12,11 @@
       </v-col>
       <v-spacer />
       <v-col cols="auto">
-        <v-btn color="success" @click="$router.push('attendant/new')" class="mb-1 mr-1">
+        <v-btn
+          color="success"
+          @click="$router.push('attendant/new')"
+          class="mb-1 mr-1"
+        >
           <v-icon class="mr-1">mdi-account-plus</v-icon> Nuevo Servidor
         </v-btn>
       </v-col>
@@ -38,7 +42,9 @@ export default {
       sortDesc: [false],
       itemsPerPage: 20
     };
-    const response = await app.$repository.Attendant.index(options).catch((e) => {});
+    const response = await app.$repository.Attendant.index(options).catch(
+      e => {}
+    );
     return { response, options };
   },
   watch: {
@@ -66,19 +72,12 @@ export default {
     },
     async deleteAttendant(item) {
       await this.$repository.Attendant.delete(item.id)
-        .then((res) => {
+        .then(res => {
           this.dialogDeleteAttendant = false;
           this.indexAttendant();
         })
-        .catch((e) => {});
+        .catch(e => {});
     }
-    // async index(options) {
-    //   if (options) {
-    //     this.options = options
-    //   }
-    //   let op = Object.assign({ filter: this.filter }, this.options)
-    //   this.response = await this.$repository.Attendant.index(op)
-    // }
   },
   data() {
     return {

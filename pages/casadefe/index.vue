@@ -177,6 +177,9 @@
         </v-row>
       </v-card-text>
     </v-card>
+
+    <img :src="mapImageUrl" alt="Static Map" />
+    <img :src="generateCityMap" alt="City Map with Circle" />
   </v-container>
 </template>
 <script>
@@ -205,13 +208,62 @@ export default {
         lng: ""
       },
       source: "",
+      sourc: "",
       full_adress: "",
       places: [],
       match: [],
-      submitted: false
+      submitted: false,
+      neighborhood: "paraje anahuac",
+      state: "escobedo, nuevo leon"
     };
   },
   methods: {
+    generateCityMap() {
+      let cityName = "paraje anahuac, escobedo";
+      const apiKey = process.env.GOOGLE_MAPS_KEY; // Replace with your actual API key
+      const apiUrl = "https://maps.googleapis.com/maps/api/staticmap";
+
+      // Geocode the city name to get its coordinates
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ address: cityName + ", Nuevo León" }, (results, status) => {
+        if (status === google.maps.GeocoderStatus.OK && results[0].geometry) {
+          const cityCenter = results[0].geometry.location;
+
+          // Create a circle around the city center
+          const circle = new google.maps.Circle({
+            center: cityCenter,
+            radius: 5000 // Adjust the radius in meters as needed
+          });
+
+          // Get the path of the circle as an encoded polyline
+          const circlePath = google.maps.geometry.encoding.encodePath(
+            circle.getPaths().getAt(0)
+          );
+
+          console.log(cityCenter);
+
+          // Map parameters
+          const parameters = {
+            center: `${cityCenter.lat()},${cityCenter.lng()}`,
+            zoom: 12,
+            size: "600x400",
+            path: `color:0x0000ff|fillcolor:0xFFFF0033|weight:2|enc:${circlePath}`,
+            format: "png",
+            key: apiKey
+          };
+
+          // Construct the URL
+          const queryString = Object.keys(parameters)
+            .map((key) => `${key}=${encodeURIComponent(parameters[key])}`)
+            .join("&");
+
+          // Set the staticMapUrl to the generated URL
+          this.staticMapUrl = `${apiUrl}?${queryString}`;
+        } else {
+          console.error(`Geocode was not successful for the following reason: ${status}`);
+        }
+      });
+    },
     searchPlaces() {
       const service = new google.maps.places.AutocompleteService();
 
@@ -268,9 +320,82 @@ export default {
       });
     }
   },
+  computed: {
+    // generateCityMap() {
+    //   let cityName = "paraje anahuac, escobedo";
+    //   const apiKey = process.env.GOOGLE_MAPS_KEY; // Replace with your actual API key
+    //   const apiUrl = "https://maps.googleapis.com/maps/api/staticmap";
+
+    //   // Geocode the city name to get its coordinates
+    //   const geocoder = new google.maps.Geocoder();
+    //   geocoder.geocode({ address: cityName + ", Nuevo León" }, (results, status) => {
+    //     if (status === google.maps.GeocoderStatus.OK && results[0].geometry) {
+    //       const cityCenter = results[0].geometry.location;
+
+    //       // Create a circle around the city center
+    //       const circle = new google.maps.Circle({
+    //         center: cityCenter,
+    //         radius: 5000 // Adjust the radius in meters as needed
+    //       });
+
+    //       // Get the path of the circle as an encoded polyline
+    //       const circlePath = google.maps.geometry.encoding.encodePath(
+    //         circle.getPaths().getAt(0)
+    //       );
+
+    //       console.log(cityCenter);
+
+    //       // Map parameters
+    //       const parameters = {
+    //         center: `${cityCenter.lat()},${cityCenter.lng()}`,
+    //         zoom: 12,
+    //         size: "600x400",
+    //         path: `color:0x0000ff|fillcolor:0xFFFF0033|weight:2|enc:${circlePath}`,
+    //         format: "png",
+    //         key: apiKey
+    //       };
+
+    //       // Construct the URL
+    //       const queryString = Object.keys(parameters)
+    //         .map((key) => `${key}=${encodeURIComponent(parameters[key])}`)
+    //         .join("&");
+
+    //       // Set the image source to the generated URL
+    //       // document.getElementById("staticMap").src = `${apiUrl}?${queryString}`;
+    //       return `${apiUrl}?${queryString}`;
+    //     } else {
+    //       console.error(`Geocode was not successful for the following reason: ${status}`);
+    //     }
+    //   });
+    // },
+    mapImageUrl() {
+      const apiKey = process.env.GOOGLE_MAPS_KEY;
+      const apiUrl = "https://maps.googleapis.com/maps/api/staticmap";
+      // const path = `${this.neighborhood},${this.state}`;
+
+      const parameters = {
+        center: `${this.neighborhood},${this.state}`,
+        zoom: 15,
+        size: "400x400",
+        markers: `${this.neighborhood},${this.state}`,
+        path:
+          "enc:|!1m18!1m12!1m3!1d7184.976096091344!2d-100.28063370932708!3d25.787468269487317!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x866293458b03503f%3A0x67f777bf6abacb3a!2sParajes%20Anahuac%2C%2066059%20Cdad.%20Gral.%20Escobedo%2C%20N.L.!5e0!3m2!1ses-419!2smx!4v1709013629837!5m2!1ses-419!2smx",
+        // markers: `label:1|${this.neighborhood},${this.state}`,
+        format: "png",
+        key: apiKey
+      };
+
+      const queryString = Object.keys(parameters)
+        .map((key) => `${key}=${encodeURIComponent(parameters[key])}`)
+        .join("&");
+
+      return `${apiUrl}?${queryString}`;
+    }
+  },
   mounted() {
     let me = this;
     this.source = this.$route.query.source;
+    this.generateCityMap();
   }
 };
 </script>

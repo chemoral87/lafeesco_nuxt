@@ -40,7 +40,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" outlined @click="cancelUpload()">Cancelar</v-btn>
+          <v-btn color="error" outlined @click="cancelUpload()">Limpiar</v-btn>
+          <v-btn color="primary" outlined @click="close()">Cancelar</v-btn>
           <v-btn color="primary" @click="dialog = false">Guardar</v-btn>
         </v-card-actions>
       </v-card>
@@ -51,13 +52,12 @@
       :style="{ maxHeight: computedMaxHeight }"
       :src="displayedImage"
     />
-    
   </div>
 </template>
 <script>
 let loadImage = require("blueimp-load-image");
 export default {
-  props: ["size", "photo", "maxHeight"],
+  props: ["value", "size", "photo", "maxHeight"],
   data() {
     return {
       // blob: null,
@@ -68,6 +68,13 @@ export default {
       image_to_upload: ""
     };
   },
+  watch: {
+    value: {
+      handler(val) {
+        if (val == null) this.cancelUpload();
+      }
+    }
+  },
   computed: {
     computedMaxHeight() {
       return this.maxHeight || "200px";
@@ -77,17 +84,21 @@ export default {
     }
   },
   methods: {
+    close() {
+      this.dialog = false;
+    },
     cancelUpload() {
       this.image = this.uri = this.image_to_upload = this.blob_cropped = null;
-      this.dialog = false;
+      // this.dialog = false;
       this.$emit("input", this.blob_cropped);
     },
     changeCropper({ canvas }) {
       let date = new Date();
-      let timestamp = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-      console.log("changeCropper", timestamp);
+      let timestamp =
+        date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+
       this.image_to_upload = canvas.toDataURL();
-      canvas.toBlob((blob) => {
+      canvas.toBlob(blob => {
         this.blob_cropped = blob;
         this.$emit("input", this.blob_cropped);
       });
@@ -112,11 +123,6 @@ export default {
       return blob;
     },
     fileInputChange(e) {
-      //  consolelog timestamp hh:mm:ss
-      let date = new Date();
-      let timestamp = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-      console.log("fileInputChange", timestamp);
-
       let me = this;
 
       if (this.image == null) {
@@ -125,9 +131,13 @@ export default {
         let _URL = window.URL || window.webkitURL;
         let imgLoader = new Image();
         imgLoader.onload = function () {
-          let ration = Math.sqrt((this.width * this.height) / (me.maxSize * me.maxSize));
+          let ration = Math.sqrt(
+            (this.width * this.height) / (me.maxSize * me.maxSize)
+          );
           let _maxSize =
-            this.width > this.height ? this.width / ration : this.height / ration;
+            this.width > this.height
+              ? this.width / ration
+              : this.height / ration;
           _maxSize = Math.round(_maxSize);
 
           loadImage(

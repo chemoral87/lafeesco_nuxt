@@ -166,10 +166,11 @@ export default {
         house_number,
         neighborhood,
         municipality,
-        phone
+        phone,
+        marital_status
       } = this.faith_house_membership;
       // include a text to api and add membership information in the text
-      let string = `Hola, estoy interesado en tu Casa de Fe. Nombre: *${name}*, Edad:  ${age} años, Domicilio: *${street_address} ${house_number}, Col. ${neighborhood}, ${municipality}*, Teléfono: *${phone}*`;
+      let string = `Hola, estoy interesado en tu Casa de Fe. Nombre: *${name}*, Edad:  *${age} años*, Domicilio: *${street_address} ${house_number}, Col. ${neighborhood}, ${municipality}*, Teléfono: *${phone}*, Estado Civl: *${marital_status}*`;
       let url = `https://api.whatsapp.com/send?phone=52${to_number}&text=${string}`;
 
       //let url = `https://api.whatsapp.com/send?phone=52${number}&text=Hola, estoy interesado en tu casa de fe`;

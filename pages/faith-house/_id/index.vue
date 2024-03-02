@@ -7,7 +7,7 @@
             outlined
             label="Nombre"
             v-model="item.name"
-            :rules="[(v) => !!v || 'Campo requerido']"
+            :rules="[v => !!v || 'Campo requerido']"
           />
         </v-col>
         <!-- <v-col cols="6" md="3" lg="2">
@@ -82,7 +82,12 @@
       </v-row>
 
       <v-row>
-        <v-col cols="12" md="6"></v-col>
+        <v-col cols="12" md="6">
+          <FaithHouseContactsList
+            :faith_house_id="item.id"
+            :contacts.sync="item.contacts"
+          />
+        </v-col>
         <v-col cols="12" md="6">
           <gmap-autocomplete
             style="background-color: yellow"
@@ -105,7 +110,7 @@
             @center_changed="updateCenter"
             @zoom_changed="updateZoom"
             map-type-id="roadmap"
-            style="height: 610px"
+            style="height: 350px"
           >
             <GmapMarker
               :clickable="true"
@@ -119,7 +124,9 @@
 
       <v-row dense>
         <v-spacer />
-        <v-btn @click="cancel" outlined color="primary" class="mr-3">Cancelar</v-btn>
+        <v-btn @click="cancel" outlined color="primary" class="mr-3"
+          >Cancelar</v-btn
+        >
         <v-btn type="submit" color="primary" class="mr-4">Guardar</v-btn>
       </v-row>
     </v-form>
@@ -139,7 +146,9 @@ export default {
     });
   },
   async asyncData({ $axios, app, params }) {
-    const item = await app.$repository.FaithHouse.show(params.id).catch((e) => {});
+    const item = await app.$repository.FaithHouse.show(params.id).catch(
+      e => {}
+    );
     return { item, id: params.id };
   },
 
@@ -179,7 +188,7 @@ export default {
         "lng"
       ];
 
-      fields.forEach((field) => {
+      fields.forEach(field => {
         const value = this.item[field];
         if (value !== undefined && value !== null) {
           formData.append(field, value);
@@ -224,10 +233,10 @@ export default {
     },
     async saveFaithHouse() {
       await this.$repository.FaithHouse.updateForm(this.item.id, this.formData)
-        .then((res) => {
+        .then(res => {
           this.$router.push("/faith-house");
         })
-        .catch((e) => {});
+        .catch(e => {});
     }
   },
   mounted() {
@@ -238,3 +247,10 @@ export default {
   }
 };
 </script>
+<style scoped>
+/* Increase the width of v-list-item-action */
+/* .v-list-item__action {
+  width: 80px; 
+}
+*/
+</style>
