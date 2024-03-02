@@ -2,9 +2,7 @@
   <v-card color="green lighten-4">
     <v-card-title>
       Contactos <v-spacer />
-      <v-btn color="primary" @click="newContact()">
-        <v-icon>mdi-plus</v-icon> Nuevo
-      </v-btn>
+      <v-btn color="primary" @click="newContact()"> <v-icon>mdi-plus</v-icon> Nuevo </v-btn>
     </v-card-title>
     <v-list>
       <v-list-item-group v-if="contacts.length > 0">
@@ -18,9 +16,7 @@
               {{ contact.paternal_surname }}
               {{ contact.maternal_surname }}
             </v-list-item-title>
-            <v-list-item-subtitle>
-              {{ contact.role }} {{ contact.phone }}</v-list-item-subtitle
-            >
+            <v-list-item-subtitle> {{ contact.role }} {{ contact.phone }}</v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
             <v-btn icon color="primary" @click="editContact(contact)">
@@ -52,38 +48,25 @@
           <v-card-text>
             <v-row dense>
               <v-col cols="12" md="6">
-                <v-text-field v-model="item.order" label="Orden" required />
+                <v-text-field v-model="item.order" label="Orden" v-mask="'###'" :rules="[$vrules.required]" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field v-model="item.name" label="Nombre" required />
+                <v-text-field v-model="item.name" label="Nombre" :rules="[$vrules.required]" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="item.paternal_surname"
-                  label="Apellido Paterno"
-                  required
-                />
+                <v-text-field v-model="item.paternal_surname" label="Apellido Paterno" :rules="[$vrules.required]" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="item.maternal_surname"
-                  label="Apellido Materno"
-                  required
-                />
+                <v-text-field v-model="item.maternal_surname" label="Apellido Materno" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field v-model="item.role" label="Rol" required />
+                <v-text-field v-model="item.role" label="Rol" :rules="[$vrules.required]" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="item.phone"
-                  label="Teléfono"
-                  v-mask="'##-####-#####'"
-                  required
-                />
+                <v-text-field v-model="item.phone" label="Teléfono" v-mask="'##-####-#####'" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field v-model="item.email" label="Correo" required />
+                <v-text-field v-model="item.email" label="Correo" />
               </v-col>
               <v-col cols="12" md="6">
                 <my-uploadimage-crop
@@ -100,14 +83,7 @@
 
           <v-card-actions>
             <v-spacer />
-            <v-btn
-              color="primary"
-              class="mr-1"
-              outlined
-              @click.native="dialogUpdate = false"
-            >
-              Cancelar
-            </v-btn>
+            <v-btn color="primary" class="mr-1" outlined @click.native="dialogUpdate = false"> Cancelar </v-btn>
             <v-btn color="primary" type="submit"> Guardar </v-btn>
           </v-card-actions>
         </v-form>
@@ -125,38 +101,25 @@
           <v-card-text>
             <v-row dense>
               <v-col cols="12" md="6">
-                <v-text-field v-model="item.order" label="Orden" required />
+                <v-text-field v-model="item.order" label="Orden" v-mask="'###'" :rules="[$vrules.required]" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field v-model="item.name" label="Nombre" required />
+                <v-text-field v-model="item.name" label="Nombre" :rules="[$vrules.required]" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="item.paternal_surname"
-                  label="Apellido Paterno"
-                  required
-                />
+                <v-text-field v-model="item.paternal_surname" label="Apellido Paterno" :rules="[$vrules.required]" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="item.maternal_surname"
-                  label="Apellido Materno"
-                  required
-                />
+                <v-text-field v-model="item.maternal_surname" label="Apellido Materno" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field v-model="item.role" label="Rol" required />
+                <v-text-field v-model="item.role" label="Rol" :rules="[$vrules.required]" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="item.phone"
-                  label="Teléfono"
-                  v-mask="'##-####-#####'"
-                  required
-                />
+                <v-text-field v-model="item.phone" label="Teléfono" v-mask="'##-####-#####'" />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field v-model="item.email" label="Correo" required />
+                <v-text-field v-model="item.email" label="Correo" />
               </v-col>
               <v-col cols="12" md="6">
                 <my-uploadimage-crop
@@ -173,14 +136,7 @@
 
           <v-card-actions>
             <v-spacer />
-            <v-btn
-              color="primary"
-              class="mr-1"
-              outlined
-              @click.native="dialogAdd = false"
-            >
-              Cancelar
-            </v-btn>
+            <v-btn color="primary" class="mr-1" outlined @click.native="dialogAdd = false"> Cancelar </v-btn>
             <v-btn color="primary" type="submit"> Guardar </v-btn>
           </v-card-actions>
         </v-form>
@@ -244,11 +200,7 @@ export default {
     async updateContact() {
       if (!this.$refs.formUpdate.validate()) return;
 
-      await this.$repository.FaithHouseContact.updateForm(
-        this.faith_house_id,
-        this.item.id,
-        this.formDataUpdate
-      )
+      await this.$repository.FaithHouseContact.updateForm(this.faith_house_id, this.item.id, this.formDataUpdate)
         .then(res => {
           this.indexContact();
           this.dialogUpdate = false;
@@ -258,10 +210,7 @@ export default {
     async saveContact() {
       if (!this.$refs.formSave.validate()) return;
 
-      await this.$repository.FaithHouseContact.createForm(
-        this.faith_house_id,
-        this.formData
-      )
+      await this.$repository.FaithHouseContact.createForm(this.faith_house_id, this.formData)
         .then(res => {
           // this.$router.push("/faith-house");
           this.indexContact();
@@ -272,9 +221,7 @@ export default {
 
     async indexContact() {
       let me = this;
-      let contacts = await me.$repository.FaithHouseContact.index(
-        me.faith_house_id
-      );
+      let contacts = await me.$repository.FaithHouseContact.index(me.faith_house_id);
       me.$emit("update:contacts", contacts);
     },
     editContact(item) {
@@ -294,10 +241,7 @@ export default {
       });
     },
     async deleteContact(item) {
-      await this.$repository.FaithHouseContact.delete(
-        this.faith_house_id,
-        item.id
-      )
+      await this.$repository.FaithHouseContact.delete(this.faith_house_id, item.id)
         .then(res => {
           this.dialogDelete = false;
           this.indexContact();
@@ -308,16 +252,7 @@ export default {
   computed: {
     formData() {
       const formData = new FormData();
-      const fields = [
-        "order",
-        "name",
-        "paternal_surname",
-        "maternal_surname",
-        "role",
-        "phone",
-        "email",
-        "photo_blob"
-      ];
+      const fields = ["order", "name", "paternal_surname", "maternal_surname", "role", "phone", "email", "photo_blob"];
 
       fields.forEach(field => {
         const value = this.item[field];
@@ -329,16 +264,7 @@ export default {
     },
     formDataUpdate() {
       const formData = new FormData();
-      const fields = [
-        "order",
-        "name",
-        "paternal_surname",
-        "maternal_surname",
-        "role",
-        "phone",
-        "email",
-        "photo_blob"
-      ];
+      const fields = ["order", "name", "paternal_surname", "maternal_surname", "role", "phone", "email", "photo_blob"];
 
       fields.forEach(field => {
         const value = this.item[field];

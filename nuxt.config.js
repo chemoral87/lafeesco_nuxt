@@ -220,10 +220,7 @@ export default {
 
     optionsPath: "./vuetify.options.js",
 
-    customVariables: [
-      "~/assets/variables.scss",
-      "~/assets/styles/width-styles.scss"
-    ]
+    customVariables: ["~/assets/variables.scss", "~/assets/styles/width-styles.scss"]
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

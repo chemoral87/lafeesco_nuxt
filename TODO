@@ -4,6 +4,9 @@
 ☐ Crear perfiles por Org_id para dividir los roles
 ☐ crear organizaciones y sus perfiles, cada perfil tiene rol
 ☐ Agregar los contactos en el registro de la casa de fe
+☐ Eliminar anfitrion y expositor de index casa de fe
+☐ agregar contactos en faith house all page
+✔ Lista de Contactos de la Casa de Fe CRUD @done(24-03-02 01:39)
 ✔ Agregar Origen y estado civil de membresias cas de fe @done(24-02-26 19:00)
 ✔ agregar fotos y fecha fin a editar/insertar casas de fe @done(24-02-09 09:13)
 ✔ Generer tabla para ver las membresias CF @done(24-02-09 09:06)

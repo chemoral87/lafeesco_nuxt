@@ -3,12 +3,7 @@
     <v-form ref="form" @submit.prevent="saveFaithHouse">
       <v-row dense>
         <v-col cols="6" md="3" lg="2">
-          <v-text-field
-            outlined
-            label="Nombre"
-            v-model="item.name"
-            :rules="[v => !!v || 'Campo requerido']"
-          />
+          <v-text-field outlined label="Nombre" v-model="item.name" :rules="[v => !!v || 'Campo requerido']" />
         </v-col>
         <!-- <v-col cols="6" md="3" lg="2">
           <v-text-field outlined label="Anfitrión" v-model="item.host" />
@@ -71,13 +66,13 @@
           <MyDatepicker outlined label="Fecha Fin" v-model="item.end_date" />
         </v-col>
         <v-col cols="4" md="3" lg="2">
-          <v-checkbox
-            v-model="item.allow_matching"
-            :true-value="1"
-            :false-value="0"
-            label="Permite match"
-          >
+          <v-checkbox v-model="item.allow_matching" :true-value="1" :false-value="0" label="Permite match">
           </v-checkbox>
+        </v-col>
+        <v-col cosl="auto">
+          <v-spacer />
+          <v-btn @click="cancel" outlined color="primary" class="mr-3">Cancelar</v-btn>
+          <v-btn type="submit" color="primary" class="mr-4">Guardar</v-btn>
         </v-col>
       </v-row>
 
@@ -106,29 +101,15 @@
             map-type-id="roadmap"
             style="height: 350px"
           >
-            <GmapMarker
-              :clickable="true"
-              :draggable="false"
-              :position="marker"
-              @click="center = marker.position"
-            />
+            <GmapMarker :clickable="true" :draggable="false" :position="marker" @click="center = marker.position" />
           </GmapMap>
         </v-col>
         <v-col cols="12" md="6">
-          <FaithHouseContactsList
-            :faith_house_id="item.id"
-            :contacts.sync="item.contacts"
-          />
+          <FaithHouseContactsList :faith_house_id="item.id" :contacts.sync="item.contacts" />
         </v-col>
       </v-row>
 
-      <v-row dense>
-        <v-spacer />
-        <v-btn @click="cancel" outlined color="primary" class="mr-3"
-          >Cancelar</v-btn
-        >
-        <v-btn type="submit" color="primary" class="mr-4">Guardar</v-btn>
-      </v-row>
+      <v-row dense> </v-row>
     </v-form>
   </v-container>
 </template>
@@ -146,9 +127,7 @@ export default {
     });
   },
   async asyncData({ $axios, app, params }) {
-    const item = await app.$repository.FaithHouse.show(params.id).catch(
-      e => {}
-    );
+    const item = await app.$repository.FaithHouse.show(params.id).catch(e => {});
     return { item, id: params.id };
   },
 

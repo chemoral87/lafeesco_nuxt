@@ -47,11 +47,7 @@
         {{ item.end_date | moment("DD MMM YYYY") }}
       </template>
       <template v-slot:[`item.allow_matching`]="{ item }">
-        <v-chip
-          :color="item.allow_matching ? 'success' : 'error'"
-          text-color="white"
-          small
-        >
+        <v-chip :color="item.allow_matching ? 'success' : 'error'" text-color="white" small>
           {{ item.allow_matching ? "Si" : "No" }}
         </v-chip>
       </template>
@@ -68,15 +64,7 @@
         >
           <v-icon> mdi-pencil </v-icon>
         </v-btn>
-        <v-btn
-          title="Ver"
-          class="ma-1"
-          color="info"
-          outlined
-          fab
-          small
-          @click="emitAction('focus', item)"
-        >
+        <v-btn title="Ver" class="ma-1" color="info" outlined fab small @click="emitAction('focus', item)">
           <v-icon> mdi-eye </v-icon>
         </v-btn>
         <v-btn @click="confirmDelete(item)" fab small color="error">
@@ -88,7 +76,7 @@
       v-if="dialogDelete"
       :dialog="dialogDeleteProp"
       @ok="
-        (item) => {
+        item => {
           $emit('delete', item);
         }
       "
@@ -116,13 +104,11 @@ export default {
           text: "Nombre ",
           value: "name"
         },
-        { text: "Anfitrión", value: "host", sortable: true },
-        { text: "Anfitrión Cel.", value: "host_phone", sortable: false },
-        { text: "Expositor", value: "exhibitor", sortable: true },
+        // { text: "Anfitrión", value: "host", sortable: true },
+        // { text: "Anfitrión Cel.", value: "host_phone", sortable: false },
+        // { text: "Expositor", value: "exhibitor", sortable: true },
 
-        { text: "Expositor Cel.", value: "exhibitor_phone", sortable: false },
-        { text: "Fecha Fin", value: "end_date", sortable: true },
-
+        // { text: "Expositor Cel.", value: "exhibitor_phone", sortable: false },
         {
           text: "Horario",
           value: "schedule"
@@ -140,7 +126,8 @@ export default {
           text: "Dirección",
           value: "address",
           sortable: true
-        }
+        },
+        { text: "Fecha Fin", value: "end_date", sortable: true }
       ]
     };
   },
@@ -167,7 +154,7 @@ export default {
       if (this.flagSetOption) {
         this.flagSetOption = false;
       } else {
-        let head = this.headers.find((x) => x.value == columnName);
+        let head = this.headers.find(x => x.value == columnName);
         if (head.firstSortDesc) this.optionsTable.sortDesc[0] = true;
       }
     },
