@@ -83,12 +83,6 @@
 
       <v-row>
         <v-col cols="12" md="6">
-          <FaithHouseContactsList
-            :faith_house_id="item.id"
-            :contacts.sync="item.contacts"
-          />
-        </v-col>
-        <v-col cols="12" md="6">
           <gmap-autocomplete
             style="background-color: yellow"
             size="40"
@@ -119,6 +113,12 @@
               @click="center = marker.position"
             />
           </GmapMap>
+        </v-col>
+        <v-col cols="12" md="6">
+          <FaithHouseContactsList
+            :faith_house_id="item.id"
+            :contacts.sync="item.contacts"
+          />
         </v-col>
       </v-row>
 
