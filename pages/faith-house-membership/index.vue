@@ -34,14 +34,9 @@
         </v-card-title>
         <v-card-text>
           <v-row dense>
-            <v-col
-              cols="12"
-              sm="6"
-              v-for="(faith_house, ix) in faith_houses"
-              :key="faith_house.id + 'pxr'"
-            >
+            <v-col cols="12" sm="6" v-for="(faith_house, ix) in faith_houses" :key="faith_house.id + 'pxr'">
               <v-card class="fill-height">
-                <v-card-title class="py-2 d-flex justify-center primary white--text">
+                <v-card-title class="py-2 mb-1 d-flex justify-center primary white--text">
                   {{ faith_house.name }}
                 </v-card-title>
                 <v-card-text class="py-1 list-subtitle">
@@ -56,7 +51,29 @@
                   <v-icon>mdi-clock</v-icon>
                   {{ faith_house.schedule }}
                 </v-card-text>
-                <v-row dense>
+
+                <v-row dense v-for="contact in faith_house.contacts" :key="contact.id">
+                  <v-col cols="8">
+                    <v-card-text class="py-1">
+                      <strong>{{ contact.role }}</strong>
+                    </v-card-text>
+                    <v-card-text class="py-1 list-subtitle">
+                      <v-icon>mdi-account</v-icon>
+                      {{ contact.name }} {{ contact.paternal_surname }}
+                    </v-card-text>
+                    <v-card-text class="py-1" v-if="contact.phone">
+                      <v-btn class="green white--text" fab x-small>
+                        <v-icon @click="sendWhatsapp(contact.phone)"> mdi-phone </v-icon>
+                      </v-btn>
+
+                      {{ contact.phone }}
+                    </v-card-text>
+                  </v-col>
+                  <v-col cols="4">
+                    <img class="image-cropper" style="width: 90%" :src="contact.photo" />
+                  </v-col>
+                </v-row>
+                <!-- <v-row dense>
                   <v-col cols="8">
                     <v-card-text class="py-1">
                       <strong v-if="faith_house.exhibitor">ANFITRIÓN</strong>
@@ -83,9 +100,9 @@
                       :src="faith_house.host_photo"
                     />
                   </v-col>
-                </v-row>
+                </v-row> -->
 
-                <v-row dense v-if="faith_house.exhibitor">
+                <!-- <v-row dense v-if="faith_house.exhibitor">
                   <v-col cols="8">
                     <v-card-text class="py-1"> <strong>EXPOSITOR</strong> </v-card-text>
                     <v-card-text class="py-1 list-subtitle">
@@ -108,16 +125,14 @@
                       :src="faith_house.exhibitor_photo"
                     />
                   </v-col>
-                </v-row>
+                </v-row> -->
               </v-card>
             </v-col>
           </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="grey" class="mr-2" outlined @click="modal = false">
-            Cerrar
-          </v-btn>
+          <v-btn color="grey" class="mr-2" outlined @click="modal = false"> Cerrar </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -134,9 +149,7 @@ export default {
       itemsPerPage: 10,
       active_faith_house
     };
-    const response = await app.$repository.FaithHouseMembership.index(
-      options
-    ).catch((e) => {});
+    const response = await app.$repository.FaithHouseMembership.index(options).catch(e => {});
     return { response, options, active_faith_house };
   },
   watch: {
@@ -144,13 +157,11 @@ export default {
       let me = this;
       this.$store.dispatch("hideNextLoading");
       let op = Object.assign(me.options, { filter: value, page: 1 });
-      me.response = await me.$repository.FaithHouseMembership.index(op).catch((e) => {});
+      me.response = await me.$repository.FaithHouseMembership.index(op).catch(e => {});
     },
     active_faith_house: async function (val) {
       this.options.active_faith_house = val;
-      this.response = await this.$repository.FaithHouse.index(
-        this.options
-      ).catch((e) => {});
+      this.response = await this.$repository.FaithHouse.index(this.options).catch(e => {});
     }
   },
 
@@ -159,16 +170,8 @@ export default {
       // remove hypens
       to_number = to_number.replace(/-/g, "");
 
-      const {
-        name,
-        age,
-        street_address,
-        house_number,
-        neighborhood,
-        municipality,
-        phone,
-        marital_status
-      } = this.faith_house_membership;
+      const { name, age, street_address, house_number, neighborhood, municipality, phone, marital_status } =
+        this.faith_house_membership;
       // include a text to api and add membership information in the text
       let string = `Hola, estoy interesado en tu Casa de Fe. Nombre: *${name}*, Edad:  *${age} años*, Domicilio: *${street_address} ${house_number}, Col. ${neighborhood}, ${municipality}*, Teléfono: *${phone}*, Estado Civl: *${marital_status}*`;
       let url = `https://api.whatsapp.com/send?phone=52${to_number}&text=${string}`;
@@ -189,11 +192,11 @@ export default {
 
     async deleteItem(item) {
       await this.$repository.FaithHouseMembership.delete(item.id)
-        .then((res) => {
+        .then(res => {
           this.dialogDelete = false;
           this.index();
         })
-        .catch((e) => {});
+        .catch(e => {});
     },
     focusItem(item) {
       this.modal = true;
