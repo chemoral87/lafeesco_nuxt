@@ -91,7 +91,7 @@
         <v-row dense>
           <v-col cols="12" sm="6" lg="5" v-for="(faith_house, ix) in match" :key="faith_house.id + 'pxr'">
             <v-card class="fill-height">
-              <v-card-title class="py-2 d-flex justify-center primary white--text">
+              <v-card-title class="py-2 mb-1 d-flex justify-center primary white--text">
                 {{ faith_house.name }}
               </v-card-title>
               <v-card-text class="py-1 list-subtitle">
@@ -121,10 +121,6 @@
                   <img class="image-cropper" style="width: 90%" :src="contact.photo" />
                 </v-col>
               </v-row>
-              <!-- <v-card-text class="py-1 list-subtitle">
-              <v-icon>mdi-map-marker</v-icon>
-              {{ faith_house.address }}
-            </v-card-text> -->
             </v-card>
           </v-col>
         </v-row>

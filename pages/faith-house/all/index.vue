@@ -3,7 +3,7 @@
     <v-row dense class="justify-center">
       <v-col cols="4" v-for="(faith_house, ix) in FaithHouses" :key="faith_house.id + 'pxr'">
         <v-card class="fill-height">
-          <v-card-title class="py-2 d-flex justify-center white--text" :class="getFlaggedMatching(faith_house)">
+          <v-card-title class="py-2 mb-1 d-flex justify-center white--text" :class="getFlaggedMatching(faith_house)">
             {{ ix + 1 }}. {{ faith_house.name }}
           </v-card-title>
           <v-card-text class="py-1 list-subtitle" v-if="faith_house.neighborhood">
@@ -51,7 +51,7 @@
       <v-col cols="4" v-for="(organizer, ix) in Organizers" :key="organizer.id + 'pxz'">
         <v-card class="fill-height">
           <v-card-title
-            class="py-2 d-flex justify-center white--text"
+            class="py-2 mb-1 d-flex justify-center white--text"
             :class="getFlaggedMatching(organizer.allow_matching)"
           >
             {{ organizer.name }}
@@ -59,7 +59,7 @@
 
           <v-row dense v-for="contact in organizer.contacts" :key="contact.id">
             <v-col cols="8">
-              <v-card-text class="py-1">
+              <v-card-text>
                 <strong>{{ contact.role }}</strong>
               </v-card-text>
               <v-card-text class="py-1 list-subtitle">

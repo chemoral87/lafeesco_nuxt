@@ -11,12 +11,7 @@
         ></v-text-field>
       </v-col>
       <v-col cols="auto">
-        <v-checkbox
-          hide-details
-          class="mt-1"
-          label="Solo Activas"
-          v-model="active_faith_house"
-        ></v-checkbox>
+        <v-checkbox hide-details class="mt-1" label="Solo Activas" v-model="active_faith_house"></v-checkbox>
       </v-col>
       <v-spacer />
       <v-col cols="auto">
@@ -84,9 +79,10 @@ export default {
       sortBy: ["name"],
       sortDesc: [true],
       itemsPerPage: 40,
-      active_faith_house
+      active_faith_house,
+      with_contacts: 1
     };
-    const response = await app.$repository.FaithHouse.index(options).catch((e) => {});
+    const response = await app.$repository.FaithHouse.index(options).catch(e => {});
     return { response, options, active_faith_house };
   },
   watch: {
@@ -94,20 +90,18 @@ export default {
       let me = this;
       this.$store.dispatch("hideNextLoading");
       let op = Object.assign(me.options, { filter: value, page: 1 });
-      me.response = await me.$repository.FaithHouse.index(op).catch((e) => {});
+      me.response = await me.$repository.FaithHouse.index(op).catch(e => {});
     },
     active_faith_house: async function (val) {
       this.options.active_faith_house = val;
-      this.response = await this.$repository.FaithHouse.index(
-        this.options
-      ).catch((e) => {});
+      this.response = await this.$repository.FaithHouse.index(this.options).catch(e => {});
     }
   },
   computed: {
     markers() {
       let faith_houses = this.response.data;
       console.log(typeof faith_houses);
-      return faith_houses.map((x) => {
+      return faith_houses.map(x => {
         return { lat: parseFloat(x.lat), lng: parseFloat(x.lng), name: x.name };
       });
     }
@@ -138,11 +132,11 @@ export default {
 
     async deleteItem(item) {
       await this.$repository.FaithHouse.delete(item.id)
-        .then((res) => {
+        .then(res => {
           this.dialogDelete = false;
           this.index();
         })
-        .catch((e) => {});
+        .catch(e => {});
     },
     focusItem(item) {
       this.center = { lat: parseFloat(item.lat), lng: parseFloat(item.lng) };
@@ -184,8 +178,7 @@ export default {
       mapStyle: [],
       clusterStyle: [
         {
-          url:
-            "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m1.png",
+          url: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m1.png",
           width: 56,
           height: 56,
           textColor: "#fff"

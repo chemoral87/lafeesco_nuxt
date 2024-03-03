@@ -51,6 +51,12 @@
           {{ item.allow_matching ? "Si" : "No" }}
         </v-chip>
       </template>
+      <template v-slot:[`item.contacts`]="{ item }">
+        <v-chip color="primary" v-for="contact in item.contacts" :key="contact.id" small>
+          {{ contact.name }}
+          {{ contact.paternal_surname }}
+        </v-chip>
+      </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn
           title="Editar"
@@ -104,6 +110,8 @@ export default {
           text: "Nombre ",
           value: "name"
         },
+        { text: "Contactos", value: "contacts" },
+
         // { text: "Anfitrión", value: "host", sortable: true },
         // { text: "Anfitrión Cel.", value: "host_phone", sortable: false },
         // { text: "Expositor", value: "exhibitor", sortable: true },
