@@ -1,6 +1,13 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer :color="authenticated ? '' : 'banner'" v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" temporary app>
+    <v-navigation-drawer
+      :color="authenticated ? '' : 'banner'"
+      v-model="drawer"
+      :mini-variant="miniVariant"
+      :clipped="clipped"
+      temporary
+      app
+    >
       <v-list>
         <v-list-item>
           <v-list-item-action class="mr-2">
@@ -26,7 +33,7 @@
     <v-app-bar :clipped-left="clipped" class="elevation-2" fixed app :color="authenticated ? '' : 'banner'">
       <v-app-bar-nav-icon v-if="show_drawer" @click.stop="drawer = !drawer" />
       <v-toolbar-title class="pl-0">
-        <v-btn v-if="back" @click="$router.push(back)" class="mr-1" outlined fab small elevation="0">
+        <v-btn v-if="backHandler" @click="backHandler" class="mr-1" outlined fab small elevation="0">
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
         <v-icon v-if="icon">mdi-{{ icon }}</v-icon>
@@ -69,7 +76,7 @@
 
       <div class="snackbar-wrapper">
         <v-snackbar
-          v-for="(snack, i) in snacks.filter((s) => s.display == true)"
+          v-for="(snack, i) in snacks.filter(s => s.display == true)"
           :key="i + 'snackbars'"
           :color="snack.color"
           v-model="snack.showing"
@@ -110,7 +117,7 @@ export default {
       icon: null,
       back: null,
       show_drawer: true,
-      show_login: true,
+      show_login: true
     };
   },
   computed: {
@@ -131,13 +138,23 @@ export default {
     },
     snacks() {
       return this.$store.getters.getSnackbars;
-    },
+    }
   },
   methods: {
     setNavBar(navbar) {
       this.title = navbar.hasOwnProperty("title") ? navbar.title : "La Fe Escobedo";
       this.icon = navbar.hasOwnProperty("icon") ? navbar.icon : null;
       this.back = navbar.hasOwnProperty("back") ? navbar.back : null;
+      if (typeof this.back === "function") {
+        this.backHandler = navbar.back;
+      } else if (this.back) {
+        this.backHandler = () => {
+          me.$router.push(me.back);
+        };
+      } else {
+        this.backHandler = null;
+      }
+
       this.show_drawer = navbar.hasOwnProperty("show_drawer") ? navbar.show_drawer : true;
       this.show_login = navbar.hasOwnProperty("show_login") ? navbar.show_login : true;
     },
@@ -153,11 +170,11 @@ export default {
     logout() {
       this.menu = false;
       this.$auth.logout();
-    },
+    }
   },
   created() {
-    this.$nuxt.$on("setNavBar", ($event) => this.setNavBar($event));
-  },
+    this.$nuxt.$on("setNavBar", $event => this.setNavBar($event));
+  }
 };
 </script>
 <style>

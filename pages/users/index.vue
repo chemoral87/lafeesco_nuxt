@@ -2,21 +2,12 @@
   <v-container fluid>
     <v-row dense>
       <v-col cols="12" md="3">
-        <v-text-field
-          append-icon="mdi-magnify"
-          clearable
-          hide-details
-          v-model="filterUser"
-          placeholder="Filtro"
-        ></v-text-field>
+        <v-text-field append-icon="mdi-magnify" clearable hide-details v-model="filterUser" placeholder="Filtro" />
       </v-col>
+
       <v-col cols="12" md="4">
-        <v-btn @click="newUser()" color="primary" class="mr-1">
-          <v-icon>mdi-plus</v-icon> Nuevo
-        </v-btn>
-        <v-btn @click="getUsers()" color="primary">
-          <v-icon>mdi-reload</v-icon> Refrescar
-        </v-btn>
+        <v-btn @click="newUser()" color="primary" class="mr-1"> <v-icon>mdi-plus</v-icon> Nuevo </v-btn>
+        <v-btn @click="getUsers()" color="primary"> <v-icon>mdi-reload</v-icon> Refrescar </v-btn>
       </v-col>
       <v-col cols="12">
         <UserTable
@@ -24,17 +15,12 @@
           :options="options"
           :response="response"
           @edit="editUser"
-          @editRoles="editUserRoles"
+          @editProfiles="editProfiles"
           @delete="beforeDeleteUser"
         ></UserTable>
       </v-col>
     </v-row>
-    <UserDialog
-      :userx="userx"
-      v-if="userDialog"
-      @close="closeDialog"
-      @save="saveUser"
-    />
+    <UserDialog :userx="userx" v-if="userDialog" @close="closeDialog" @save="saveUser" />
     <DialogDelete
       v-if="userDialogDelete"
       :dialog="dialogDelete"
@@ -58,7 +44,7 @@ export default {
       options: {},
       filterUser: "",
       userDialog: false,
-      userDialogDelete: false,
+      userDialogDelete: false
     };
   },
   watch: {
@@ -68,7 +54,7 @@ export default {
       let op = Object.assign(me.options, { filter: value, page: 1 });
       // me.response = await me.$repository.User.index(op);
       me.getUsers(op);
-    },
+    }
   },
   methods: {
     newUser() {
@@ -82,24 +68,25 @@ export default {
     editUserRoles(item) {
       this.$router.push(`/users/${item.id}`);
     },
+    editProfiles(item) {
+      this.$router.push(`/users/${item.id}/profiles`);
+    },
     beforeDeleteUser(item) {
       this.userDialogDelete = true;
       this.dialogDelete = {
         text: "Desea eliminar el Usuario ",
-        strong: `${item.name} ${item.last_name}  ${
-          item.second_last_name ? item.second_last_name : ""
-        }`,
-        payload: item,
+        strong: `${item.name} ${item.last_name}  ${item.second_last_name ? item.second_last_name : ""}`,
+        payload: item
       };
       // this.userx = Object.assign({}, item);
     },
     async deleteUser(item) {
       await this.$repository.User.delete(item.id, item)
-        .then((res) => {
+        .then(res => {
           this.getUsers();
           this.userDialogDelete = false;
         })
-        .catch((e) => {});
+        .catch(e => {});
     },
     async getUsers(options) {
       if (options) {
@@ -112,38 +99,38 @@ export default {
       let me = this;
       if (item.id) {
         await this.$repository.User.update(item.id, item)
-          .then((res) => {
+          .then(res => {
             me.getUsers();
             me.userDialog = false;
           })
-          .catch((e) => {});
+          .catch(e => {});
       } else {
         await this.$repository.User.create(item)
-          .then((res) => {
+          .then(res => {
             me.getUsers();
             me.userDialog = false;
           })
-          .catch((e) => {});
+          .catch(e => {});
       }
     },
     closeDialog() {
       this.userDialog = false;
       this.clearErrors();
-    },
+    }
   },
 
   async asyncData({ $axios, app }) {
     let op = {
       sortBy: ["name"],
       sortDesc: [false],
-      itemsPerPage: 10,
+      itemsPerPage: 10
     };
 
-    const res = await app.$repository.User.index(op).catch((e) => {});
+    const res = await app.$repository.User.index(op).catch(e => {});
     return { response: res, options: op };
   },
   created() {
     this.$nuxt.$emit("setNavBar", { title: "Usuarios", icon: "account" });
-  },
+  }
 };
 </script>

@@ -1,6 +1,9 @@
 <template>
   <div>
-    <v-btn @click="toCopy()"><v-icon>mdi-content-copy</v-icon></v-btn>
+    <v-btn color="primary" @click="copyHead()"><v-icon>mdi-content-copy</v-icon>Copiar</v-btn>
+    <div v-text="templ_head" ref="message_head" class="templ"></div>
+    <br />
+    <v-btn color="primary" @click="copy()"><v-icon>mdi-content-copy</v-icon>Copiar</v-btn>
     <div v-text="templ" ref="message" class="templ"></div>
     <!-- <template v-for="def in definitions">
       <div>{{ def }}</div>
@@ -13,7 +16,36 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    copy() {
+      // copy all innert text from div ref code
+      let range = document.createRange();
+      range.selectNode(this.$refs.message);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+
+      document.execCommand("copy");
+      window.getSelection().removeAllRanges();
+      // notify copy
+      this.$store.dispatch("notify", {
+        success: "Copiado al portapapeles"
+      });
+    },
+    copyHead() {
+      // copy all innert text from div ref code
+      let range = document.createRange();
+      range.selectNode(this.$refs.message_head);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+
+      document.execCommand("copy");
+      window.getSelection().removeAllRanges();
+      // notify copy
+      this.$store.dispatch("notify", {
+        success: "Copiado al portapapeles"
+      });
+    }
+  },
   computed: {
     createParams() {
       let create = "";
@@ -48,16 +80,18 @@ export default {
       if (this.variable_name == "") return "";
       return this.variable_name
         .split("_")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join("");
+    },
+    templ_head() {
+      if (this.variable_name == "") return "";
+      return `use App\\Http\\Resources\\DataSetResource;
+use Illuminate\\Http\\Request;
+use App\\Models\\${this.ModelName};`;
     },
     templ() {
       if (this.variable_name == "") return "";
-      return `use App\\Http\\Resources\\DataSetResource;
-use Illuminate\Http\Request;
-use App\\Models\\${this.ModelName};
-
-public function index(Request $request) {
+      return `public function index(Request $request) {
     $filter = $request->get("filter");
     $query = queryServerSide($request, ${this.ModelName}::query());
     if ($filter) {
@@ -96,11 +130,11 @@ public function show($id) {
   }
 
 `;
-    },
+    }
   },
   mounted() {
     let me = this;
-  },
+  }
 };
 </script>
 <style scoped>

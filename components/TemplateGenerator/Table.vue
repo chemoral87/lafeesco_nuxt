@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn @click="toCopy()"><v-icon>mdi-content-copy</v-icon></v-btn>
+    <v-btn color="primary" @click="copy()"><v-icon>mdi-content-copy</v-icon> Copiar</v-btn>
     <div v-text="templ" ref="message" class="templ"></div>
   </div>
 </template>
@@ -13,13 +13,27 @@ export default {
     };
   },
   methods: {
-    async toCopy() {
-      let message = this.$refs.message.innerHTML
-        .replace(/&lt;/g, "<")
-        .replace(/&gt;/g, ">")
-        .replace(/&quot;/g, '"');
-      await navigator.clipboard.writeText(message);
-    },
+    copy() {
+      // copy all innert text from div ref code
+      let range = document.createRange();
+      range.selectNode(this.$refs.message);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+
+      document.execCommand("copy");
+      window.getSelection().removeAllRanges();
+      // notify copy
+      this.$store.dispatch("notify", {
+        success: "Copiado al portapapeles"
+      });
+    }
+    // async toCopy() {
+    //   let message = this.$refs.message.innerHTML
+    //     .replace(/&lt;/g, "<")
+    //     .replace(/&gt;/g, ">")
+    //     .replace(/&quot;/g, '"');
+    //   await navigator.clipboard.writeText(message);
+    // }
   },
   computed: {
     Modelname() {
@@ -29,10 +43,7 @@ export default {
     headers() {
       let header = "";
       for (let def of this.definitions) {
-        if (
-          def.column_key != "PRI" &&
-          !["created_at", "updated_at"].includes(def.column_name)
-        ) {
+        if (def.column_key != "PRI" && !["created_at", "updated_at"].includes(def.column_name)) {
           header += `{   text: "${def.column_name}", value: "${def.column_name}", sortable: true, firstSortDesc:true  },`;
         }
       }
@@ -152,12 +163,12 @@ export default {
 <\/script>
 
       `;
-    },
+    }
   },
 
   mounted() {
     let me = this;
-  },
+  }
 };
 </script>
 <style scoped>

@@ -17,12 +17,12 @@ export class MenuService {
         title: "Dashboard",
         to: "/dashboard"
       });
-      if (this.hasPermission("user-index"))
-        menu.push({ icon: "mdi-account", title: "Usuarios", to: "/users" });
-      if (this.hasPermission("role-index"))
-        menu.push({ icon: "mdi-redhat", title: "Roles", to: "/roles" });
-      if (this.hasPermission("permission-index"))
-        menu.push({ icon: "mdi-key", title: "Permisos", to: "/permissions" });
+
+      if (this.hasPermission("organization-index"))
+        menu.push({ icon: "mdi-domain", title: "Iglesias", to: "/organizations" });
+      if (this.hasPermission("user-index")) menu.push({ icon: "mdi-account", title: "Usuarios", to: "/users" });
+      if (this.hasPermission("role-index")) menu.push({ icon: "mdi-redhat", title: "Roles", to: "/roles" });
+      if (this.hasPermission("permission-index")) menu.push({ icon: "mdi-key", title: "Permisos", to: "/permissions" });
       if (this.hasPermission("investment-index"))
         menu.push({
           icon: "mdi-pencil-box",
@@ -181,9 +181,7 @@ export class MenuService {
       );
     }
     // remove duplicates
-    let uniqueArr = menu.filter(
-      (v, i, a) => a.findIndex(t => t.to === v.to) === i
-    );
+    let uniqueArr = menu.filter((v, i, a) => a.findIndex(t => t.to === v.to) === i);
     return uniqueArr;
   }
 }

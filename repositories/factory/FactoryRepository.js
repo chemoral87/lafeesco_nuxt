@@ -18,6 +18,8 @@ export default $axios => ({
   Role: CommonRepository($axios)("/roles"),
   Permission: CommonRepository($axios)("/permissions"),
   User: UserRepository($axios)("/users"),
+  Profile: ParentRepository($axios)("/profiles"),
+  ////////////////////////////////////////////////
   Investor: InvestorRepository($axios)("/investor"),
   InvestorProfile: InvestorProfileRepository($axios)("/investor-profile"),
   Investment: InvestmentRepository($axios)("/investment"),
@@ -29,6 +31,7 @@ export default $axios => ({
   FaithHouse: CommonRepository($axios)("/faith-house"),
   FaithHouseContact: ParentRepository($axios)("/faith-house-contact"),
   FaithHouseMembership: CommonRepository($axios)("/faith-house-membership"),
+  Organization: CommonRepository($axios)("/organizations"),
   AgroEvent: AgroEventRepository($axios)("/agro-event"),
   Attendant: CommonRepository($axios)("/attendant"),
   AttendantMinistry: CommonRepository($axios)("/attendant-ministry"),

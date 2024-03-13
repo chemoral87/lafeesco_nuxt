@@ -19,14 +19,7 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-          @click="closeDrawer"
-        >
+        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact @click="closeDrawer">
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
@@ -37,36 +30,17 @@
         <v-spacer />
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar
-      :clipped-left="clipped"
-      class="elevation-2"
-      fixed
-      app
-      :color="authenticated ? '' : 'banner'"
-    >
+    <v-app-bar :clipped-left="clipped" class="elevation-2" fixed app :color="authenticated ? '' : 'banner'">
       <v-app-bar-nav-icon v-if="show_drawer" @click.stop="drawer = !drawer" />
       <v-toolbar-title class="pl-0">
-        <v-btn
-          v-if="back"
-          @click="$router.push(back)"
-          class="mr-1"
-          outlined
-          fab
-          small
-          elevation="0"
-        >
+        <v-btn v-if="backHandler" @click="backHandler" class="mr-1" outlined fab small elevation="0">
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
         <v-icon v-if="icon">mdi-{{ icon }}</v-icon>
         {{ title }}
       </v-toolbar-title>
       <v-spacer />
-      <v-btn
-        v-if="!authenticated && show_login"
-        @click="gotoLogin()"
-        color="banner_item elevation-2"
-        class="mr-2"
-      >
+      <v-btn v-if="!authenticated && show_login" @click="gotoLogin()" color="banner_item elevation-2" class="mr-2">
         <v-icon>mdi-lock</v-icon>
       </v-btn>
 
@@ -88,9 +62,7 @@
 
           <v-list-item @click="logout()">
             <v-list-item-content>
-              <v-list-item-title>
-                <v-icon>mdi-logout</v-icon> Cerrar Sesión
-              </v-list-item-title>
+              <v-list-item-title> <v-icon>mdi-logout</v-icon> Cerrar Sesión </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -104,7 +76,7 @@
 
       <div class="snackbar-wrapper">
         <v-snackbar
-          v-for="(snack, i) in snacks.filter((s) => s.display == true)"
+          v-for="(snack, i) in snacks.filter(s => s.display == true)"
           :key="i + 'snackbars'"
           :color="snack.color"
           v-model="snack.showing"
@@ -144,6 +116,7 @@ export default {
       title: "",
       icon: null,
       back: null,
+      backHandler: null,
       show_drawer: true,
       show_login: true
     };
@@ -170,9 +143,20 @@ export default {
   },
   methods: {
     setNavBar(navbar) {
-      this.title = navbar.hasOwnProperty("title") ? navbar.title : "La Fe Escobedo";
+      let me = this;
+      this.title = navbar.hasOwnProperty("title") ? navbar.title : "La Fe";
       this.icon = navbar.hasOwnProperty("icon") ? navbar.icon : null;
       this.back = navbar.hasOwnProperty("back") ? navbar.back : null;
+      if (typeof this.back === "function") {
+        this.backHandler = navbar.back;
+      } else if (this.back) {
+        this.backHandler = () => {
+          me.$router.push(me.back);
+        };
+      } else {
+        this.backHandler = null;
+      }
+
       this.show_drawer = navbar.hasOwnProperty("show_drawer") ? navbar.show_drawer : true;
       this.show_login = navbar.hasOwnProperty("show_login") ? navbar.show_login : true;
     },
@@ -191,7 +175,7 @@ export default {
     }
   },
   created() {
-    this.$nuxt.$on("setNavBar", ($event) => this.setNavBar($event));
+    this.$nuxt.$on("setNavBar", $event => this.setNavBar($event));
   }
 };
 </script>

@@ -46,15 +46,24 @@
       <v-col cols="6">
         <v-text-field v-model="variable_name" label="Variable Singular"></v-text-field>
         <v-radio-group v-model="radioComponent" column>
-          <v-radio v-for="item in components" :label="item.name" :value="item.name" @click="getComponent()"
-            :key="item.name"></v-radio>
+          <v-radio
+            v-for="item in components"
+            :label="item.name"
+            :value="item.name"
+            @click="getComponent()"
+            :key="item.name"
+          ></v-radio>
         </v-radio-group>
       </v-col>
     </v-row>
     <v-row dense>
       <v-col cols="12" v-if="Object.entries(definitions).length !== 0 && radioComponent != ''">
-        <TemplateGeneratorCompo :component="radioComponent" :definitions="definitions" :table_name="radioTable"
-          :variable_name="variable_name" />
+        <TemplateGeneratorCompo
+          :component="radioComponent"
+          :definitions="definitions"
+          :table_name="radioTable"
+          :variable_name="variable_name"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -78,9 +87,9 @@ export default {
         { name: "Table" },
         { name: "Indez" },
         { name: "New" },
-        { name: "Id" },
+        { name: "Id" }
         // { name: "Table" },
-      ],
+      ]
     };
   },
   computed: {
@@ -93,7 +102,7 @@ export default {
     async table_filter(value) {
       this.$store.dispatch("hideNextLoading");
       this.getTables();
-    },
+    }
   },
   methods: {
     // mark(ev, item) {
@@ -103,7 +112,7 @@ export default {
     // },
     sendNotify() {
       this.$store.dispatch("notify", {
-        success: "tomasin " + this.a,
+        success: "tomasin " + this.a
       });
       this.a++;
     },
@@ -112,7 +121,7 @@ export default {
       this.radioTable = "";
       this.tablez = await this.$repository.TemplateGenerator.getTables({
         table_filter,
-        schema_filter,
+        schema_filter
       });
     },
     getColumns(payload) {
@@ -120,17 +129,17 @@ export default {
 
       this.getDefinitions([payload]);
     },
-    getComponent() { },
+    getComponent() {},
     async getDefinitions(data) {
       // let { mark_tables } = this;
-      let payload = data.map((tab) => {
+      let payload = data.map(tab => {
         return { table_name: tab.table_name, table_schema: tab.table_schema };
       });
 
       this.definitions = await this.$repository.TemplateGenerator.getDefinitions({
-        payload,
+        payload
       });
-    },
+    }
   },
   mounted() {
     let me = this;
@@ -138,8 +147,8 @@ export default {
   created() {
     this.$nuxt.$emit("setNavBar", {
       title: "Template Generator",
-      icon: "engine",
+      icon: "engine"
     });
-  },
+  }
 };
 </script>
