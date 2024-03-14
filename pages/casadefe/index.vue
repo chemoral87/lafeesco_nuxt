@@ -39,6 +39,7 @@
                 />
               </v-col>
             </v-row>
+
             <v-row dense v-if="match.length == 0">
               <v-col cols="8" md="3">
                 <v-text-field
@@ -94,9 +95,9 @@
               <v-card-title class="py-2 mb-1 d-flex justify-center primary white--text">
                 {{ faith_house.name }}
               </v-card-title>
-              <v-card-text class="py-1 list-subtitle">
-                <v-icon>mdi-map-marker</v-icon>
-                Col. {{ faith_house.neighborhood }}, {{ faith_house.municipality }}
+              <v-card-text class="py-1 list-subtitle cursor-pointer" @click="showGoogleMaps(faith_house)">
+                <v-icon color="red">mdi-map-marker</v-icon> <a>Google Maps</a> Col. {{ faith_house.neighborhood }},
+                {{ faith_house.municipality }}
               </v-card-text>
               <v-card-text class="py-1 list-subtitle">
                 <v-icon>mdi-clock</v-icon>
@@ -164,6 +165,13 @@ export default {
     };
   },
   methods: {
+    showGoogleMaps(faith_house) {
+      console.log("showGoogleMaps", faith_house);
+      let search = faith_house.neighborhood + ", " + faith_house.municipality + ", méxico";
+      let url = `https://www.google.com/maps/search/?api=1&query=${search}`;
+      // let url = `https://www.google.com/maps/search/?api=1&query=${faith_house.lat},${faith_house.lng}`;
+      window.open(url, "_blank");
+    },
     searchPlaces() {
       const service = new google.maps.places.AutocompleteService();
 
