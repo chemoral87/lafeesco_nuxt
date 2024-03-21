@@ -116,19 +116,23 @@
 <script>
 export default {
   middleware: ["authenticated"],
-  validate({ store, error }) {
-    if (store.getters.permissions.includes("casas-fe-insert")) return true;
-    else throw error({ statusCode: 403 });
+  async asyncData({ $axios, app, params, store, error }) {
+    console.log("mua");
+    let org_ids = await store.dispatch("validatePermission", { permission: "casas-fe-insert", error });
+    const item = await app.$repository.FaithHouse.show(params.id).catch(e => {
+      error({ statusCode: e.response.status, message: e.response.data.message });
+    });
+    return { item, id: params.id };
   },
+  // validate({ store, error }) {
+  //   if (store.getters.permissions.includes("casas-fe-insert")) return true;
+  //   else throw error({ statusCode: 403 });
+  // },
   created() {
     this.$nuxt.$emit("setNavBar", {
       title: "Editar Casa de Fe",
       icon: "home"
     });
-  },
-  async asyncData({ $axios, app, params }) {
-    const item = await app.$repository.FaithHouse.show(params.id).catch(e => {});
-    return { item, id: params.id };
   },
 
   props: {},

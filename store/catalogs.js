@@ -2,7 +2,8 @@ export const state = () => ({
   call_types: [],
   marital_statuses: [],
   member_categories: [],
-  member_sources: []
+  member_sources: [],
+  configs: []
 });
 
 export const getters = {
@@ -45,14 +46,19 @@ async function fetchManager(commit, getter, apiCall, mutator) {
   return getter;
 }
 
+async function fetchOrganizationManager(commit, getter, apiCall, mutator) {
+  if (getter.length > 0) {
+    return getter;
+  } else {
+    getter = await apiCall();
+    commit(mutator, getter);
+  }
+  return getter;
+}
+
 export const actions = {
   async fetchCallTypes({ commit, getters }) {
-    return fetchManager(
-      commit,
-      getters.getCallTypes,
-      this.$repository.MemberCall.getCallTypes,
-      "SET_CALL_TYPES"
-    );
+    return fetchManager(commit, getters.getCallTypes, this.$repository.MemberCall.getCallTypes, "SET_CALL_TYPES");
   },
   async fetchMaritalStatuses({ commit, getters }) {
     return fetchManager(
@@ -77,5 +83,8 @@ export const actions = {
       this.$repository.Member.getMemberSources,
       "SET_MEMBER_SOURCES"
     );
+  },
+  async fetchConfigs({ commit, getters }) {
+    return fetchOrganizationManager(commit, getters.getConfigs, this.$repository.Config.fetch, "SET_CONFIGS");
   }
 };

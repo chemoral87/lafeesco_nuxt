@@ -24,6 +24,7 @@
           :response="response"
           @edit="editOrganization"
           @delete="deleteOrganization"
+          @config="goConfig"
           :dialogDelete.sync="dialogDeleteOrganization"
         />
       </v-col>
@@ -38,7 +39,9 @@
 </template>
 <script>
 export default {
-  async asyncData({ $axios, app }) {
+  async asyncData({ $axios, app, error, store }) {
+    let orgs_id = await store.dispatch("validatePermission", { permission: "organization-index", error });
+
     let options = {
       sortBy: ["name"],
       sortDesc: [true],
@@ -56,6 +59,9 @@ export default {
     }
   },
   methods: {
+    goConfig(item) {
+      this.$router.push(`/organizations/${item.id}/config`);
+    },
     newOrganization() {
       this.organization = {};
       this.organizationFormDialog = true;
@@ -116,10 +122,10 @@ export default {
     };
   },
   middleware: ["authenticated"],
-  validate({ store, error }) {
-    if (store.getters.permissions.includes("organization-index")) return true;
-    else throw error({ statusCode: 403 });
-  },
+  // validate({ store, error }) {
+  //   if (store.getters.permissions.includes("organization-index")) return true;
+  //   else throw error({ statusCode: 403 });
+  // },
   created() {
     this.$nuxt.$emit("setNavBar", {
       title: "Organizaciones",

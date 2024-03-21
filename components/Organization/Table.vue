@@ -15,6 +15,9 @@
         <v-btn title="Editar" class="ma-1" color="primary" outlined fab small @click="emitAction('edit', item)">
           <v-icon>mdi-pencil</v-icon>
         </v-btn>
+        <v-btn title="Config" class="ma-1" color="info" outlined fab small @click="emitAction('config', item)">
+          <v-icon>mdi-cog</v-icon>
+        </v-btn>
         <v-btn title="Delete" class="ma-1" color="error" outlined fab small @click="confirmDelete(item)">
           <v-icon>mdi-delete</v-icon>
         </v-btn>

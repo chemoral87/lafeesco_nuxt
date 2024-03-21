@@ -10,6 +10,7 @@ const User = {
           authenticated: "authenticated",
           // verified: "verified",
           permissions: "permissions",
+          orgs: "orgs",
           snackbar: "snackbar",
           showLoading: "showLoading",
           hideNextLoading: "hideNextLoading"

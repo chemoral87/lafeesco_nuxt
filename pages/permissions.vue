@@ -11,12 +11,8 @@
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="3">
-        <v-btn @click="newPermission()" class="mr-1" color="primary">
-          <v-icon>mdi-plus</v-icon> Nuevo
-        </v-btn>
-        <v-btn @click="getPermissions()" color="primary">
-          <v-icon>mdi-reload</v-icon> Refrescar
-        </v-btn>
+        <v-btn @click="newPermission()" class="mr-1" color="primary"> <v-icon>mdi-plus</v-icon> Nuevo </v-btn>
+        <v-btn @click="getPermissions()" color="primary"> <v-icon>mdi-reload</v-icon> Refrescar </v-btn>
       </v-col>
       <v-col cols="12">
         <client-only>
@@ -30,12 +26,7 @@
         </client-only>
       </v-col>
     </v-row>
-    <PermissionDialog
-      :permission="permission"
-      v-if="permissionDialog"
-      @close="closeDialog"
-      @save="savePermission"
-    />
+    <PermissionDialog :permission="permission" v-if="permissionDialog" @close="closeDialog" @save="savePermission" />
     <DialogDelete
       v-if="permissionDialogDelete"
       :dialog="dialogDelete"
@@ -49,9 +40,17 @@
 <script>
 export default {
   middleware: ["authenticated"],
-  validate({ store, error }) {
-    if (store.getters.permissions.includes("permission-index")) return true;
-    else throw error({ statusCode: 403 });
+  async asyncData({ $axios, app, store, error }) {
+    let org_ids = await store.dispatch("validatePermission", { permission: "permission-index", error });
+
+    let op = {
+      sortBy: ["name"],
+      sortDesc: [false],
+      itemsPerPage: 10
+    };
+    //NOTE Repository https://medium.com/js-dojo/consuming-apis-in-nuxt-using-the-repository-pattern-8a13ea57d520
+    const res = await app.$repository.Permission.index(op).catch(e => {});
+    return { response: res, options: op };
   },
   props: {},
   data() {
@@ -61,7 +60,7 @@ export default {
       filterPermission: "",
       permissionDialog: false,
       permissionDialogDelete: false,
-      dialogDelete: {},
+      dialogDelete: {}
     };
   },
   watch: {
@@ -70,7 +69,7 @@ export default {
       this.$store.dispatch("hideNextLoading");
       let op = Object.assign(me.options, { filter: value, page: 1 });
       me.response = await me.$repository.Permission.index(op);
-    },
+    }
   },
   methods: {
     newPermission() {
@@ -85,17 +84,17 @@ export default {
       this.dialogDelete = {
         text: "Desea eliminar el Permiso ",
         strong: item.name,
-        payload: item,
+        payload: item
       };
       this.permissionDialogDelete = true;
     },
     async deletePermission(item) {
       await this.$repository.Permission.delete(item.id, item)
-        .then((res) => {
+        .then(res => {
           this.getPermissions();
           this.permissionDialogDelete = false;
         })
-        .catch((e) => {});
+        .catch(e => {});
     },
     async getPermissions(options) {
       if (options) {
@@ -108,38 +107,28 @@ export default {
       let me = this;
       if (item.id) {
         await this.$repository.Permission.update(item.id, item)
-          .then((res) => {
+          .then(res => {
             me.getPermissions();
             me.permissionDialog = false;
           })
-          .catch((e) => {});
+          .catch(e => {});
       } else {
         await this.$repository.Permission.create(item)
-          .then((res) => {
+          .then(res => {
             me.getPermissions();
             me.permissionDialog = false;
           })
-          .catch((e) => {});
+          .catch(e => {});
       }
     },
     closeDialog() {
       this.permissionDialog = false;
       this.clearErrors();
-    },
+    }
   },
 
-  async asyncData({ $axios, app }) {
-    let op = {
-      sortBy: ["name"],
-      sortDesc: [false],
-      itemsPerPage: 10,
-    };
-    //NOTE Repository https://medium.com/js-dojo/consuming-apis-in-nuxt-using-the-repository-pattern-8a13ea57d520
-    const res = await app.$repository.Permission.index(op).catch((e) => {});
-    return { response: res, options: op };
-  },
   created() {
     this.$nuxt.$emit("setNavBar", { title: "Permisos", icon: "key" });
-  },
+  }
 };
 </script>

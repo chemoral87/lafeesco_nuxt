@@ -52,6 +52,11 @@
                   {{ faith_house.schedule }}
                 </v-card-text>
 
+                <v-card-text class="py-1 list-subtitle">
+                  <v-icon>mdi-vector-line</v-icon>
+                  {{ faith_house.pivot.distance }} km
+                </v-card-text>
+
                 <v-row dense v-for="contact in faith_house.contacts" :key="contact.id">
                   <v-col cols="8">
                     <v-card-text class="py-1">
@@ -73,59 +78,6 @@
                     <img class="image-cropper" style="width: 90%" :src="contact.photo" />
                   </v-col>
                 </v-row>
-                <!-- <v-row dense>
-                  <v-col cols="8">
-                    <v-card-text class="py-1">
-                      <strong v-if="faith_house.exhibitor">ANFITRIÓN</strong>
-                      <strong v-else>ANFITRIÓN y EXPOSITOR</strong>
-                    </v-card-text>
-                    <v-card-text class="py-1 list-subtitle">
-                      <v-icon>mdi-account</v-icon>
-                      {{ faith_house.host }}
-                    </v-card-text>
-                    <v-card-text class="py-1" v-if="faith_house.host_phone">
-                      <v-btn class="green white--text" fab small>
-                        <v-icon @click="sendWhatsapp(faith_house.host_phone)">
-                          mdi-phone
-                        </v-icon>
-                      </v-btn>
-
-                      {{ faith_house.host_phone }}
-                    </v-card-text></v-col
-                  >
-                  <v-col cols="4">
-                    <img
-                      class="image-cropper"
-                      style="width: 96%"
-                      :src="faith_house.host_photo"
-                    />
-                  </v-col>
-                </v-row> -->
-
-                <!-- <v-row dense v-if="faith_house.exhibitor">
-                  <v-col cols="8">
-                    <v-card-text class="py-1"> <strong>EXPOSITOR</strong> </v-card-text>
-                    <v-card-text class="py-1 list-subtitle">
-                      <v-icon>mdi-account</v-icon>
-                      {{ faith_house.exhibitor }}
-                    </v-card-text>
-                    <v-card-text class="py-1" v-if="faith_house.exhibitor_phone">
-                      <v-btn class="green white--text" fab x-small>
-                        <v-icon @click="sendWhatsapp(faith_house.exhibitor_phone)">
-                          mdi-phone
-                        </v-icon>
-                      </v-btn>
-                      {{ faith_house.exhibitor_phone }}
-                    </v-card-text>
-                  </v-col>
-                  <v-col cols="4">
-                    <img
-                      class="image-cropper"
-                      style="width: 96%"
-                      :src="faith_house.exhibitor_photo"
-                    />
-                  </v-col>
-                </v-row> -->
               </v-card>
             </v-col>
           </v-row>
@@ -141,7 +93,9 @@
 
 <script>
 export default {
-  async asyncData({ $axios, app }) {
+  async asyncData({ $axios, app, store, error }) {
+    store.dispatch("validatePermission", { error, permission: "casas-fe-index" });
+
     let active_faith_house = true;
     let options = {
       sortBy: ["created_at"],
@@ -173,7 +127,7 @@ export default {
       const { name, age, street_address, house_number, neighborhood, municipality, phone, marital_status } =
         this.faith_house_membership;
       // include a text to api and add membership information in the text
-      let string = `Hola, estoy interesado en tu Casa de Fe. Nombre: *${name}*, Edad:  *${age} años*, Domicilio: *${street_address} ${house_number}, Col. ${neighborhood}, ${municipality}*, Teléfono: *${phone}*, Estado Civl: *${marital_status}*`;
+      let string = `Registro Casa de Fe QR. Nombre: *${name}*, Edad:  *${age} años*, Domicilio: *${street_address} ${house_number}, Col. ${neighborhood}, ${municipality}*, Estado Civil: *${marital_status}*, Teléfono: *${phone}*. Favor de contactar y dar informes de Horario y Domicilio`;
       let url = `https://api.whatsapp.com/send?phone=52${to_number}&text=${string}`;
 
       //let url = `https://api.whatsapp.com/send?phone=52${number}&text=Hola, estoy interesado en tu casa de fe`;
@@ -220,10 +174,7 @@ export default {
     };
   },
   middleware: ["authenticated"],
-  validate({ store, error }) {
-    if (store.getters.permissions.includes("casas-fe-index")) return true;
-    else throw error({ statusCode: 403 });
-  },
+
   created() {
     this.$nuxt.$emit("setNavBar", { title: "CF Membresías", icon: "home" });
   }

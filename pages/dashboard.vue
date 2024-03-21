@@ -1,6 +1,7 @@
 <template>
   <v-container fluid>
     <span class="text-h6 ml-2">Bienvenido {{ NAME_SECRET }}</span>
+
     <!-- {{permissions}} -->
     <!-- {{user}} -->
     <v-row>
@@ -31,29 +32,6 @@
         </v-col>
       </template>
     </v-row>
-    <GMap
-      ref="gMap"
-      language="en"
-      :cluster="{ options: { styles: clusterStyle } }"
-      :center="currentLocation"
-      :options="{ fullscreenControl: false, styles: mapStyle }"
-      :zoom="12"
-    >
-      <!-- <GMapMarker
-        v-for="location in locations"
-        :key="location.id"
-        :position="{ lat: location.lat, lng: location.lng }"
-        :options="{
-          icon: location === currentLocation ? pins.selected : pins.notSelected,
-        }"
-        @click="currentLocation = location"
-      >
-        <GMapInfoWindow :options="{ maxWidth: 200 }">
-          <code> lat: {{ location.lat }}, lng: {{ location.lng }} </code>
-        </GMapInfoWindow>
-      </GMapMarker> -->
-      <GMapCircle :options="circleOptions" />
-    </GMap>
   </v-container>
 </template>
 <script>
@@ -61,52 +39,21 @@ export default {
   props: {},
   data() {
     return {
-      NAME_SECRET: "", // process.env.NAME_SECRET
-      currentLocation: {
-        lat: 25.788294135889345,
-        lng: -100.30426405190066,
-      },
-      circleOptions: {},
-      locations: [
-        {
-          lat: 44.933076,
-          lng: 15.629058,
-        },
-        {
-          lat: 45.815,
-          lng: "15.9819",
-        },
-        {
-          lat: "45.12",
-          lng: "16.21",
-        },
-      ],
-      pins: {
-        selected: "data:image/png;base64,iVBORw0KGgo...",
-        notSelected: "data:image/png;base64,iVBORw0KGgo...",
-      },
-      mapStyle: [],
-      clusterStyle: [
-        {
-          url: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m1.png",
-          width: 56,
-          height: 56,
-          textColor: "#fff",
-        },
-      ],
+      NAME_SECRET: "" // process.env.NAME_SECRET
     };
   },
   methods: {
     hasPermission(permission) {
-      return this.permissions.includes(permission);
-    },
+      return this.permissions.hasOwnProperty(permission);
+      // return this.permissions.includes(permission);
+    }
   },
   mounted() {
     let me = this;
     this.$nuxt.$emit("setNavBar", {
       title: "Dashboard",
-      icon: "view-dashboard",
+      icon: "view-dashboard"
     });
-  },
+  }
 };
 </script>

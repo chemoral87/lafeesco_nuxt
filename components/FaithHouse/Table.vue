@@ -135,6 +135,7 @@ export default {
           value: "address",
           sortable: true
         },
+        { text: "Org", value: "org_name", sortable: true },
         { text: "Fecha Fin", value: "end_date", sortable: true }
       ]
     };

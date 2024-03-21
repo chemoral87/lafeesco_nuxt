@@ -176,6 +176,7 @@ export default {
   },
   created() {
     this.$nuxt.$on("setNavBar", $event => this.setNavBar($event));
+    this.$store.dispatch("loadConfig");
   }
 };
 </script>

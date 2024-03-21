@@ -23,6 +23,14 @@
 </template>
 <script>
 export default {
+  async asyncData({ $axios, app, params, store, error }) {
+    let org_ids = await store.dispatch("validatePermission", { permission: "user-update", error });
+
+    const _mUser = await app.$repository.User.show(params.id).catch(e => {});
+    // const res2 = await app.$repository.Profile.index(params.id).catch(e => {});
+    const _profile = await app.$repository.Profile.show(params.id, params.profile_id).catch(e => {});
+    return { mUser: _mUser, profile: _profile };
+  },
   props: {},
   data() {
     return {
@@ -57,12 +65,7 @@ export default {
   mounted() {
     let me = this;
   },
-  async asyncData({ $axios, app, params }) {
-    const _mUser = await app.$repository.User.show(params.id).catch(e => {});
-    // const res2 = await app.$repository.Profile.index(params.id).catch(e => {});
-    const _profile = await app.$repository.Profile.show(params.id, params.profile_id).catch(e => {});
-    return { mUser: _mUser, profile: _profile };
-  },
+
   created() {
     this.$nuxt.$emit("setNavBar", {
       title: `Perfilx: ${this.mUser.name} ${this.mUser.last_name}`,

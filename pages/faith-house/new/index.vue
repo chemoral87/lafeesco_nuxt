@@ -3,35 +3,9 @@
     <v-form ref="form" @submit.prevent="saveFaithHouse">
       <v-row dense>
         <v-col cols="6" md="3">
-          <v-text-field
-            outlined
-            label="Nombre"
-            v-model="item.name"
-            :rules="[(v) => !!v || 'Campo requerido']"
-          />
+          <v-text-field outlined label="Nombre" v-model="item.name" :rules="[v => !!v || 'Campo requerido']" />
         </v-col>
-        <v-col cols="6" md="3">
-          <v-text-field outlined label="Anfitrión" v-model="item.host" />
-        </v-col>
-        <v-col cols="6" md="3">
-          <v-text-field
-            outlined
-            label="Anfitrión Teléfono"
-            v-mask="'##-####-####'"
-            v-model="item.host_phone"
-          />
-        </v-col>
-        <v-col cols="6" md="3">
-          <v-text-field outlined label="Expositor" v-model="item.exhibitor" />
-        </v-col>
-        <v-col cols="6" md="3">
-          <v-text-field
-            outlined
-            label="Expositor Teléfono"
-            v-mask="'##-####-####'"
-            v-model="item.exhibitor_phone"
-          />
-        </v-col>
+
         <v-col cols="6" md="3" lg="2">
           <v-text-field outlined label="Horario" v-model="item.schedule" />
         </v-col>
@@ -48,34 +22,13 @@
         <v-col cols="6" md="3">
           <v-text-field outlined label="Longitud" v-model="item.lng" />
         </v-col>
-        <v-col cols="6" md="2">
-          <my-uploadimage-crop
-            :photo="item.host_photo"
-            v-model="item.host_photo_blob"
-            label="Anfitrión"
-            :size="750"
-            max-height="95px"
-            placeholder="Seleccione imagen"
-          />
-        </v-col>
-        <v-col cols="6" md="2">
-          <my-uploadimage-crop
-            :photo="item.exhibitor_photo"
-            v-model="item.exhibitor_photo_blob"
-            label="Expositor"
-            :size="750"
-            max-height="95px"
-            placeholder="Seleccione imagen"
-          />
+
+        <v-col cols="6" md="3" lg="2">
+          <v-checkbox v-model="item.allow_matching" label="Permite match" :true-value="1" :false-value="0">
+          </v-checkbox>
         </v-col>
         <v-col cols="6" md="3" lg="2">
-          <v-checkbox
-            v-model="item.allow_matching"
-            label="Permite match"
-            :true-value="1"
-            :false-value="0"
-          >
-          </v-checkbox>
+          <organization-select v-model="item.org_id" outlined :rules="[$vrules.required]" />
         </v-col>
       </v-row>
 
@@ -86,6 +39,7 @@
       </v-row>
     </v-form>
     <gmap-autocomplete
+      style="background-color: yellow"
       size="40"
       @place_changed="setPlace"
       v-on:keydown.enter.prevent
@@ -107,12 +61,7 @@
       map-type-id="roadmap"
       style="height: 610px"
     >
-      <GmapMarker
-        :clickable="true"
-        :draggable="false"
-        :position="marker"
-        @click="center = marker.position"
-      />
+      <GmapMarker :clickable="true" :draggable="false" :position="marker" @click="center = marker.position" />
     </GmapMap>
     {{ marker }}
   </v-container>
@@ -120,10 +69,10 @@
 <script>
 export default {
   middleware: ["authenticated"],
-  validate({ store, error }) {
-    if (store.getters.permissions.includes("casas-fe-insert")) return true;
-    else throw error({ statusCode: 403 });
+  async asyncData({ $axios, app, store, error }) {
+    store.dispatch("validatePermission", { error, permission: "casas-fe-insert" });
   },
+
   created() {
     this.$nuxt.$emit("setNavBar", {
       title: "Nueva Casa de Fe",
@@ -137,32 +86,33 @@ export default {
       const formData = new FormData();
       const fields = [
         "name",
-        "host",
-        "host_phone",
-        "exhibitor",
-        "exhibitor_phone",
+        // "host",
+        // "host_phone",
+        // "exhibitor",
+        // "exhibitor_phone",
         "schedule",
         "address",
         "order",
         "allow_matching",
         "lat",
-        "lng"
+        "lng",
+        "org_id"
       ];
 
-      fields.forEach((field) => {
+      fields.forEach(field => {
         const value = this.item[field];
         if (value !== undefined && value !== null) {
           formData.append(field, value);
         }
       });
 
-      if (this.item.host_photo_blob) {
-        formData.append("host_photo", this.item.host_photo_blob);
-      }
+      // if (this.item.host_photo_blob) {
+      //   formData.append("host_photo", this.item.host_photo_blob);
+      // }
 
-      if (this.item.exhibitor_photo_blob) {
-        formData.append("exhibitor_photo", this.item.exhibitor_photo_blob);
-      }
+      // if (this.item.exhibitor_photo_blob) {
+      //   formData.append("exhibitor_photo", this.item.exhibitor_photo_blob);
+      // }
 
       return formData;
     }
@@ -215,10 +165,10 @@ export default {
       if (!this.$refs.form.validate()) return;
 
       await this.$repository.FaithHouse.createForm(this.formData)
-        .then((res) => {
+        .then(res => {
           this.$router.push("/faith-house");
         })
-        .catch((e) => {});
+        .catch(e => {});
     }
   },
   mounted() {

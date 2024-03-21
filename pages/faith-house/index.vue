@@ -13,6 +13,7 @@
       <v-col cols="auto">
         <v-checkbox hide-details class="mt-1" label="Solo Activas" v-model="active_faith_house"></v-checkbox>
       </v-col>
+
       <v-spacer />
       <v-col cols="auto">
         <v-btn color="success" @click="$router.push('faith-house/new')" class="mb-1 mr-1">
@@ -32,6 +33,9 @@
           @focus="focusItem"
           :dialogDelete.sync="dialogDelete"
         />
+      </v-col>
+      <v-col cols="auto">
+        <v-checkbox hide-details class="mt-1" label="Ver Covertura" v-model="show_faith_house_radio"></v-checkbox>
       </v-col>
     </v-row>
 
@@ -59,21 +63,49 @@
         @closeclick="infoWindow = false"
         >{{ infoContent }}</gmap-info-window
       >
+      <template v-if="show_faith_house_radio">
+        <GmapCircle
+          v-for="(item, ix) in matchMarkers"
+          :key="ix + 'circles'"
+          :center="item"
+          :radius="item.radius"
+          :options="circleOptions"
+        />
+      </template>
+
       <GmapMarker
         @click="showInfo(item)"
-        v-for="(item, ix) in markers"
-        :key="ix"
+        v-for="(item, ix) in matchMarkers"
+        :key="ix + 'match'"
         :clickable="true"
         :draggable="false"
         :position="item"
       />
+
+      <GmapMarker
+        @click="showInfo(item)"
+        v-for="(item, ix) in unmatchMarkers"
+        :key="ix + 'unmatch'"
+        :clickable="true"
+        :draggable="false"
+        :icon="{
+          url: 'https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_green.png'
+        }"
+        :position="item"
+      />
     </GmapMap>
+
+    {{ show_faith_house_radio }}
+    {{ matchMarkers.length }}
+    {{ unmatchMarkers.length }}
   </v-container>
 </template>
 
 <script>
 export default {
-  async asyncData({ $axios, app }) {
+  async asyncData({ $axios, app, error, store }) {
+    let orgs_id = await store.dispatch("validatePermission", { permission: "casas-fe-index", error });
+
     let active_faith_house = true;
     let options = {
       sortBy: ["name"],
@@ -83,6 +115,7 @@ export default {
       with_contacts: 1
     };
     const response = await app.$repository.FaithHouse.index(options).catch(e => {});
+
     return { response, options, active_faith_house };
   },
   watch: {
@@ -98,12 +131,31 @@ export default {
     }
   },
   computed: {
-    markers() {
+    matchMarkers() {
       let faith_houses = this.response.data;
-      console.log(typeof faith_houses);
-      return faith_houses.map(x => {
-        return { lat: parseFloat(x.lat), lng: parseFloat(x.lng), name: x.name };
-      });
+
+      // skpi if lat and lng is not a number and not null
+      return faith_houses
+        .filter(x => x.lat && x.lng && !isNaN(x.lat) && !isNaN(x.lng) && x.allow_matching == 1)
+
+        .map(x => {
+          let radius = this.$store.getters.getConfig(x.org_id, "faith_house.match_radio");
+          radius = radius ? parseFloat(radius) * 1000 : 2500;
+          return { lat: parseFloat(x.lat), lng: parseFloat(x.lng), name: x.name, radius };
+        });
+    },
+    unmatchMarkers() {
+      let faith_houses = this.response.data;
+
+      // skpi if lat and lng is not a number and not null
+      return faith_houses
+        .filter(x => x.lat && x.lng && !isNaN(x.lat) && !isNaN(x.lng) && x.allow_matching != 1)
+
+        .map(x => {
+          let radius = this.$store.getters.getConfig(x.org_id, "faith_house.match_radio");
+          radius = radius ? parseFloat(radius) * 1000 : 2500;
+          return { lat: parseFloat(x.lat), lng: parseFloat(x.lng), name: x.name, radius };
+        });
     }
   },
   methods: {
@@ -152,8 +204,17 @@ export default {
   },
   data() {
     return {
+      circleOptions: {
+        fillColor: "#EF5350",
+        fillOpacity: 0.07,
+        strokeWeight: 0.2,
+        clickable: false,
+        editable: false,
+        zIndex: 1
+      },
       filterFaithHouse: "",
       active_faith_house: true,
+      show_faith_house_radio: false,
       infoWindow: false,
       infoOptions: {
         pixelOffset: {
@@ -165,16 +226,14 @@ export default {
       infoPosition: { lat: null, lng: null },
       dialogDelete: false,
       center: { lat: 25.786, lng: -100.3044 },
-
-      zoom: 14,
-
+      zoom: 15,
       response: {},
       options: {},
       currentLocation: {
         lat: 25.788294135889345,
         lng: -100.30426405190066
       },
-      circleOptions: {},
+
       mapStyle: [],
       clusterStyle: [
         {
@@ -189,9 +248,16 @@ export default {
     };
   },
   middleware: ["authenticated"],
-  validate({ store, error }) {
-    if (store.getters.permissions.includes("casas-fe-index")) return true;
-    else throw error({ statusCode: 403 });
+  mounted() {
+    let me = this;
+    // get the center of all markers,  skip if item.lat is not a number
+
+    if (this.matchMarkers.length > 0) {
+      let lat = this.matchMarkers.reduce((acc, item) => acc + parseFloat(item.lat), 0) / this.matchMarkers.length;
+      let lng = this.matchMarkers.reduce((acc, item) => acc + parseFloat(item.lng), 0) / this.matchMarkers.length;
+
+      this.center = { lat, lng };
+    }
   },
   created() {
     this.$nuxt.$emit("setNavBar", { title: "Casas de Fe", icon: "home" });

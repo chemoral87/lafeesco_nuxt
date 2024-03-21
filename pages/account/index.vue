@@ -7,20 +7,17 @@
           {{ user.second_last_name }}
         </div>
         <div class="text-h6">Email: {{ user.email }}</div>
-        v.0.0.16
+        v.2.2.16
       </v-col>
       <v-col>
-        <v-btn color="primary">Editar Nombre</v-btn>
+        <!-- <v-btn color="primary">Editar Nombre</v-btn> -->
         <v-btn color="success" @click="dialogPassword = true">Cambiar contraseña</v-btn>
       </v-col>
       <v-col cols="12">
         <div class="text-h6">Permisos:</div>
         <ul>
-          <li v-for="permission in permissions" :key="permission">
-            {{ permission }}
-          </li>
+          <li v-for="(permission, ix) in permissions" :key="ix">{{ ix }} {{ permission }}</li>
         </ul>
-        <!-- {{permissions}} -->
       </v-col>
     </v-row>
     <UserDialogPassword v-if="dialogPassword" @close="dialogPassword = false" @save="changePassword($event)">
@@ -36,17 +33,17 @@ export default {
   methods: {
     async changePassword(payload) {
       await this.$repository.User.change(payload)
-        .then((res) => {
+        .then(res => {
           // me.getUsers();
           // me.userDialog = false;
           this.$auth.logout();
         })
-        .catch((e) => { });
-    },
+        .catch(e => {});
+    }
   },
 
   data: () => ({
-    dialogPassword: false,
-  }),
+    dialogPassword: false
+  })
 };
 </script>

@@ -80,11 +80,18 @@
 
 <script>
 export default {
-  middleware: ["authenticated"],
-  validate({ store, error }) {
-    if (store.getters.permissions.includes("user-update")) return true;
-    else throw error({ statusCode: 403 });
+  async asyncData({ $axios, app, params, store, error }) {
+    let org_ids = await store.dispatch("validatePermission", { permission: "user-update", error });
+
+    const res = await app.$repository.User.show(params.id).catch(e => {});
+    const res2 = await app.$repository.Profile.index(params.id).catch(e => {});
+    return { mUser: res, profiles: res2 };
   },
+  middleware: ["authenticated"],
+  // validate({ store, error }) {
+  //   if (store.getters.permissions.includes("user-update")) return true;
+  //   else throw error({ statusCode: 403 });
+  // },
   data() {
     return {
       mUser: {},
@@ -155,11 +162,7 @@ export default {
       });
     }
   },
-  async asyncData({ $axios, app, params }) {
-    const res = await app.$repository.User.show(params.id).catch(e => {});
-    const res2 = await app.$repository.Profile.index(params.id).catch(e => {});
-    return { mUser: res, profiles: res2 };
-  },
+
   created() {
     this.$nuxt.$emit("setNavBar", {
       title: `Perfiles de: ${this.mUser.name} ${this.mUser.last_name}`,

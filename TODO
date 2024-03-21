@@ -1,11 +1,14 @@
-☐ generar los siguientes servicios POST
+
 ☐ Registro Cara Cara y EDE
 ☐ checkin con numbero de boleto
-☐ Crear perfiles por Org_id para dividir los roles
-☐ crear organizaciones y sus perfiles, cada perfil tiene rol
-☐ Agregar los contactos en el registro de la casa de fe
-☐ Eliminar anfitrion y expositor de index casa de fe
 ☐ Agregar radio a las casas de fe, circulo aldedor
+☐ Agregar modulo de configuraciones por organizacion
+☐ Agregar json default de configuracion es Laravel statico
+☐ Agregar radio para las casas de fe
+✔ Crear perfiles por Org_id para dividir los roles @done(24-03-13 18:10)
+✔ crear organizaciones y sus perfiles, cada perfil tiene rol @done(24-03-13 18:10)
+✔ Agregar los contactos en el registro de la casa de fe @done(24-03-13 18:10)
+✔ Eliminar anfitrion y expositor de index casa de fe @done(24-03-13 18:10)
 ✔ Crear Organizaciones y perfiles @done(24-03-13 17:30)
 ✔ agregar contactos en faith house all page @done(24-03-03 02:54)
 ✔ Lista de Contactos de la Casa de Fe CRUD @done(24-03-02 01:39)

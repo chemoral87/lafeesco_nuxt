@@ -33,10 +33,10 @@
 <script>
 export default {
   middleware: ["authenticated"],
-  validate({ store, error }) {
-    if (store.getters.permissions.includes("user-index")) return true;
-    else throw error({ statusCode: 403 });
-  },
+  // validate({ store, error }) {
+  //   if (store.getters.permissions.includes("user-index")) return true;
+  //   else throw error({ statusCode: 403 });
+  // },
 
   data() {
     return {
@@ -119,7 +119,9 @@ export default {
     }
   },
 
-  async asyncData({ $axios, app }) {
+  async asyncData({ $axios, app, store, error }) {
+    store.dispatch("validatePermission", { error, permission: "user-index" });
+
     let op = {
       sortBy: ["name"],
       sortDesc: [false],

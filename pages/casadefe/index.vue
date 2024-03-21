@@ -166,7 +166,6 @@ export default {
   },
   methods: {
     showGoogleMaps(faith_house) {
-      console.log("showGoogleMaps", faith_house);
       let search = faith_house.neighborhood + ", " + faith_house.municipality + ", méxico";
       let url = `https://www.google.com/maps/search/?api=1&query=${search}`;
       // let url = `https://www.google.com/maps/search/?api=1&query=${faith_house.lat},${faith_house.lng}`;
@@ -215,6 +214,7 @@ export default {
       let me = this;
       // show loader
       me.item.source = this.source;
+      me.item.org_id = "ESCO"; // la FE ESCOBEDO
       me.$repository.FaithHouseMembership.create(me.item).then(res => {
         this.match = res.match;
       });
@@ -224,6 +224,15 @@ export default {
   mounted() {
     let me = this;
     this.source = this.$route.query.source;
+    // Load Google Maps API script
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_KEY}&libraries=places`;
+    script.onload = () => {
+      this.$nextTick(() => {
+        // Google Maps API loaded, you can now use it
+      });
+    };
+    document.head.appendChild(script);
   }
 };
 </script>
