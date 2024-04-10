@@ -44,7 +44,6 @@
         <v-icon>mdi-lock</v-icon>
       </v-btn>
 
-      <!-- Usuario -->
       <v-menu v-if="authenticated" v-model="menu" offset-y :close-on-content-click="true">
         <template v-slot:activator="{ on, attrs }">
           <v-btn class="ml-3" small fab color="blue white--text" v-bind="attrs" v-on="on">
@@ -176,7 +175,7 @@ export default {
   },
   created() {
     this.$nuxt.$on("setNavBar", $event => this.setNavBar($event));
-    this.$store.dispatch("loadConfig");
+    // this.$store.dispatch("loadConfig");
   }
 };
 </script>

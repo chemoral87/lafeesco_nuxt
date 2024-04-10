@@ -12,6 +12,10 @@
               >{{ profile.organization_name }} ({{ profile.organization_short_code }})</span
             >
             <v-spacer />
+
+            <v-btn icon :color="getColorFavorite(profile.favorite)" @click="setFavProfile(profile)">
+              <v-icon>mdi-star</v-icon>
+            </v-btn>
             <v-btn icon color="primary" @click="editProfile(profile)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
@@ -108,6 +112,18 @@ export default {
   //   }
   // },
   methods: {
+    getColorFavorite(profile) {
+      return profile ? "orange" : "grey";
+    },
+    setFavProfile(profile) {
+      this.$repository.Profile.favorite(this.user_id, profile.id).then(res => {
+        // update profile.favorite and set others false
+        this.profiles = this.profiles.map(x => {
+          x.favorite = x.id == profile.id;
+          return x;
+        });
+      });
+    },
     editProfile(profile) {
       this.$router.push(`/users/${this.user_id}/profiles/${profile.id}`);
     },
@@ -125,7 +141,6 @@ export default {
       this.mUser.direct_permissions = permissions;
     },
     saveProfile(item) {
-      console.log(item);
       this.$repository.Profile.create(this.user_id, { org_id: item.org_id }).then(res => {
         this.profileDialog = false;
         // add profile to profiles

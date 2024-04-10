@@ -185,7 +185,6 @@ export default {
       });
     },
     selectPlace(place) {
-      console.log("Selected Place:", place);
       const placeService = new google.maps.places.PlacesService(document.createElement("div"));
 
       placeService.getDetails({ placeId: place.place_id }, (result, status) => {
@@ -196,7 +195,7 @@ export default {
           };
           this.item.lat = coordinates.lat;
           this.item.lng = coordinates.lng;
-          // console.log("Selected Coordinates:", coordinates);
+
           this.saveMembership();
           // get near faith house
         }

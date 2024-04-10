@@ -37,7 +37,6 @@ export default {
   },
   computed: {
     errorMessage() {
-      console.log(this.error);
       if (this.error.statusCode == 403) {
         let message = this.error.message ? this.error.message : "";
 

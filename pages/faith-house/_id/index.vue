@@ -117,7 +117,6 @@
 export default {
   middleware: ["authenticated"],
   async asyncData({ $axios, app, params, store, error }) {
-    console.log("mua");
     let org_ids = await store.dispatch("validatePermission", { permission: "casas-fe-insert", error });
     const item = await app.$repository.FaithHouse.show(params.id).catch(e => {
       error({ statusCode: e.response.status, message: e.response.data.message });

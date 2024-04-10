@@ -5,8 +5,9 @@
       <v-col cols="12">
         <div v-show="enable_camera" id="reader"></div>
         <div v-if="!enable_camera">
-          <v-btn dealer-id="34" @click="enableCamera()" color="primary"> <v-icon class="mr-1">mdi-camera</v-icon> Activar
-            Scanner </v-btn>
+          <v-btn dealer-id="34" @click="enableCamera()" color="primary">
+            <v-icon class="mr-1">mdi-camera</v-icon> Activar Scanner
+          </v-btn>
         </div>
         <div>{{ content }}</div>
         <div>{{ error_interface }}</div>
@@ -25,18 +26,17 @@ export default {
       enable_camera: true,
       registration: {},
       error_interface: "",
-      html5QrcodeScanner: null,
+      html5QrcodeScanner: null
     };
   },
   methods: {
     async getSkyKids() {
       if (this.enable_camera == false) return;
       await this.$repository.SkyRegistration.show(this.content)
-        .then((res) => {
-          console.log(res);
+        .then(res => {
           this.registration = res.data;
         })
-        .catch((e) => {
+        .catch(e => {
           alert(e);
         });
     },
@@ -44,7 +44,7 @@ export default {
       this.content = "";
       this.html5QrcodeScanner.resume();
       this.enable_camera = true;
-    },
+    }
   },
   mounted() {
     this.html5QrcodeScanner = new Html5Qrcode("reader");
@@ -53,26 +53,25 @@ export default {
         { facingMode: "environment" },
         {
           fps: 10,
-          qrbox: { width: 300, height: 300 },
+          qrbox: { width: 300, height: 300 }
         },
-        (qrCodeMessage) => {
+        qrCodeMessage => {
           this.html5QrcodeScanner.pause();
           this.content = qrCodeMessage;
           this.getSkyKids();
           this.enable_camera = false;
         },
-        (errorMessage) => { }
+        errorMessage => {}
       )
-      .catch((err) => {
+      .catch(err => {
         this.error_interface = `No se pudo comenzar a escanear, error: ${err}`;
-        console.log(`Unable to start scanning, error: ${err}`);
       });
   },
   created() {
     this.$nuxt.$emit("setNavBar", {
       title: "SkyKids CheckIn",
-      icon: "qrcode-scan",
+      icon: "qrcode-scan"
     });
-  },
+  }
 };
 </script>

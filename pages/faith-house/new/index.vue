@@ -63,7 +63,7 @@
     >
       <GmapMarker :clickable="true" :draggable="false" :position="marker" @click="center = marker.position" />
     </GmapMap>
-    {{ marker }}
+    
   </v-container>
 </template>
 <script>

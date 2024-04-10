@@ -12,13 +12,14 @@ import AgroEventRepository from "../AgroEventRepository";
 import TemplateGeneratorRepository from "../TemplateGeneratorRepository";
 import MinistryLeaderRepository from "../MinistryLeaderRepository";
 import UserRepository from "../UserRepository";
+import ProfileRepository from "../ProfileRepository";
 // import SkyRegistrationRepository from '../SkyRegistrationRepository'
 
 export default $axios => ({
   Role: CommonRepository($axios)("/roles"),
   Permission: CommonRepository($axios)("/permissions"),
   User: UserRepository($axios)("/users"),
-  Profile: ParentRepository($axios)("/profiles"),
+  Profile: ProfileRepository($axios)("/profiles"),
   ////////////////////////////////////////////////
   Investor: InvestorRepository($axios)("/investor"),
   InvestorProfile: InvestorProfileRepository($axios)("/investor-profile"),

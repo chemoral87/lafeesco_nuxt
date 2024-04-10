@@ -41,15 +41,7 @@
 
     <GmapMap
       :center="center"
-      :options="{
-        zoomControl: true,
-        mapTypeControl: true,
-        scaleControl: true,
-        streetViewControl: false,
-        rotateControl: false,
-        fullscreenControl: false,
-        disableDefaultUi: false
-      }"
+      :options="mapOptions"
       :zoom="zoom"
       @center_changed="updateCenter"
       @zoom_changed="updateZoom"
@@ -89,15 +81,11 @@
         :clickable="true"
         :draggable="false"
         :icon="{
-          url: 'https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_green.png'
+          url: 'https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_blue.png'
         }"
         :position="item"
       />
     </GmapMap>
-
-    {{ show_faith_house_radio }}
-    {{ matchMarkers.length }}
-    {{ unmatchMarkers.length }}
   </v-container>
 </template>
 
@@ -243,6 +231,22 @@ export default {
           textColor: "#fff"
         }
       ],
+      mapOptions: {
+        zoomControl: true,
+        mapTypeControl: true,
+        scaleControl: true,
+        streetViewControl: false,
+        rotateControl: false,
+        fullscreenControl: false,
+        disableDefaultUi: false,
+        styles: [
+          {
+            featureType: "all",
+            elementType: "labels.icon",
+            stylers: [{ visibility: "off" }]
+          }
+        ]
+      },
       dialogDeleteProp: {},
       dialogDelete: false
     };
@@ -251,13 +255,26 @@ export default {
   mounted() {
     let me = this;
     // get the center of all markers,  skip if item.lat is not a number
-
     if (this.matchMarkers.length > 0) {
       let lat = this.matchMarkers.reduce((acc, item) => acc + parseFloat(item.lat), 0) / this.matchMarkers.length;
       let lng = this.matchMarkers.reduce((acc, item) => acc + parseFloat(item.lng), 0) / this.matchMarkers.length;
-
       this.center = { lat, lng };
     }
+
+    let org = this.$store.getters.orgs[0];
+
+    this.$store.dispatch("loadConfig", ["faith_house"]).then(res => {
+      let zoomi = me.$store.getters.getConfig(org.id, "faith_house.map_zoom");
+      me.zoom = zoomi ? parseInt(zoomi) : 13;
+    });
+
+    // calculate the zoom level with the matchMarkers, use a eauation
+    // let zoom = 12;
+    // if (this.matchMarkers.length > 0) {
+    //   let max = this.matchMarkers.reduce((acc, item) => Math.max(acc, item.radius), 0);
+    //   zoom = Math.round(14 - Math.log2(max / 1000));
+    // }
+    // this.zoom = zoom;
   },
   created() {
     this.$nuxt.$emit("setNavBar", { title: "Casas de Fe", icon: "home" });

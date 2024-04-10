@@ -41,13 +41,13 @@ export const getters = {
     return state.hide_next_loading;
   },
   getConfig: state => (org, parameter) => {
-    console.log(state.config);
     if (state.config.length == 0) return null;
     let config = state.config.find(c => c.org_id == org);
     if (config == null) return null;
-    console.log(config, "tconfig");
+
     // validate if exists the parameter
     if (!config.keys.hasOwnProperty(parameter)) return null;
+
     return config.keys[parameter];
   }
 };
@@ -144,10 +144,9 @@ export const actions = {
   showNextLoading({ commit }) {
     commit("SHOW_NEXT_LOADING");
   },
-  loadConfig({ commit }) {
-    this.$repository.Config.index({ settings: ["faith_house"] }).then(res => {
+  async loadConfig({ commit }, settings) {
+    await this.$repository.Config.index({ settings: settings }).then(res => {
       commit("SET_CONFIG", res);
     });
-    // call repository Config
   }
 };

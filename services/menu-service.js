@@ -6,12 +6,6 @@ export class MenuService {
 
   hasPermission(permission) {
     return this.permissions.hasOwnProperty(permission);
-    // let permissionId = this.permissions[permission];
-    // if (permissionId) {
-    //   console.log("permissionId", permissionId);
-    //   return true;
-    // }
-    // return this.permissions.includes(permission);
   }
 
   getMenu() {

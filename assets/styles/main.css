@@ -1,13 +1,9 @@
-/* .v-btn:not(.v-btn--outlined).return {
-  color: #ffffff;
-} */
-/* .v-data-table__wrapper {
-  overflow-x: visible;
-} */
-/* .v-data-table__wrapper{
-  overflow-x:auto;
-  }
- */
+
+html { overflow: auto }
+
+.invisible-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 
 .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
   padding: 0 7px !important;
@@ -17,7 +13,6 @@
   padding: 0 7px !important;
 }
 
-/* pagination start */
 .v-application--is-ltr .v-data-footer__pagination {
   margin: 0 3px 0 3px !important;
 }
@@ -47,8 +42,3 @@
   text-align: left !important;
 }
 
-/* .wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-} */

@@ -2,14 +2,7 @@
   <v-container fluid class="pa-2">
     <v-row dense>
       <v-col cols="auto">
-        <v-select
-          label="Acordes"
-          v-model="selected_chord"
-          :items="chords"
-          item-value="id"
-          item-text="name"
-        >
-        </v-select>
+        <v-select label="Acordes" v-model="selected_chord" :items="chords" item-value="id" item-text="name"> </v-select>
       </v-col>
       <v-col cols="12">
         <v-btn @click="getChords()" color="primary"> Generar </v-btn>
@@ -24,11 +17,7 @@
         <v-simple-table>
           <tbody>
             <tr v-for="(chord, ix) in chords_table" :key="ix">
-              <td
-                v-for="(not, ixs) in chord"
-                :key="ix + 'x' + ixs"
-                :class="{ 'bg-green-1': not.note == common_note }"
-              >
+              <td v-for="(not, ixs) in chord" :key="ix + 'x' + ixs" :class="{ 'bg-green-1': not.note == common_note }">
                 {{ not.letter }}
               </td>
             </tr>
@@ -86,7 +75,7 @@ export default {
       if (this.last_array_notes.length == 0) {
         return "";
       }
-      this.last_array_notes.forEach((x) => {
+      this.last_array_notes.forEach(x => {
         counts[x] = (counts[x] || 0) + 1;
       });
       let max = Object.keys(counts).reduce((a, b) => (counts[a] > counts[b] ? a : b));
@@ -205,7 +194,7 @@ export default {
     getChords() {
       this.audioContext.resume();
       this.chords_table = [];
-      //   console.log(this.selected_chord);
+
       if (this.selected_chord == 1) {
         let a = 0;
         let b = 4;
@@ -276,8 +265,8 @@ export default {
         }
       }
 
-      this.chords_table = this.chords_table.map((chord) => {
-        return chord.map((note) => {
+      this.chords_table = this.chords_table.map(chord => {
+        return chord.map(note => {
           return { letter: this.notes[note], note };
         });
       });
@@ -294,13 +283,13 @@ export default {
   mounted() {
     navigator.mediaDevices
       .getUserMedia({ audio: true })
-      .then((stream) => {
+      .then(stream => {
         const source = this.audioContext.createMediaStreamSource(stream);
         source.connect(this.analyser);
         // source.connect(this.audioContext.destination);
         this.updateFrequency();
       })
-      .catch((err) => {
+      .catch(err => {
         console.error("Error accessing microphone:", err);
       });
     // necesarry

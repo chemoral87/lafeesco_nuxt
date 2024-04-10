@@ -2,14 +2,7 @@
   <v-container fluid class="pa-2">
     <v-row dense>
       <v-col cols="auto">
-        <v-select
-          label="Acordes"
-          v-model="selected_chord"
-          :items="chords"
-          item-value="id"
-          item-text="name"
-        >
-        </v-select>
+        <v-select label="Acordes" v-model="selected_chord" :items="chords" item-value="id" item-text="name"> </v-select>
       </v-col>
       <v-col cols="12">
         <v-btn @click="getChords()" color="primary"> Generar </v-btn>
@@ -34,11 +27,7 @@
         <v-simple-table>
           <tbody>
             <tr v-for="(chord, ix) in chords_table" :key="ix">
-              <td
-                v-for="(not, ixs) in chord"
-                :key="ix + 'x' + ixs"
-                :class="{ 'bg-green-1': not.note == common_note }"
-              >
+              <td v-for="(not, ixs) in chord" :key="ix + 'x' + ixs" :class="{ 'bg-green-1': not.note == common_note }">
                 {{ not.letter }}
               </td>
             </tr>
@@ -65,20 +54,7 @@ export default {
         { id: 5, name: "Escala Pentatónica Menor" }
       ],
       chords_table: [],
-      notes: [
-        "C",
-        "C# / Db",
-        "D",
-        "D# / Eb",
-        "E",
-        "F",
-        "F# / Gb",
-        "G",
-        "G# / Ab",
-        "A",
-        "A# / Bb",
-        "B"
-      ],
+      notes: ["C", "C# / Db", "D", "D# / Eb", "E", "F", "F# / Gb", "G", "G# / Ab", "A", "A# / Bb", "B"],
       selected_chord: 1,
       frequency: 0,
       note: "",
@@ -95,7 +71,7 @@ export default {
       if (this.last_array_notes.length == 0) {
         return "";
       }
-      this.last_array_notes.forEach((x) => {
+      this.last_array_notes.forEach(x => {
         counts[x] = (counts[x] || 0) + 1;
       });
       let max = Object.keys(counts).reduce((a, b) => (counts[a] > counts[b] ? a : b));
@@ -223,13 +199,13 @@ export default {
         this.initAudioContext();
         navigator.mediaDevices
           .getUserMedia({ audio: true })
-          .then((stream) => {
+          .then(stream => {
             const source = this.audioContext.createMediaStreamSource(stream);
             source.connect(this.analyser);
             // source.connect(this.audioContext.destination);
             this.updateFrequency();
           })
-          .catch((err) => {
+          .catch(err => {
             console.error("Error accessing microphone:", err);
           });
         this.audioIsPlaying = true;
@@ -239,25 +215,7 @@ export default {
         // this.audioContext.suspend();
       }
     },
-    // offOn() {
-    //   console.log(this.audioContext.state);
-    //   if (this.audioContext.state === "suspended") {
-    //     this.audioContext.resume();
-    //     navigator.mediaDevices
-    //       .getUserMedia({ audio: true })
-    //       .then((stream) => {
-    //         const source = this.audioContext.createMediaStreamSource(stream);
-    //         source.connect(this.analyser);
-    //         // source.connect(this.audioContext.destination);
-    //         this.updateFrequency();
-    //       })
-    //       .catch((err) => {
-    //         console.error("Error accessing microphone:", err);
-    //       });
-    //   } else {
-    //     this.audioContext.suspend();
-    //   }
-    // },
+
     initAudioContext() {
       this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       this.analyser = this.audioContext.createAnalyser();
@@ -278,7 +236,7 @@ export default {
       const chord = chordConfig[selectedChord];
       let a = 0;
       while (a < 12) {
-        this.chords_table.push(chord.map((note) => ({ letter: this.notes[note], note })));
+        this.chords_table.push(chord.map(note => ({ letter: this.notes[note], note })));
         if (a === 11) break;
         chord.forEach((_, index) => (chord[index] = (chord[index] + 1) % 12));
         a = a + 1;
