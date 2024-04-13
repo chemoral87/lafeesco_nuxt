@@ -121,7 +121,7 @@ export default {
 
   methods: {
     sendWhatsapp(to_number) {
-      // remove hypens
+      // remove all spaces and hyphens
       to_number = to_number.replace(/-/g, "");
 
       const { name, age, street_address, house_number, neighborhood, municipality, phone, marital_status } =
