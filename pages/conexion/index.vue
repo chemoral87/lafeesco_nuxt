@@ -218,7 +218,7 @@ export default {
     },
     saveMembership() {
       let me = this;
-      // tes
+      // tess
       me.item.source = this.source;
       me.item.org_id = "APO"; // la FE APODACA
       me.$repository.FaithHouseMembership.create(me.item).then(res => {
