@@ -63,7 +63,6 @@
     >
       <GmapMarker :clickable="true" :draggable="false" :position="marker" @click="center = marker.position" />
     </GmapMap>
-    
   </v-container>
 </template>
 <script>
@@ -166,7 +165,8 @@ export default {
 
       await this.$repository.FaithHouse.createForm(this.formData)
         .then(res => {
-          this.$router.push("/faith-house");
+          // redirect to add contacts
+          this.$router.push("/faith-house/" + res.id);
         })
         .catch(e => {});
     }
