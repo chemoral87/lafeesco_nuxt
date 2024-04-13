@@ -8,7 +8,7 @@
         ></v-img>
       </center>
       <v-card-title class="py-1">Grupos Conexión</v-card-title>
-      <v-card-subtitle class="py-1">Castillo del Rey La Fe</v-card-subtitle>
+      <v-card-subtitle class="py-1">Castillo del Rey La Fe Apodaca</v-card-subtitle>
 
       <template v-if="!submitted">
         <v-card-text class="py-1">
