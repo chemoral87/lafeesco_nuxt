@@ -4,7 +4,7 @@
       <v-col>
         <v-card>
           <v-card-title>
-            <v-row>
+            <v-row dense>
               <v-col cols="12">
                 <h3>{{ organization.name }} ({{ organization.short_code }})</h3>
               </v-col>
