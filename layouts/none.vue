@@ -1,5 +1,5 @@
 <template>
-  <v-app dark>
+  <v-app>
     <v-main>
       <v-container fluid class="pa-0">
         <Nuxt />
@@ -9,7 +9,7 @@
 
       <div class="snackbar-wrapper">
         <v-snackbar
-          v-for="(snack, i) in snacks.filter((s) => s.display == true)"
+          v-for="(snack, i) in snacks.filter(s => s.display == true)"
           :key="i + 'snackbars'"
           :color="snack.color"
           v-model="snack.showing"

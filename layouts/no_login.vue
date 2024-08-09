@@ -1,5 +1,5 @@
 <template>
-  <v-app dark>
+  <v-app>
     <v-navigation-drawer
       :color="authenticated ? '' : 'banner'"
       v-model="drawer"

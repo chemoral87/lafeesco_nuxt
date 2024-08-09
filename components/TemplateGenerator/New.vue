@@ -6,56 +6,56 @@
 </template>
 <script>
 export default {
-  props: ['component', 'definitions', 'table_name', 'model_name'],
+  props: ["component", "definitions", "table_name", "variable_name"],
   data() {
     return {
       // Modelname: "",
-    }
+    };
   },
   methods: {
     async toCopy() {
       let message = this.$refs.message.innerHTML
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&quot;/g, '"')
-      await navigator.clipboard.writeText(message)
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"');
+      await navigator.clipboard.writeText(message);
     }
   },
   computed: {
     Modelname() {
-      let str = this.model_name.toLowerCase()
-      return str.charAt(0).toUpperCase() + str.slice(1)
+      let str = this.variable_name.toLowerCase();
+      return str.charAt(0).toUpperCase() + str.slice(1);
     },
     colRows() {
-      let columns = ''
+      let columns = "";
       for (let [i, def] of this.definitions.entries()) {
-        if (def.column_key != 'PRI' && !['created_at', 'updated_at'].includes(def.column_name)) {
+        if (def.column_key != "PRI" && !["created_at", "updated_at"].includes(def.column_name)) {
           if (i > 1) {
-            columns += '\n'
+            columns += "\n";
           }
           columns += `<v-col cols="6" md="3">
             <v-text-field
             outlined
             label="${def.column_name}"
-            v-model="${this.model_name}.${def.column_name}"
+            v-model="${this.variable_name}.${def.column_name}"
             :rules="[(v) => !!v || 'Campo requerido']"
             />
-          </v-col>`
+          </v-col>`;
         }
       }
-      return columns
+      return columns;
     },
     headers() {
-      let header = ''
+      let header = "";
       for (let def of this.definitions) {
-        if (def.column_key != 'PRI' && !['created_at', 'updated_at'].includes(def.column_name)) {
-          header += `{   text: "${def.column_name}", value: "${def.column_name}", sortable: false },`
+        if (def.column_key != "PRI" && !["created_at", "updated_at"].includes(def.column_name)) {
+          header += `{   text: "${def.column_name}", value: "${def.column_name}", sortable: false },`;
         }
       }
-      return header
+      return header;
     },
     templ() {
-      if (this.model_name == '') return ''
+      if (this.variable_name == "") return "";
       return `<template>
   <v-container fluid>
     <v-form ref="form" @submit.prevent="save${this.Modelname}">
@@ -83,29 +83,29 @@ export default {
 export default {
   data() {
     return {
-      ${this.model_name}: {}
+      ${this.variable_name}: {}
     }
   },
   methods: {
     async save${this.Modelname}() {
       if (!this.$refs.form.validate()) return;
 
-      await this.$repository.${this.Modelname}.create(this.${this.model_name})
+      await this.$repository.${this.Modelname}.create(this.${this.variable_name})
         .then((res) => {
-          this.$router.push("/${this.model_name}");
+          this.$router.push("/${this.variable_name}");
         })
         .catch((e) => {
           alert(e);
         });
     },
     cancel() {
-      this.$router.push("/${this.model_name}");
+      this.$router.push("/${this.variable_name}");
     },
   },
   middleware: ["authenticated"],
   validate({ store, error }) {
     return true;
-    let permission = "${this.model_name}-create";
+    let permission = "${this.variable_name}-create";
     if (store.getters.permissions.includes(permission)) return true;
     else
     throw error({
@@ -121,14 +121,14 @@ export default {
   },
 };
 <\/script>
- `
+ `;
     }
   },
 
   mounted() {
-    let me = this
+    let me = this;
   }
-}
+};
 </script>
 <style scoped>
 .templ {

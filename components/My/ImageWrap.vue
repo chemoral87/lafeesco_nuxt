@@ -1,26 +1,13 @@
 <template>
   <div>
     <div class="wrapper">
-      <v-btn
-        @click="confirmRemove()"
-        color="error"
-        class="mt-8"
-        dark
-        small
-        absolute
-        style="top: -50px"
-        right
-        fab
-      >
+      <v-btn @click="confirmRemove()" color="error" class="mt-8" small absolute style="top: -50px" right fab>
         <v-icon>mdi-delete</v-icon>
       </v-btn>
       <v-img style="min-height: 30px" v-bind="{ ...$props, ...$attrs }">
         <template v-slot:placeholder>
           <v-row class="fill-height ma-0" align="center" justify="center">
-            <v-progress-circular
-              indeterminate
-              color="grey lighten-1"
-            ></v-progress-circular>
+            <v-progress-circular indeterminate color="grey lighten-1"></v-progress-circular>
           </v-row>
         </template>
       </v-img>
@@ -39,7 +26,7 @@ export default {
   data() {
     return {
       dialogDelete: false,
-      dialogDeleteProp: {},
+      dialogDeleteProp: {}
     };
   },
   methods: {
@@ -50,14 +37,14 @@ export default {
     confirmRemove(imu) {
       this.dialogDeleteProp = {
         text: "Desea eliminar esta imagen ",
-        strong: "",
+        strong: ""
       };
       this.dialogDelete = true;
-    },
+    }
   },
   mounted() {
     let me = this;
-  },
+  }
 };
 </script>
 <style scoped>

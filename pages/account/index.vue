@@ -16,7 +16,8 @@
       <v-col cols="12">
         <div class="text-h6">Permisos:</div>
         <ul>
-          <li v-for="(permission, ix) in permissions" :key="ix">{{ ix }} {{ permission }}</li>
+          <!-- <li v-for="(permission, ix) in permissions" :key="ix">{{ ix }} {{ permission }}</li> -->
+          <li v-for="(permission, ix) in permissions" :key="ix">{{ ix }}</li>
         </ul>
       </v-col>
     </v-row>

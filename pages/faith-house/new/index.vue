@@ -28,7 +28,12 @@
           </v-checkbox>
         </v-col>
         <v-col cols="6" md="3" lg="2">
-          <organization-select v-model="item.org_id" outlined :rules="[$vrules.required]" />
+          <organization-select
+            v-model="item.org_id"
+            :permission="'casas-fe-insert'"
+            outlined
+            :rules="[$vrules.required]"
+          />
         </v-col>
       </v-row>
 
@@ -141,7 +146,6 @@ export default {
       this.marker = { lat: center.lat(), lng: center.lng() };
       this.item.lat = center.lat();
       this.item.lng = center.lng();
-      // this.map.locati = center.lat().toFixed(9) + " " + center.lng().toFixed(9); //this.marker.position;
     },
     updateZoom(zoom) {
       this.map.zoom = zoom;

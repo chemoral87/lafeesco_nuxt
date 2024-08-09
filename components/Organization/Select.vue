@@ -3,7 +3,7 @@
 </template>
 <script>
 export default {
-  props: {},
+  props: ["permission"],
   data() {
     return {
       items: [],
@@ -18,9 +18,15 @@ export default {
   methods: {},
   mounted() {
     let me = this;
-    me.items = this.orgs;
-    if (this.orgs.length == 1) {
-      me.selected = this.orgs[0].id;
+    let org_ids = this.permissions[this.permission];
+
+    let filter_orgs = this.orgs.filter(org => org_ids.includes(org.id));
+
+    me.items = filter_orgs;
+
+    // select if only one
+    if (filter_orgs.length == 1) {
+      me.selected = filter_orgs[0].id;
     }
   }
 };

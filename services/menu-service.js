@@ -156,6 +156,14 @@ export class MenuService {
           to: "/template-generator"
         });
       }
+
+      if (this.hasPermission("parking-car-index")) {
+        menu.push({
+          icon: "mdi-car",
+          title: "Estacionamiento",
+          to: "/parking-car"
+        });
+      }
       // menu.push({
       //   icon: "mdi-chart-bar",
       //   title: "ReportesA",

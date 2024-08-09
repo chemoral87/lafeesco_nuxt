@@ -1,5 +1,5 @@
 <template>
-  <v-app dark>
+  <v-app class="back_white">
     <v-navigation-drawer
       :color="authenticated ? '' : 'banner'"
       v-model="drawer"
@@ -179,7 +179,7 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .snackbar-wrapper {
   position: fixed;
   height: 100%;
@@ -188,5 +188,8 @@ export default {
   top: 0;
   left: 0;
   z-index: 1000;
+}
+.back_white {
+  background-color: #f5f5f5 !important;
 }
 </style>

@@ -34,12 +34,26 @@
           </tbody>
         </v-simple-table>
 
-        <!-- {{ chords_table }} -->
+        {{ Object.entries(notes) }} <br /><br />
+        <v-text-field v-model="common_note_input" label="Common Notes"></v-text-field>
+        {{ common_note }} <br />
+        {{ chord_list_filtered }} <br />
+        <span v-for="chor in chord_list_filtered"> {{ chor.name }} , </span>
+
+        <!-- <table>
+          <tr v-for="chord in chord_list">
+            <td>
+              {{ chord.name }}
+            </td>
+            <td>{{ getLettersNotes(chord.notes) }}</td>
+          </tr>
+        </table> -->
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script>
+import { chord_list, notes_list } from "./chords.js";
 export default {
   data() {
     // this.initi();
@@ -54,6 +68,8 @@ export default {
         { id: 5, name: "Escala Pentatónica Menor" }
       ],
       chords_table: [],
+      chordy: [],
+      chord_list: chord_list,
       notes: ["C", "C# / Db", "D", "D# / Eb", "E", "F", "F# / Gb", "G", "G# / Ab", "A", "A# / Bb", "B"],
       selected_chord: 1,
       frequency: 0,
@@ -61,21 +77,34 @@ export default {
       last_array_notes: [],
       max_array_notes: 11,
       audioContext: null,
-      analyser: null
+      analyser: null,
+
+      common_note_input: "4,6,8,9,10,0,2"
     };
   },
   computed: {
     // get the value in last_array_notes
+    chord_list_filtered() {
+      // include if match at least with n-1 notes
+      return this.chord_list.filter(
+        x => x.notes.filter(y => this.common_note.includes(y)).length >= this.common_note.length - 1
+      );
+
+      //return this.chord_list.filter(x => x.notes.every(y => this.common_note.includes(y)));
+
+      //return this.chord_list.filter(x => x.notes.includes(this.common_note));
+    },
     common_note() {
-      let counts = {};
-      if (this.last_array_notes.length == 0) {
-        return "";
-      }
-      this.last_array_notes.forEach(x => {
-        counts[x] = (counts[x] || 0) + 1;
-      });
-      let max = Object.keys(counts).reduce((a, b) => (counts[a] > counts[b] ? a : b));
-      return max;
+      return this.common_note_input.split(",").map(x => parseInt(x));
+      // let counts = {};
+      // if (this.last_array_notes.length == 0) {
+      //   return "";
+      // }
+      // this.last_array_notes.forEach(x => {
+      //   counts[x] = (counts[x] || 0) + 1;
+      // });
+      // let max = Object.keys(counts).reduce((a, b) => (counts[a] > counts[b] ? a : b));
+      // return max;
     },
     audioContextStateColor() {
       return this.audioIsPlaying == false ? "primary" : "error";
@@ -85,6 +114,27 @@ export default {
     }
   },
   methods: {
+    getLettersNotes(notes) {
+      // return notes.map(x => this.notes[x]);
+      // return map separate by comma use note_list
+      //       export const notes_list = [
+      //   { letter: ["C"], value: 0 },
+      //   { letter: ["C#", "Db"], value: 1 },
+      //   { letter: ["D"], value: 2 },
+      //   { letter: ["D#", "Eb"], value: 3 },
+      //   { letter: ["E"], value: 4 },
+      //   { letter: ["F"], value: 5 },
+      //   { letter: ["F#", "Gb"], value: 6 },
+      //   { letter: ["G"], value: 7 },
+      //   { letter: ["G#", "Ab"], value: 8 },
+      //   { letter: ["A"], value: 9 },
+      //   { letter: ["A#", "Bb"], value: 10 },
+      //   { letter: ["B"], value: 11 }
+      // ];
+      return notes.map(x => notes_list[x].letter[0]).join("-");
+
+      // return notes.map(x => this.notes[x]).join("-");
+    },
     updateFrequency() {
       requestAnimationFrame(() => this.updateFrequency());
       // this.analyser.getFloatTimeDomainData(new Float32Array(this.analyser.fftSize));
@@ -222,6 +272,7 @@ export default {
     },
     getChords() {
       this.chords_table = [];
+      // this.chordy = [];
 
       const chordConfig = [
         [0, 4, 7],
@@ -241,6 +292,28 @@ export default {
         chord.forEach((_, index) => (chord[index] = (chord[index] + 1) % 12));
         a = a + 1;
       }
+
+      let chorda = chordConfig[0];
+      a = 0;
+      while (a < 12) {
+        this.chordy.push({ name: this.notes[a], notes: Object.assign([], chorda) });
+
+        if (a === 11) break;
+        chorda.forEach((_, index) => (chorda[index] = (chorda[index] + 1) % 12));
+        a = a + 1;
+      }
+
+      chorda = chordConfig[1];
+      chorda.forEach((_, index) => (chorda[index] = (chorda[index] + 1) % 12));
+
+      a = 0;
+      while (a < 12) {
+        this.chordy.push({ name: this.notes[a] + "m", notes: Object.assign([], chorda) });
+
+        if (a === 11) break;
+        chorda.forEach((_, index) => (chorda[index] = (chorda[index] + 1) % 12));
+        a = a + 1;
+      }
     }
   },
   created() {
@@ -254,6 +327,7 @@ export default {
   },
   mounted() {
     this.initAudioContext();
+    console.log(chord_list);
   }
 };
 </script>

@@ -34,6 +34,8 @@ export default $axios => ({
   FaithHouseMembership: CommonRepository($axios)("/faith-house-membership"),
   Organization: CommonRepository($axios)("/organizations"),
   OrganizationConfig: ParentRepository($axios)("/organization-configs"),
+  ParkingCar: CommonRepository($axios)("/parking-car"),
+  ParkingCarContact: ParentRepository($axios)("/parking-car-contact"),
   Config: CommonRepository($axios)("/configs"),
   AgroEvent: AgroEventRepository($axios)("/agro-event"),
   Attendant: CommonRepository($axios)("/attendant"),

@@ -1,0 +1,41 @@
+export const notes_list = [
+  { letter: ["C"], value: 0 },
+  { letter: ["C#", "Db"], value: 1 },
+  { letter: ["D"], value: 2 },
+  { letter: ["D#", "Eb"], value: 3 },
+  { letter: ["E"], value: 4 },
+  { letter: ["F"], value: 5 },
+  { letter: ["F#", "Gb"], value: 6 },
+  { letter: ["G"], value: 7 },
+  { letter: ["G#", "Ab"], value: 8 },
+  { letter: ["A"], value: 9 },
+  { letter: ["A#", "Bb"], value: 10 },
+  { letter: ["B"], value: 11 }
+];
+
+export const chord_list = [
+  { name: "C", notes: [0, 4, 7] },
+  { name: "C# / Db", notes: [1, 5, 8] },
+  { name: "D", notes: [2, 6, 9] },
+  { name: "D# / Eb", notes: [3, 7, 10] },
+  { name: "E", notes: [4, 8, 11] },
+  { name: "F", notes: [5, 9, 0] },
+  { name: "F# / Gb", notes: [6, 10, 1] },
+  { name: "G", notes: [7, 11, 2] },
+  { name: "G# / Ab", notes: [8, 0, 3] },
+  { name: "A", notes: [9, 1, 4] },
+  { name: "A# / Bb", notes: [10, 2, 5] },
+  { name: "B", notes: [11, 3, 6] },
+  { name: "Cm", notes: [0, 3, 7] },
+  { name: "C#m / Dbm", notes: [1, 4, 8] },
+  { name: "Dm", notes: [2, 5, 9] },
+  { name: "D#m / Ebm", notes: [3, 6, 10] },
+  { name: "Em", notes: [4, 7, 11] },
+  { name: "Fm", notes: [5, 8, 0] },
+  { name: "F#m / Gbm", notes: [6, 9, 1] },
+  { name: "Gm", notes: [7, 10, 2] },
+  { name: "G#m / Abm", notes: [8, 11, 3] },
+  { name: "Am", notes: [9, 0, 4] },
+  { name: "A#m / Bbm", notes: [10, 1, 5] },
+  { name: "Bm", notes: [11, 2, 6] }
+];

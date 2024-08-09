@@ -1,10 +1,6 @@
 <template>
   <section id="hero">
-    <v-parallax
-      dark
-      :src="isXs ? '/img/bgHeroXs.jpg' : '/img/bgHero.jpg'"
-      height="750"
-    >
+    <v-parallax :src="isXs ? '/img/bgHeroXs.jpg' : '/img/bgHero.jpg'" height="750">
       <v-row align="center" justify="center">
         <v-col cols="10">
           <v-row align="center" justify="center">
@@ -14,14 +10,7 @@
                 Bienvenidos a tu iglesia <br />
                 un lugar de adoración.<br />
               </h1>
-              <v-btn
-                rounded
-                outlined
-                large
-                dark
-                @click="$vuetify.goTo('#activities')"
-                class="mt-5"
-              >
+              <v-btn rounded outlined large @click="$vuetify.goTo('#activities')" class="mt-5">
                 Actividades
                 <v-icon class="ml-2">mdi-arrow-down</v-icon>
               </v-btn>
@@ -65,12 +54,7 @@
                     />
                   </svg>
                 </a>
-                <p
-                  @click.stop="dialog = true"
-                  class="text-h5 ml-2 mb-0 text-decoration-underline"
-                >
-                  Hablando con caFé
-                </p>
+                <p @click.stop="dialog = true" class="text-h5 ml-2 mb-0 text-decoration-underline">Hablando con caFé</p>
               </div>
             </v-col>
             <v-col cols="12" md="6" xl="4" class="hidden-sm-and-down"> </v-col>
@@ -85,22 +69,9 @@
       <v-row dense align="center" justify="center">
         <v-col cols="11">
           <v-row align="center" justify="space-around">
-            <v-col
-              cols="12"
-              sm="6"
-              md="4"
-              lg="3"
-              class="text-center"
-              v-for="(activity, i) in activities"
-              :key="i"
-            >
+            <v-col cols="12" sm="6" md="4" lg="3" class="text-center" v-for="(activity, i) in activities" :key="i">
               <v-hover v-slot:default="{ hover }">
-                <v-card
-                  class="card"
-                  shaped
-                  :elevation="hover ? 10 : 4"
-                  :class="{ up: hover }"
-                >
+                <v-card class="card" shaped :elevation="hover ? 10 : 4" :class="{ up: hover }">
                   <v-img
                     :src="activity.img"
                     max-width="100px"
@@ -111,10 +82,7 @@
                   <h4 class="font-weight-regular subtitle-1">
                     {{ activity.text }}
                   </h4>
-                  <h5
-                    class="font-weight-regular subtitle-2"
-                    v-if="activity.schedule"
-                  >
+                  <h5 class="font-weight-regular subtitle-2" v-if="activity.schedule">
                     {{ activity.schedule }}
                   </h5>
                 </v-card>
@@ -127,12 +95,7 @@
     <v-dialog v-model="dialog" max-width="640px">
       <v-card>
         <no-ssr placeholder="Loading...">
-          <youtube
-            :video-id="videoId"
-            @ready="ready"
-            @playing="playing"
-            :player-width="getMaxWindow()"
-          ></youtube>
+          <youtube :video-id="videoId" @ready="ready" @playing="playing" :player-width="getMaxWindow()"></youtube>
         </no-ssr>
       </v-card>
     </v-dialog>
@@ -154,43 +117,43 @@ export default {
           img: "/img/ede.png",
           title: "Escuela de Discípulado y Entrenamiento (EDE) ",
           text: "Entrenamiento para formar líderes.",
-          schedule: "Lunes 8pm",
+          schedule: "Lunes 8pm"
         },
         {
           img: "/img/casa_fe.png",
           title: "Casas de Fe",
           text: "Hogares cumpliendo la visión celular.",
-          schedule: "Martes 8pm*",
+          schedule: "Martes 8pm*"
         },
 
         {
           img: "/img/reto_valientes.png",
           title: "Reto de Valientes",
           text: "Formación para las familias en Cristo.",
-          schedule: "Sábado 4pm",
+          schedule: "Sábado 4pm"
         },
         {
           img: "/img/reconfortados.png",
           title: "Reconfortados",
-          text: "Personas en situación de viudez, separación o padres solteros.",
+          text: "Personas en situación de viudez, separación o padres solteros."
         },
         {
           img: "/img/oracion.png",
           title: "Oración",
           text: "Interseción por peticiones y necesidades.",
-          schedule: "Lunes a Viernes 8am",
+          schedule: "Lunes a Viernes 8am"
         },
         {
           img: "/img/jovenes.png",
           title: "Jóvenes Nuevo Horizonte",
-          text: "Reunión de jovenes y actividades evangelísticas.",
+          text: "Reunión de jovenes y actividades evangelísticas."
         },
         {
           img: "/img/icon3.png",
           title: "Ados",
-          text: "Reunión de adolescentes.",
-        },
-      ],
+          text: "Reunión de adolescentes."
+        }
+      ]
     };
   },
   watch: {
@@ -198,7 +161,7 @@ export default {
       if (!value) {
         this.pause();
       }
-    },
+    }
   },
   methods: {
     ready(event) {
@@ -223,8 +186,8 @@ export default {
     },
     pause() {
       this.player.pauseVideo();
-    },
-  },
+    }
+  }
 };
 </script>
 

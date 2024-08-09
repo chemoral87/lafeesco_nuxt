@@ -33,13 +33,6 @@ export default {
         .replace(/&gt;/g, ">")
         .replace(/&quot;/g, '"');
       await navigator.clipboard.writeText(message);
-      // const storage = document.createElement("textarea");
-      // storage.value = this.$refs.message.innerHTML;
-      // this.$refs.reference.appendChild(storage);
-      // storage.select();
-      // storage.setSelectionRange(0, 99999);
-      // document.execCommand("copy");
-      // this.$refs.reference.removeChild(storage);
     }
   },
   computed: {

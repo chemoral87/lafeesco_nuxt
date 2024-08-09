@@ -7,17 +7,7 @@
       <LandingContact />
     </v-main>
     <v-scale-transition>
-      <v-btn
-        fab
-        v-show="fab"
-        v-scroll="onScroll"
-        dark
-        fixed
-        bottom
-        right
-        color="secondary"
-        @click="toTop"
-      >
+      <v-btn fab v-show="fab" v-scroll="onScroll" fixed bottom right color="secondary" @click="toTop">
         <v-icon>mdi-arrow-up</v-icon>
       </v-btn>
     </v-scale-transition>
@@ -31,7 +21,7 @@ export default {
   data: () => ({
     fab: null,
     color: "",
-    flat: null,
+    flat: null
   }),
   watch: {
     fab(value) {
@@ -42,7 +32,7 @@ export default {
         this.color = "transparent";
         this.flat = true;
       }
-    },
+    }
   },
   methods: {
     onScroll(e) {
@@ -52,7 +42,7 @@ export default {
     },
     toTop() {
       this.$vuetify.goTo(0);
-    },
+    }
   },
   mounted() {
     let me = this;
@@ -63,7 +53,7 @@ export default {
       this.color = "transparent";
       this.flat = true;
     }
-  },
+  }
 };
 </script>
 <style scoped>
