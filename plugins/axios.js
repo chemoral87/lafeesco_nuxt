@@ -17,6 +17,9 @@ export default function (context) {
         let err = error.response.data;
 
         if (err.message) context.store.dispatch("notify", { error: err.message });
+      } else if (error.response.status === 405) {
+        let err = error.response.data;
+        if (err.message) context.store.dispatch("notify", { error: err.message });
       }
     }
     context.store.dispatch("hideLoading");

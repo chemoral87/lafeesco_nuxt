@@ -41,24 +41,36 @@ export default {
         let message = this.error.message ? this.error.message : "";
 
         return `No tiene los suficientes permisos para ver esta página, verifique con el administrador del sistema. <br/><br/> ${message}`;
-      } else if (this.error.statusCode == 404) {
+      } else if (
+        this.error.statusCode == 404 ||
+        this.error.response.status == 404 ||
+        this.error.response.status == 405
+      ) {
         this.color = "red";
+
+        let message = this.error.message || this.error.response.data.message;
+
+        if (message) {
+          return "<span class='error-message'>" + this.error.response.data.message + "</span>";
+        }
+
         return "<span class='error-message'>Registro No Encontrado.</span>";
       }
+
       return "Ocurrio un error inesperado.";
     }
-  },
-  head() {
-    let title = "";
-    // this.error.statusCode === 404 ? this.pageNotFound : this.error.message;
-
-    this.error.statusCode === 404 && (title = this.pageNotFound);
-    this.error.statusCode === 403 && (title = "Permisos");
-
-    return {
-      title
-    };
   }
+  // head() {
+  //   let title = "";
+  //   // this.error.statusCode === 404 ? this.pageNotFound : this.error.message;
+
+  //   this.error.statusCode === 404 && (title = this.pageNotFound);
+  //   this.error.statusCode === 403 && (title = "Permisos");
+
+  //   return {
+  //     title
+  //   };
+  // }
 };
 </script>
 

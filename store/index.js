@@ -122,9 +122,10 @@ export const actions = {
     if (notify == null) return;
 
     commit("SET_SNACKBAR", notify);
+    let notify_time_out = 4000;
     setTimeout(() => {
       commit("DELETE_SNACK", notify);
-    }, 3800);
+    }, notify_time_out);
   },
   closeSnackbar({ commit }, snackbar) {
     commit("DELETE_SNACK", snackbar);

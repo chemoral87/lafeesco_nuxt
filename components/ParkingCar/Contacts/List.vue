@@ -2,7 +2,7 @@
   <v-card color="green lighten-4">
     <v-card-title>
       Contactos <v-spacer />
-      <v-btn color="primary" @click="newContact()"> <v-icon>mdi-plus</v-icon> Nuevo </v-btn>
+      <v-btn color="primary" @click="newContact()" class="ml-3"> <v-icon>mdi-plus</v-icon> Nuevo </v-btn>
     </v-card-title>
     <v-list>
       <v-list-item-group v-if="contacts.length > 0">

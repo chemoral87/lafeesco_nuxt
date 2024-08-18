@@ -19,7 +19,7 @@
     </v-row>
     <v-row dense v-if="parkingCars">
       <div style="overflow-x: auto">
-        <v-simple-table dense style="min-width: 500px">
+        <v-simple-table dense style="min-width: 600px">
           <thead>
             <tr>
               <th>Placas</th>
@@ -36,15 +36,13 @@
               </td>
             </tr>
             <tr v-for="(item, index) in parkingCars">
-              <td>{{ item.plate_number }}</td>
+              <td>{{ maskAsterisk(item.plate_number, 4) }}</td>
               <td>{{ item.brand }}</td>
               <td>{{ item.model }}</td>
               <td>{{ item.color }}</td>
 
               <td>
-                <v-btn @click="getParkingCarContacts(item)" color="success" class="mb-1">
-                  <v-icon>mdi-card-account-phone</v-icon> Contacto
-                </v-btn>
+                <v-btn @click="getParkingCarContacts(item)" color="success" class="mb-1"> Contacto </v-btn>
                 <v-btn @click="editParkingCar(item)" color="info" class="mb-1">
                   <!-- <v-icon class="mr-1">mdi-pencil </v-icon> -->
                   Editar
@@ -106,6 +104,9 @@ export default {
     };
   },
   methods: {
+    maskAsterisk(value, length) {
+      return value.replace(/.(?=.{4})/g, "*");
+    },
     getMobileOperatingSystem() {
       var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 

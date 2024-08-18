@@ -1,5 +1,13 @@
 <template>
-  <v-select v-model="selected" :items="items" label="Org" item-text="name" item-value="id" v-bind="$attrs"></v-select>
+  <v-select
+    :disabled="disabled"
+    v-model="selected"
+    :items="items"
+    label="Org"
+    item-text="name"
+    item-value="id"
+    v-bind="$attrs"
+  ></v-select>
 </template>
 <script>
 export default {
@@ -7,7 +15,8 @@ export default {
   data() {
     return {
       items: [],
-      selected: null
+      selected: null,
+      disabled: false
     };
   },
   watch: {
@@ -27,6 +36,8 @@ export default {
     // select if only one
     if (filter_orgs.length == 1) {
       me.selected = filter_orgs[0].id;
+      me.disabled = true;
+      // set disabled if only one
     }
   }
 };
