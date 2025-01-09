@@ -32,7 +32,7 @@
           <tbody>
             <tr v-if="parkingCars.length == 0">
               <td colspan="5">
-                <v-alert class="text-left mb-0" dense text type="warning"> No existe el carros </v-alert>
+                <v-alert class="text-left mb-0" dense text type="warning"> No se encontraron registros. </v-alert>
               </td>
             </tr>
             <tr v-for="(item, index) in parkingCars">

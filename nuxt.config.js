@@ -2,7 +2,6 @@
 // const env = require("dotenv").config({ path: ".env." + process.env.NODE_ENV });
 
 let env;
-
 let title;
 // let dateStamp = new Date().toISOString().slice(0, 10).replace(/-/g, '')
 if (process.env.NODE_ENV == "production") {
@@ -12,8 +11,7 @@ if (process.env.NODE_ENV == "production") {
   env = require("dotenv").config({ path: ".env" });
   title = process.env.APP_ENVIRONMENT;
 }
-console.log("NODE_ENV ", process.env.NODE_ENV);
-console.log("BASE_URL ", process.env.BASE_URL);
+
 // import VueI18n from "vue-i18n";
 
 // const i18n = new VueI18n({
@@ -67,7 +65,7 @@ export default {
     "./plugins/vue-the-mask.js",
     "./plugins/trading-vue.js",
     "./plugins/google-maps.js",
-
+ 
     // './plugins/vue-gtag.js',
     { src: "./plugins/vue-gtag.js", mode: "client" },
     "./plugins/youtube"
@@ -217,32 +215,15 @@ export default {
     //   t: (key, ...params) => app.i18n.t(key, params)
     // },
     treeShake: true,
-
     optionsPath: "./vuetify.options.js",
-
     customVariables: ["~/assets/variables.scss", "~/assets/styles/width-styles.scss"]
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    // maxChunkSize: 900000,
     maxChunkSize: 900000,
     extractCSS: true,
     filenames: {
       chunk: ({ isDev }) => (isDev ? "[name].js" : "[id].[contenthash].js")
     }
-    // postcss: {
-    //   // Add plugin names as key and arguments as value
-    //   // Install them before as dependencies with npm or yarn
-    //   postcssOptions: {
-    //     plugins: {
-    //       'postcss-url': false
-    //     }
-    //   },
-    //   preset: {
-    //     autoprefixer: {
-    //       grid: true
-    //     }
-    //   }
-    // }
   }
 };

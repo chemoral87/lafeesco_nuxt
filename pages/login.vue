@@ -77,7 +77,6 @@ export default {
           path: this.$route.query.redirect || "/dashboard"
         });
       } catch (e) {
-        console.log(e);
       }
     }
   },

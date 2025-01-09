@@ -62,7 +62,7 @@ export default {
     updateParams() {
       let update = "";
       for (let [i, def] of this.definitions.entries()) {
-        if (def.column_key != "PRI" && !["created_at", "updated_at"].includes(def.column_name)) {
+        if (def.column_key != "PRI" && !["created_at", "updated_at", "created_by", "org_id"].includes(def.column_name)) {
           if (i > 1) {
             update += "\n";
           }
@@ -87,6 +87,8 @@ export default {
       if (this.variable_name == "") return "";
       return `use App\\Http\\Resources\\DataSetResource;
 use Illuminate\\Http\\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 use App\\Models\\${this.ModelName};`;
     },
     templ() {
@@ -110,6 +112,7 @@ public function show($id) {
 }
 
   public function create(Request $request) {
+    $userId = JWTAuth::user()->id;
     \$${this.variable_name} = ${this.ModelName}::create([
       ${this.createParams}
     ]);
@@ -117,6 +120,7 @@ public function show($id) {
   }
 
   public function update(Request $request, $id) {
+    $userId = JWTAuth::user()->id;
     \$${this.variable_name} = ${this.ModelName}::find($id);
     ${this.updateParams}
     \$${this.variable_name}->save();

@@ -44,7 +44,9 @@ export default {
   },
   methods: {
     hasPermission(permission) {
-      return this.permissions.hasOwnProperty(permission);
+      console.log("ppe " + permission);
+      //return this.permissions.hasOwnProperty(permission);
+      return Object.prototype.hasOwnProperty.call(this.permissions, permission);
       // return this.permissions.includes(permission);
     }
   },

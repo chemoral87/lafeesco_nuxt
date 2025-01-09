@@ -10,7 +10,7 @@
                 Bienvenidos a tu iglesia <br />
                 un lugar de adoración.<br />
               </h1>
-              <v-btn rounded outlined large @click="$vuetify.goTo('#activities')" class="mt-5">
+              <v-btn rounded outlined large @click="$vuetify.goTo('#activities')" class="mt-5" color="white">
                 Actividades
                 <v-icon class="ml-2">mdi-arrow-down</v-icon>
               </v-btn>

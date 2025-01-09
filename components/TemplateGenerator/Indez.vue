@@ -81,7 +81,7 @@ export default {
           :response="response"
           @edit="edit${this.ModelName}"
           @delete="delete${this.ModelName}"
-          :dialogDelete.sync="dialogDelete${this.ModelName}"
+          :dialog-delete.sync="dialogDelete${this.ModelName}"
         />
       </v-col>
     </v-row>

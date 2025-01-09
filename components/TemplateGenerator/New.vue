@@ -29,6 +29,7 @@ export default {
     colRows() {
       let columns = "";
       for (let [i, def] of this.definitions.entries()) {
+        console.log(def)
         if (def.column_key != "PRI" && !["created_at", "updated_at"].includes(def.column_name)) {
           if (i > 1) {
             columns += "\n";
@@ -38,7 +39,7 @@ export default {
             outlined
             label="${def.column_name}"
             v-model="${this.variable_name}.${def.column_name}"
-            :rules="[(v) => !!v || 'Campo requerido']"
+            :rules="${def.is_nullable === 'NO' ? '[(v) => !!v || \'Campo requerido\']' : '[]'}"
             />
           </v-col>`;
         }

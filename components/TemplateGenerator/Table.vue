@@ -6,7 +6,7 @@
 </template>
 <script>
 export default {
-  props: ["component", "definitions", "table_name", "model_name"],
+  props: ["component", "definitions", "table_name", "variable_name"],
   data() {
     return {
       // Modelname: "",
@@ -37,7 +37,7 @@ export default {
   },
   computed: {
     Modelname() {
-      let str = this.model_name.toLowerCase();
+      let str = this.variable_name.toLowerCase();
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
     headers() {
@@ -50,7 +50,7 @@ export default {
       return header;
     },
     templ() {
-      if (this.model_name == "") return "";
+      if (this.variable_name == "") return "";
       return `<template>
   <div>
     <v-data-table
@@ -103,6 +103,7 @@ export default {
 </template>
 <script>
 export default {
+  name: "${this.Modelname}Table",
   props: ["dialogDelete", "response", "options", "tableHeaders"],
   data() {
     return {
@@ -129,14 +130,14 @@ export default {
   methods: {
     confirmDelete(item) {
       this.dialogDeleteProp = {
-        text: "Desea eliminar ${this.model_name}",
+        text: "Desea eliminar ${this.variable_name}",
         strong: item.name,
         payload: item,
       };
       this.$emit("update:dialogDelete", true);
     },
     sortTable(columnName) {
-        let head = this.headers.find((x) => x.value == columnName);
+        let head = this.headers.find((x) => x.value === columnName);
         if (head.firstSortDesc) this.optionsTable.sortDesc[0] = true;
     },
     emitAction(action, payload) {
