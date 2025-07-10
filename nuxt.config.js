@@ -1,6 +1,3 @@
-// require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
-// const env = require("dotenv").config({ path: ".env." + process.env.NODE_ENV });
-
 let env;
 let title;
 // let dateStamp = new Date().toISOString().slice(0, 10).replace(/-/g, '')
@@ -26,7 +23,7 @@ export default {
   ssr: false,
   telemetry: false,
   router: {
-    trailingSlash: false
+    trailingSlash: false,
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
 
@@ -40,13 +37,13 @@ export default {
       { name: "format-detection", content: "telephone=no" },
       {
         name: "facebook-domain-verification",
-        content: "hgrbrsl8g67s9ot1426gksguus13mu"
-      }
+        content: "hgrbrsl8g67s9ot1426gksguus13mu",
+      },
     ],
     htmlAttrs: {
-      lang: "es"
+      lang: "es",
     },
-    link: [{ rel: "icon", type: "image/png", href: "/favicon.png" }]
+    link: [{ rel: "icon", type: "image/png", href: "/favicon.png" }],
   },
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ["~/assets/styles/main.css"],
@@ -65,10 +62,10 @@ export default {
     "./plugins/vue-the-mask.js",
     "./plugins/trading-vue.js",
     "./plugins/google-maps.js",
- 
+
     // './plugins/vue-gtag.js',
     { src: "./plugins/vue-gtag.js", mode: "client" },
-    "./plugins/youtube"
+    "./plugins/youtube",
   ],
   ignore: ["pages/country*.vue"],
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -79,24 +76,24 @@ export default {
     // https://go.nuxtjs.dev/vuetify
     "@nuxtjs/vuetify",
     "@nuxtjs/moment",
-    "nuxt-webpack-optimisations"
+    "nuxt-webpack-optimisations",
   ],
   googleAnalytics: {
     id: "G-8H2274BQF6",
-    checkDuplicatedScript: true
+    checkDuplicatedScript: true,
   },
   webpackOptimisations: {
     // hard source is the riskiest, if you have issues don't enable it
     cacheLoader: false,
     hardSourcePlugin: true,
-    parallelPlugin: true
+    parallelPlugin: true,
   },
   moment: {
     defaultLocale: "es",
-    locales: ["es"]
+    locales: ["es"],
   },
   dev: {
-    hotReload: true
+    hotReload: true,
   },
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
@@ -105,7 +102,7 @@ export default {
     // '@nuxtjs/google-analytics',
     // https://go.nuxtjs.dev/pwa
     "@nuxtjs/pwa",
-    ["@nuxtjs/dotenv", { filename: ".env." + process.env.NODE_ENV }]
+    ["@nuxtjs/dotenv", { filename: ".env." + process.env.NODE_ENV }],
 
     // [
     //   "@nuxtjs/i18n",
@@ -154,11 +151,11 @@ export default {
   ],
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL: process.env.BASE_URL
+    baseURL: process.env.BASE_URL,
   },
   auth: {
     redirect: {
-      logout: "/login"
+      logout: "/login",
     },
     strategies: {
       laravelJWT: {
@@ -166,43 +163,43 @@ export default {
         provider: "laravel/jwt",
         token: {
           property: "access_token",
-          maxAge: 60 * 60
+          maxAge: 60 * 60,
         },
         refreshToken: {
-          maxAge: 20160 * 60
+          maxAge: 20160 * 60,
         },
         // optional. //
         url: "/",
         endpoints: {
           login: {
             url: "auth/login",
-            method: "post"
+            method: "post",
           },
           refresh: {
             url: "auth/refresh",
-            method: "post"
+            method: "post",
           },
           logout: {
             url: "auth/logout",
-            method: "post"
+            method: "post",
           },
           user: {
             url: "auth/user",
-            method: "post"
-          }
-        }
-      }
-    }
+            method: "post",
+          },
+        },
+      },
+    },
   },
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
     manifest: {
-      lang: "en"
+      lang: "en",
     },
     // https://www.favicon-generator.org/
     icon: {
-      fileName: "favicon-96x96.png"
-    }
+      fileName: "favicon-96x96.png",
+    },
   },
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -216,14 +213,17 @@ export default {
     // },
     treeShake: true,
     optionsPath: "./vuetify.options.js",
-    customVariables: ["~/assets/variables.scss", "~/assets/styles/width-styles.scss"]
+    customVariables: [
+      "~/assets/variables.scss",
+      "~/assets/styles/width-styles.scss",
+    ],
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     maxChunkSize: 900000,
     extractCSS: true,
     filenames: {
-      chunk: ({ isDev }) => (isDev ? "[name].js" : "[id].[contenthash].js")
-    }
-  }
+      chunk: ({ isDev }) => (isDev ? "[name].js" : "[id].[contenthash].js"),
+    },
+  },
 };

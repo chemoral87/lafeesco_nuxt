@@ -87,7 +87,7 @@ export default {
       if (this.variable_name == "") return "";
       return `use App\\Http\\Resources\\DataSetResource;
 use Illuminate\\Http\\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\\JWTAuth\\Facades\\JWTAuth;
 
 use App\\Models\\${this.ModelName};`;
     },

@@ -164,6 +164,14 @@ export class MenuService {
           to: "/parking-car"
         });
       }
+
+      if (this.hasPermission("intake-index")) {
+        menu.push({
+          icon: "mdi-food",
+          title: "Ingesta",
+          to: "/intake"
+        });
+      }
       // menu.push({
       //   icon: "mdi-chart-bar",
       //   title: "ReportesA",

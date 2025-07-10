@@ -42,9 +42,16 @@ export default {
     },
     headers() {
       let header = "";
+      let firstSortSet = false;
       for (let def of this.definitions) {
         if (def.column_key != "PRI" && !["created_at", "updated_at"].includes(def.column_name)) {
-          header += `{   text: "${def.column_name}", value: "${def.column_name}", sortable: true, firstSortDesc:true  },`;
+          let firstSortDesc = "";
+    if (!firstSortSet) {
+      firstSortDesc = ", firstSortDesc: true";
+      firstSortSet = true;
+    }
+    header += `{ text: "${def.column_name}", value: "${def.column_name}", sortable: true${firstSortDesc} },`;
+ 
         }
       }
       return header;

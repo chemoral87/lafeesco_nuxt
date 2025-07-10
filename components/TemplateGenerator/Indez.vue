@@ -1,6 +1,8 @@
 <template>
   <div>
-    <v-btn @click="copy()" color="primary"><v-icon>mdi-content-copy</v-icon> Copiar</v-btn>
+    <v-btn @click="copy()" color="primary"
+      ><v-icon>mdi-content-copy</v-icon> Copiar</v-btn
+    >
     <div v-text="templ" ref="message" class="templ"></div>
   </div>
 </template>
@@ -24,7 +26,7 @@ export default {
       window.getSelection().removeAllRanges();
       // notify copy
       this.$store.dispatch("notify", {
-        success: "Copiado al portapapeles"
+        success: "Copiado al portapapeles",
       });
     },
     async toCopy() {
@@ -33,7 +35,7 @@ export default {
         .replace(/&gt;/g, ">")
         .replace(/&quot;/g, '"');
       await navigator.clipboard.writeText(message);
-    }
+    },
   },
   computed: {
     Modelname() {
@@ -46,7 +48,7 @@ export default {
       if (this.variable_name == "") return "";
       return this.variable_name
         .split("_")
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join("");
     },
     templ() {
@@ -137,7 +139,10 @@ export default {
     };
   },
   middleware: ["authenticated"],
-  validate({ store, error }) {
+  validate({ store,  app }) {
+    if (!app.$repository.${this.ModelName}) {
+      throw new Error("${this.ModelName} repository does not exist.");
+    }
     return true;
     if (store.getters.permissions.includes("${this.variable_name}-index")) return true;
     else throw error({ statusCode: 403 });
@@ -152,12 +157,12 @@ export default {
 <\/script>
 
       `;
-    }
+    },
   },
 
   mounted() {
     let me = this;
-  }
+  },
 };
 </script>
 <style scoped>

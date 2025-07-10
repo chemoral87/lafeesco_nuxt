@@ -6,94 +6,93 @@
           append-icon="mdi-magnify"
           clearable
           hide-details
-          v-model="filterAttendant"
+          v-model="filterIntake"
           placeholder="Filtro"
         ></v-text-field>
       </v-col>
+
       <v-spacer />
       <v-col cols="auto">
         <v-btn
           color="success"
-          @click="$router.push('attendant/new')"
+          @click="$router.push('intake/new')"
           class="mb-1 mr-1"
         >
-          <v-icon class="mr-1">mdi-account-plus</v-icon> Nuevo Servidor
+          <v-icon>mdi-account-plus</v-icon>Nuevo Intake
         </v-btn>
       </v-col>
       <v-col cols="12">
-        <AttendantTable
-          @sorting="indexAttendant"
+        <IntakeTable
+          @sorting="indexIntake"
           :options="options"
           :response="response"
-          @edit="editAttendant"
-          @delete="deleteAttendant"
-          :dialogDelete.sync="dialogDeleteAttendant"
+          @edit="editIntake"
+          @delete="deleteIntake"
+          :dialog-delete.sync="dialogDeleteIntake"
         />
       </v-col>
     </v-row>
   </v-container>
 </template>
-
 <script>
 export default {
   async asyncData({ $axios, app }) {
     let options = {
       sortBy: ["name"],
-      sortDesc: [false],
-      itemsPerPage: 20,
+      sortDesc: [true],
+      itemsPerPage: 5,
     };
-    const response = await app.$repository.Attendant.index(options).catch(
+    const response = await app.$repository.Intake.index(options).catch(
       (e) => {}
     );
     return { response, options };
   },
   watch: {
-    async filterAttendant(value) {
+    async filterIntake(value) {
       let me = this;
       this.$store.dispatch("hideNextLoading");
       let op = Object.assign(me.options, { filter: value, page: 1 });
-      me.response = await me.$repository.Attendant.index(op);
+      me.response = await me.$repository.Intake.index(op);
     },
   },
   methods: {
-    async indexAttendant(options) {
-      // let me = this;
-      // let op = Object.assign(me.options, { page: 1 });
-      // me.response = me.$repository.Attendant.index(op);
-
+    async indexIntake(options) {
       if (options) {
-        this.options = options;
+        this.options = Object.assign(this.options, options);
       }
       let op = Object.assign({ filter: this.filter }, this.options);
-      this.response = await this.$repository.Attendant.index(op);
+      this.response = await this.$repository.Intake.index(op);
     },
-    editAttendant(item) {
-      this.$router.push(`/attendant/${item.id}`);
+    editIntake(item) {
+      this.$router.push(`/intake/${item.id}`);
     },
-    async deleteAttendant(item) {
-      await this.$repository.Attendant.delete(item.id)
+    async deleteIntake(item) {
+      await this.$repository.Intake.delete(item.id)
         .then((res) => {
-          this.dialogDeleteAttendant = false;
-          this.indexAttendant();
+          this.dialogDeleteIntake = false;
+          this.indexIntake();
         })
         .catch((e) => {});
     },
   },
   data() {
     return {
-      dialogDeleteAttendant: false,
+      dialogDeleteIntake: false,
       options: {},
       response: {},
-      filterAttendant: "",
+      filterIntake: "",
     };
   },
   middleware: ["authenticated"],
-  validate({ store, error }) {
+  validate({ app }) {
+    if (!app.$repository.Intake) {
+      throw new Error("Intake repository does not exist.");
+    }
     return true;
   },
   created() {
     this.$nuxt.$emit("setNavBar", {
-      title: "Servidores",
+      title: "Intake",
       icon: "human-greeting-variant",
     });
   },

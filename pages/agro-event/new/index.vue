@@ -8,13 +8,10 @@
   </v-container>
 </template>
 <script>
-import { types } from "../misc";
 export default {
   middleware: ["authenticated"],
   validate({ store, error }) {
     return true;
-    // if (store.getters.permissions.includes("casas-fe-insert"))
-    // else throw error({ statusCode: 403 });
   },
   created() {
     this.$nuxt.$emit("setNavBar", {

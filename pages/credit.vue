@@ -1,6 +1,10 @@
 <template>
   <v-container>
-    <v-form ref="formCredit" lazy-validation @submit.prevent="getAmortizationTable">
+    <v-form
+      ref="formCredit"
+      lazy-validation
+      @submit.prevent="getAmortizationTable"
+    >
       <v-row>
         <v-col cols="12" sm="3" md="3">
           <!-- <v-text-field v-model="capital" label="Capital Prestado"></v-text-field> -->
@@ -11,7 +15,12 @@
           <my-money v-model="rate" prefix="" label="Interés %"></my-money>
         </v-col>
         <v-col cols="12" sm="3" md="3">
-          <my-money :anOptions="{ decimalPlaces: 0 }" prefix="" v-model="total_payments" label="# Pagos"></my-money>
+          <my-money
+            :anOptions="{ decimalPlaces: 0 }"
+            prefix=""
+            v-model="total_payments"
+            label="# Pagos"
+          ></my-money>
         </v-col>
       </v-row>
       <v-row>
@@ -46,36 +55,31 @@
 </template>
 <script>
 export default {
-  // middleware: ["authenticated"],
-  // validate({ store, error }) {
-  //   if (store.getters.permissions.includes("credit-index")) return true;
-  //   else throw error({ statusCode: 403 });
-  // },
   props: {},
   data() {
     return {
       capital: 120000,
       rate: 23.81,
       total_payments: 60,
-      amortization_table: []
-    }
+      amortization_table: [],
+    };
   },
   methods: {
     async getAmortizationTable() {
       let creditDTO = {
         capital: this.capital,
         rate: this.rate,
-        total_payments: this.total_payments
-      }
+        total_payments: this.total_payments,
+      };
       await this.$repository.Credit.getAmortizationTable(creditDTO)
         .then((res) => {
-          this.amortization_table = res.table
+          this.amortization_table = res.table;
         })
-        .catch((e) => {})
-    }
+        .catch((e) => {});
+    },
   },
   mounted() {
-    let me = this
-  }
-}
+    let me = this;
+  },
+};
 </script>

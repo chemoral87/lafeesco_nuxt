@@ -10,7 +10,9 @@
           <br />
           <br />
         </div>
-        <div class="text-h6 text--primary mt-12">Presione el siguiente botón.</div>
+        <div class="text-h6 text--primary mt-12">
+          Presione el siguiente botón.
+        </div>
       </v-card-text>
       <v-card-actions>
         <NuxtLink v-if="!authenticated" to="/login">
@@ -32,34 +34,39 @@ export default {
     return {
       color: "orange",
       pageNotFound: "404 Not Found",
-      otherError: "An error occurred"
+      otherError: "An error occurred",
     };
   },
   computed: {
     errorMessage() {
+      console.log("errorMessager");
+      console.log(this.error);
+
       if (this.error.statusCode == 403) {
         let message = this.error.message ? this.error.message : "";
 
         return `No tiene los suficientes permisos para ver esta página, verifique con el administrador del sistema. <br/><br/> ${message}`;
       } else if (
         this.error.statusCode == 404 ||
-        this.error.response.status == 404 ||
-        this.error.response.status == 405
+        this.error.statusCode == 500 ||
+        (this.error.response &&
+          (this.error.response.status == 404 ||
+            this.error.response.status == 405))
       ) {
         this.color = "red";
 
         let message = this.error.message || this.error.response.data.message;
 
         if (message) {
-          return "<span class='error-message'>" + this.error.response.data.message + "</span>";
+          return "<span class='error-message'>" + message + "</span>";
         }
 
         return "<span class='error-message'>Registro No Encontrado.</span>";
       }
 
       return "Ocurrio un error inesperado.";
-    }
-  }
+    },
+  },
   // head() {
   //   let title = "";
   //   // this.error.statusCode === 404 ? this.pageNotFound : this.error.message;

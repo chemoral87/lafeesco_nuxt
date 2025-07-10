@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-combobox
+       <v-combobox
       v-model="model"
       :filter="filter"
       item-value="id"
       item-text="name"
       :hide-no-data="!search"
       :items="items"
-      :search-input.sync="search"
+       :search-input.sync="search"
       hide-selected
       label="Roles"
       multiple

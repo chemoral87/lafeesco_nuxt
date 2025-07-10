@@ -9,7 +9,7 @@
     "amplify/backend/awscloudformation": true
   },
   "task.allowAutomaticTasks": "on",
-  "vue3snippets.enable-compile-vue-file-on-did-save-code": true,
+
   "workbench.colorCustomizations": {
     "activityBar.activeBackground": "#65c89b",
     "activityBar.background": "#65c89b",
