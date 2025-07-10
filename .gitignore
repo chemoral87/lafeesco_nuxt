@@ -110,4 +110,4 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 package-lock.json
-#amplify-do-not-edit-end
+amplify-do-not-edit-end
