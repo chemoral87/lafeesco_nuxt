@@ -9,7 +9,13 @@
         ></v-text-field>
       </v-col>
       <v-col cols="auto">
-        <v-btn @click="getVersicles()" color="primary"> Buscar </v-btn>
+        <v-btn
+          :disabled="prompt.length <= 4"
+          @click="getVersicles()"
+          color="primary"
+        >
+          Buscar
+        </v-btn>
         <v-btn @click="showHelp()" color="info"> Ayuda </v-btn>
       </v-col>
       <v-col cols="auto">
@@ -155,7 +161,7 @@ export default {
   props: {},
   data() {
     return {
-      prompt: "jr 3.33", // "is 1.1;is 3.4-5",
+      prompt: "jr 33.3", // "is 1.1;is 3.4-5",
       versicles: [],
       bible_books: [],
       see_sub: true,
@@ -164,9 +170,16 @@ export default {
       books_per_row: 3,
       searches: [],
       no_result: "",
+      showPromptError: false,
     };
   },
   methods: {
+    onPromptInput() {
+      if (this.showPromptError) {
+        this.showPromptError = false;
+        this.$refs.promptField.resetValidation();
+      }
+    },
     getTbody(books, cols) {
       let rows = [];
       for (let i = 0; i < books.length; i += cols) {
@@ -187,7 +200,7 @@ export default {
     },
     getVersicles() {
       // this.$route.query.s = this.prompt
-      this.$router.push({ path: this.$route.path, query: { s: this.prompt } });
+      //this.$router.push({ path: this.$route.path, query: { s: this.prompt } });
       this.$repository.Bible.index({ prompt: this.prompt }).then((resp) => {
         // for each item in resp push to searches
         for (let i = resp.length - 1; i > -1; i--) {
@@ -213,6 +226,9 @@ export default {
     },
   },
   computed: {
+    promptRule() {
+      return (v) => !!v || "Debes escribir un versículo o palabra clave.";
+    },
     newTestamentBooks() {
       return this.bible_books.filter((book) => book.testament === "N");
     },
@@ -222,12 +238,15 @@ export default {
   },
   mounted() {
     let me = this;
-    /* if (this.$route.query.s) {
+    if (this.$route.query.s) {
       this.prompt = this.$route.query.s;
       this.$repository.Bible.index({ prompt: this.prompt }).then((resp) => {
-        this.versicles = resp;
+        for (let i = resp.length - 1; i > -1; i--) {
+          this.searches.unshift(resp[i]);
+        }
+        this.prompt = "";
       });
-    } */
+    }
     this.$repository.BibleBook.index().then((resp) => {
       this.bible_books = resp;
     });
