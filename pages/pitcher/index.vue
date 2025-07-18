@@ -221,8 +221,6 @@ export default {
         : [];
       const recentFrequencies = this.history.slice(0, 2).map((h) => h.freq);
 
-      this.ctx.font = "16px sans-serif";
-
       for (let midi = MIN_MIDI; midi <= MAX_MIDI; midi++) {
         const y =
           this.$refs.histogram.height -
@@ -238,19 +236,23 @@ export default {
           this.selectedRootNote && scaleNoteIndices.includes(noteIndex);
 
         if (isRecentNearby && isInScale) {
+          this.ctx.font = "bold 17px sans-serif";
           this.ctx.strokeStyle = "red";
           this.ctx.fillStyle = "red";
           this.ctx.lineWidth = 3;
         } else if (isRecentNearby && !isInScale) {
+          this.ctx.font = "16px sans-serif";
           // Nota cercana pero fuera de la escala
-          this.ctx.strokeStyle = "#00BFFF"; // azul cielo
-          this.ctx.fillStyle = "#00BFFF";
+          this.ctx.strokeStyle = "#ADD8E6"; // azul cielo
+          this.ctx.fillStyle = "#ADD8E6";
           this.ctx.lineWidth = 2;
         } else if (this.selectedRootNote && isInScale) {
+          this.ctx.font = "16px sans-serif";
           this.ctx.strokeStyle = "#aaa";
           this.ctx.fillStyle = "white";
           this.ctx.lineWidth = 2.5;
         } else {
+          this.ctx.font = "16px sans-serif";
           this.ctx.strokeStyle = "#555";
           this.ctx.fillStyle = "white";
           this.ctx.lineWidth = 1.5;
