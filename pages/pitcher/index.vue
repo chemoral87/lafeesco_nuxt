@@ -71,23 +71,6 @@
 </template>
 
 <script>
-// Import Tone.js
-import * as Tone from "tone";
-
-const NOTE_STRINGS = [
-  "Do",
-  "Do♯",
-  "Re",
-  "Re♯",
-  "Mi",
-  "Fa",
-  "Fa♯",
-  "Sol",
-  "Sol♯",
-  "La",
-  "La♯",
-  "Si",
-];
 const NOTE_SHORT_STRINGS = [
   "C",
   "C♯",
@@ -103,34 +86,6 @@ const NOTE_SHORT_STRINGS = [
   "B",
 ];
 const COLORS = [
-  "#FF2E2E", // Do - Rojo brillante/neón
-  "#FF6F00", // Do♯/Re♭ - Naranja neón brillante
-  "#FFD800", // Re - Amarillo neón intenso
-  "#BFFF00", // Re♯/Mi♭ - Amarillo verdoso brillante
-  "#00FF00", // Mi - Verde neón
-  "#00FFD7", // Fa - Verde azulado neón brillante
-  "#00BFFF", // Fa♯/Sol♭ - Azul celeste brillante
-  "#1E90FF", // Sol - Azul neón brillante
-  "#7B00FF", // Sol♯/La♭ - Índigo neón
-  "#BB00FF", // La - Violeta neón brillante
-  "#FF00AA", // La♯/Si♭ - Rosa fuerte/neón
-  "#FF1493", // Si - Rosa intenso/neón
-];
-const COLORSs = [
-  "#FF0000", // Do (Rojo)
-  "#FF7F00", // Do♯/Re♭ (Naranja)
-  "#FFFF00", // Re (Amarillo)
-  "#BFFF00", // Re♯/Mi♭ (Amarillo verdoso)
-  "#00FF00", // Mi (Verde)
-  "#00FF7F", // Fa (Verde azulado)
-  "#00BFFF", // Fa♯/Sol♭ (Azul claro)
-  "#0000FF", // Sol (Azul)
-  "#4B0082", // Sol♯/La♭ (Índigo)
-  "#8B00FF", // La (Violeta)
-  "#C71585", // La♯/Si♭ (Violeta rosado)
-  "#FF1493", // Si (Rosa intenso)
-];
-const COLORSx = [
   "#FF0000",
   "#FF4000",
   "#FF8000",
@@ -145,7 +100,6 @@ const COLORSx = [
   "#8000FF",
 ];
 const MAJOR_STEPS = [0, 2, 4, 5, 7, 9, 11];
-
 const MIN_MIDI = 40;
 const MAX_MIDI = 84;
 const TOTAL_NOTES = MAX_MIDI - MIN_MIDI;
@@ -157,7 +111,6 @@ const A4_FREQ = 440;
 const A4_MIDI = 69;
 
 export default {
-  name: "NoteDetector",
   data() {
     return {
       isMicActive: false,
@@ -174,15 +127,12 @@ export default {
       selectedRootNote: "C",
       noteOptions: NOTE_SHORT_STRINGS,
       hasScrolledToFirst: false,
-      toneSynth: null,
     };
   },
   mounted() {
     this.ctx = this.$refs.histogram.getContext("2d");
     this.ctx.lineWidth = 0.5;
-
     this.buffer = new Float32Array(2048);
-    this.populateNoteSelector();
     this.drawNoteLines();
   },
   methods: {
@@ -199,23 +149,6 @@ export default {
       const rootIndex = NOTE_SHORT_STRINGS.indexOf(root);
       return MAJOR_STEPS.map((step) => (rootIndex + step) % 12);
     },
-    aWeightingCorrection(freq) {
-      const f2 = freq * freq;
-      const num = f2 * f2 * 12200 ** 2;
-      const den =
-        (f2 + 20.6 ** 2) *
-        Math.sqrt((f2 + 107.7 ** 2) * (f2 + 737.9 ** 2)) *
-        (f2 + 12200 ** 2);
-      return 20 * Math.log10(num / den);
-    },
-    getAWeightedDb(rms, freq) {
-      const adjustedRMS = Math.max(rms, MIN_RMS);
-      let dB = 20 * Math.log10(adjustedRMS);
-      if (freq !== -1 && freq >= 40 && freq <= 20000) {
-        dB += this.aWeightingCorrection(freq);
-      }
-      return dB + 110; // empirical adjustment
-    },
     resetHistory() {
       this.history = [];
       this.ctx.clearRect(
@@ -229,7 +162,6 @@ export default {
     autoCorrelate(buf, sampleRate) {
       const SIZE = buf.length;
       let rms = 0;
-
       for (let i = 0; i < SIZE; i++) {
         rms += buf[i] * buf[i];
       }
@@ -309,6 +241,11 @@ export default {
           this.ctx.strokeStyle = "red";
           this.ctx.fillStyle = "red";
           this.ctx.lineWidth = 3;
+        } else if (isRecentNearby && !isInScale) {
+          // Nota cercana pero fuera de la escala
+          this.ctx.strokeStyle = "#00BFFF"; // azul cielo
+          this.ctx.fillStyle = "#00BFFF";
+          this.ctx.lineWidth = 2;
         } else if (this.selectedRootNote && isInScale) {
           this.ctx.strokeStyle = "#aaa";
           this.ctx.fillStyle = "white";
@@ -378,25 +315,17 @@ export default {
           this.buffer.reduce((sum, val) => sum + val * val, 0) /
             this.buffer.length
         );
-        const dB = Math.round(this.getAWeightedDb(rms, freq));
         const midi = this.freqToMidi(freq.toFixed(1));
         const note = this.getNoteName(Math.round(midi));
 
         this.freqDisplay = freq.toFixed(0);
         this.noteDisplay = note;
-        this.dBDisplay = dB;
+        this.dBDisplay = "-";
 
-        // Agregar nota al historial
         this.history.unshift({ freq, midi });
         if (this.history.length > MAX_HISTORY) this.history.pop();
 
         this.drawHistogram();
-
-        // Reproducir nota con Tone.js (puedes ajustar la octava o duración)
-        if (this.toneSynth && !this.toneSynth.isPlaying) {
-          const toneNote = note.replace("♯", "#"); // Formato compatible con Tone.js
-          this.toneSynth.triggerAttackRelease(toneNote + "4", "8n");
-        }
 
         const y =
           this.$refs.histogram.height -
@@ -424,9 +353,6 @@ export default {
         requestAnimationFrame(this.update);
       }
     },
-    populateNoteSelector() {
-      // Ya está manejado con v-select, no hace falta
-    },
     async toggleMic() {
       if (!this.isMicActive) {
         try {
@@ -443,9 +369,6 @@ export default {
           );
           source.connect(this.analyser);
 
-          // Crear sintetizador Tone.js
-          this.toneSynth = new Tone.Synth().toDestination();
-
           this.drawNoteLines();
           this.hasScrolledToFirst = false;
           this.isMicActive = true;
@@ -454,7 +377,6 @@ export default {
           alert("Error accediendo al micrófono: " + e);
         }
       } else {
-        // Parar audio y mic
         if (this.mediaStream) {
           this.mediaStream.getTracks().forEach((track) => track.stop());
         }
@@ -473,18 +395,12 @@ export default {
           this.$refs.histogram.height
         );
         this.drawNoteLines();
-
-        if (this.toneSynth) {
-          this.toneSynth.dispose();
-          this.toneSynth = null;
-        }
       }
     },
   },
   watch: {
     sensitivity() {
-      // Cuando cambia sensibilidad, limpiar historial
-      this.resetHistory();
+      // Se lee directamente en autoCorrelate, no hace falta acción aquí
     },
     selectedRootNote() {
       this.drawHistogram();
@@ -494,5 +410,7 @@ export default {
 </script>
 
 <style scoped>
-/* Puedes ajustar estilos adicionales aquí */
+h4 {
+  font-weight: 600;
+}
 </style>
