@@ -16,8 +16,15 @@
         >
           Buscar
         </v-btn>
+        <v-btn
+          :disabled="prompt.length <= 4"
+          @click="share()"
+          color="purple"
+          class="white--text"
+        >
+          <v-icon>mdi-share</v-icon>
+        </v-btn>
         <v-btn @click="showHelp()" color="info"> Ayuda </v-btn>
-        <v-btn @click="share()" color="info"> Compartir </v-btn>
       </v-col>
       <v-col cols="auto">
         <v-checkbox v-model="see_sub" label="Ver Sub"></v-checkbox>
