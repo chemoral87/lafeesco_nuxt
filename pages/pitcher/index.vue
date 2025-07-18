@@ -105,7 +105,7 @@ const MAX_MIDI = 84;
 const TOTAL_NOTES = MAX_MIDI - MIN_MIDI;
 const TEXT_WIDTH = 40;
 const MAX_HISTORY = 1500;
-const TOLERANCE_HZ = 1.77;
+const TOLERANCE_HZ = 1.95;
 const MIN_RMS = 0.000001;
 const A4_FREQ = 440;
 const A4_MIDI = 69;
@@ -235,24 +235,22 @@ export default {
         const isInScale =
           this.selectedRootNote && scaleNoteIndices.includes(noteIndex);
 
+        this.ctx.font = "16px sans-serif";
         if (isRecentNearby && isInScale) {
-          this.ctx.font = "bold 17px sans-serif";
+          this.ctx.font = " 18px sans-serif";
           this.ctx.strokeStyle = "red";
           this.ctx.fillStyle = "red";
           this.ctx.lineWidth = 3;
         } else if (isRecentNearby && !isInScale) {
-          this.ctx.font = "16px sans-serif";
           // Nota cercana pero fuera de la escala
           this.ctx.strokeStyle = "#ADD8E6"; // azul cielo
           this.ctx.fillStyle = "#ADD8E6";
           this.ctx.lineWidth = 2;
         } else if (this.selectedRootNote && isInScale) {
-          this.ctx.font = "16px sans-serif";
           this.ctx.strokeStyle = "#aaa";
           this.ctx.fillStyle = "white";
           this.ctx.lineWidth = 2.5;
         } else {
-          this.ctx.font = "16px sans-serif";
           this.ctx.strokeStyle = "#555";
           this.ctx.fillStyle = "white";
           this.ctx.lineWidth = 1.5;
