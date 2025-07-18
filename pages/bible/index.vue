@@ -17,6 +17,7 @@
           Buscar
         </v-btn>
         <v-btn @click="showHelp()" color="info"> Ayuda </v-btn>
+        <v-btn @click="share()" color="info"> Compartir </v-btn>
       </v-col>
       <v-col cols="auto">
         <v-checkbox v-model="see_sub" label="Ver Sub"></v-checkbox>
@@ -174,6 +175,17 @@ export default {
     };
   },
   methods: {
+    share() {
+      if (this.prompt.length < 4) {
+        this.showPromptError = true;
+        this.$refs.promptField.validate();
+        return;
+      }
+      let url = `${window.location.origin}${this.$route.path}?s=${this.prompt}`;
+      navigator.clipboard.writeText(url).then(() => {
+        alert("Enlace copiado al portapapeles");
+      });
+    },
     onPromptInput() {
       if (this.showPromptError) {
         this.showPromptError = false;
