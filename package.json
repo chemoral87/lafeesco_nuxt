@@ -29,6 +29,7 @@
     "nuxt": "^2.17.3",
     "nuxt-webpack-optimisations": "^2.2.8",
     "three": "^0.147.0",
+    "tone": "^15.1.22",
     "trading-vue-js": "^1.0.2",
     "v-chartist": "^0.1.6",
     "v-lazy-image": "^2.1.1",
