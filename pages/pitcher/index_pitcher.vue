@@ -71,6 +71,8 @@
 </template>
 
 <script>
+import { YIN } from "pitchfinder";
+
 const NOTE_SHORT_STRINGS = [
   "C",
   "C♯",
@@ -119,7 +121,7 @@ export default {
       analyser: null,
       buffer: null,
       history: [],
-      correlationArray: [],
+      pitchDetector: null,
       freqDisplay: "--",
       noteDisplay: "--",
       dBDisplay: "--",
@@ -155,55 +157,6 @@ export default {
       this.ctx.clearRect(0, 0, canvas.width, canvas.height);
       this.drawNoteLines();
     },
-    autoCorrelate(buf, sampleRate) {
-      const SIZE = buf.length;
-      let rms = 0;
-      for (let i = 0; i < SIZE; i++) rms += buf[i] * buf[i];
-      rms = Math.sqrt(rms / SIZE);
-      if (rms < this.sensitivity) return -1;
-
-      let r1 = 0,
-        r2 = SIZE - 1,
-        thres = 0.2;
-      for (let i = 0; i < SIZE / 2; i++)
-        if (Math.abs(buf[i]) < thres) {
-          r1 = i;
-          break;
-        }
-      for (let i = 1; i < SIZE / 2; i++)
-        if (Math.abs(buf[SIZE - i]) < thres) {
-          r2 = SIZE - i;
-          break;
-        }
-
-      const newSize = r2 - r1;
-      if (newSize <= 0) return -1;
-      if (this.correlationArray.length < newSize)
-        this.correlationArray = new Array(newSize);
-      this.correlationArray.fill(0);
-
-      for (let i = 0; i < newSize; i++) {
-        const offset = r1 + i;
-        let sum = 0;
-        for (let j = 0; j < newSize - i; j++) {
-          sum += buf[r1 + j] * buf[offset + j];
-        }
-        this.correlationArray[i] = sum;
-      }
-
-      let d = 0;
-      while (this.correlationArray[d] > this.correlationArray[d + 1]) d++;
-
-      let maxval = -1,
-        maxpos = -1;
-      for (let i = d; i < newSize; i++) {
-        if (this.correlationArray[i] > maxval) {
-          maxval = this.correlationArray[i];
-          maxpos = i;
-        }
-      }
-      return maxpos > 0 ? sampleRate / maxpos : -1;
-    },
     drawNoteLines() {
       const canvas = this.$refs.histogram;
       const ctx = this.ctx;
@@ -211,6 +164,8 @@ export default {
       const width = canvas.width;
       const scaleNoteIndices = this.getMajorScaleNotes(this.selectedRootNote);
       const recentFreqs = this.history.slice(0, 2).map((h) => h.freq);
+
+      ctx.clearRect(0, 0, width, height);
 
       for (let midi = MIN_MIDI; midi <= MAX_MIDI; midi++) {
         const y = height - ((midi - MIN_MIDI) / TOTAL_NOTES) * height;
@@ -275,13 +230,12 @@ export default {
     async update() {
       if (!this.analyser) return;
       this.analyser.getFloatTimeDomainData(this.buffer);
-      const freq = this.autoCorrelate(
-        this.buffer,
-        this.audioContext.sampleRate
-      );
 
-      if (freq !== -1) {
-        const midi = this.freqToMidi(freq.toFixed(1));
+      // Usar pitchfinder para detectar pitch
+      const freq = this.pitchDetector(this.buffer);
+
+      if (freq && freq >= 20 && freq <= 2000) {
+        const midi = this.freqToMidi(freq);
         const note = this.getNoteName(Math.round(midi));
 
         this.freqDisplay = freq.toFixed(0);
@@ -315,6 +269,11 @@ export default {
             this.mediaStream
           );
           source.connect(this.analyser);
+
+          this.pitchDetector = YIN({
+            sampleRate: this.audioContext.sampleRate,
+            threshold: 0.01,
+          });
 
           this.hasScrolledToFirst = false;
           this.isMicActive = true;

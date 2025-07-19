@@ -65,7 +65,7 @@ export default {
 
     // './plugins/vue-gtag.js',
     { src: "./plugins/vue-gtag.js", mode: "client" },
-    { src: "~/plugins/tone.js", mode: "client" },
+    "~/plugins/tone.js",
     "./plugins/youtube",
   ],
   ignore: ["pages/country*.vue"],
