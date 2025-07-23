@@ -62,10 +62,8 @@ export default {
     "./plugins/vue-the-mask.js",
     "./plugins/trading-vue.js",
     "./plugins/google-maps.js",
-
     // './plugins/vue-gtag.js',
     { src: "./plugins/vue-gtag.js", mode: "client" },
-    "~/plugins/tone.js",
     "./plugins/youtube",
   ],
   ignore: ["pages/country*.vue"],

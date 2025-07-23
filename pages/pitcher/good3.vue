@@ -390,7 +390,7 @@ export default {
 
         ctx.fillStyle = pointColor;
         ctx.beginPath();
-        ctx.arc(x, y, 3, 0, 2 * Math.PI);
+        ctx.arc(x, y, 2, 0, 2 * Math.PI);
         ctx.fill();
 
         ctx.fillStyle = textColor;
@@ -485,7 +485,7 @@ export default {
 
         ctx.fillStyle = fadedColor;
         ctx.beginPath();
-        ctx.arc(x, y, 1.7, 0, 3 * Math.PI);
+        ctx.arc(x, y, 1.3, 0, 2 * Math.PI);
         ctx.fill();
       }
     },

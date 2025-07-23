@@ -54,17 +54,18 @@
       ref="scrollContainer"
       style="
         width: 920px;
-        height: 500px;
+        height: 600px;
         margin: 20px auto 0;
         border: 1px solid #ccc;
-
+        overflow-y: auto;
+        scroll-behavior: smooth;
         background-color: black;
       "
     >
       <canvas
         ref="histogram"
         width="900"
-        height="500"
+        height="1000"
         style="display: block; margin: auto; background-color: black"
       ></canvas>
     </div>
@@ -101,8 +102,8 @@ const COLORS = [
   "#8000FF",
 ];
 const MAJOR_STEPS = [0, 2, 4, 5, 7, 9, 11];
-const MIN_MIDI = 47;
-const MAX_MIDI = 61;
+const MIN_MIDI = 40;
+const MAX_MIDI = 84;
 const TOTAL_NOTES = MAX_MIDI - MIN_MIDI;
 const MAX_HISTORY = 700;
 const TOLERANCE_HZ = 1.95;
@@ -150,7 +151,7 @@ export default {
       return A4_MIDI + 12 * Math.log2(freq / A4_FREQ);
     },
     getNoteName(midiNote) {
-      return NOTE_SHORT_STRINGS[midiNote % 12]; // + Math.floor(midiNote / 12 - 1);
+      return NOTE_SHORT_STRINGS[midiNote % 12] + Math.floor(midiNote / 12 - 1);
     },
     getMajorScaleNotes(root) {
       const rootIndex = NOTE_SHORT_STRINGS.indexOf(root);
@@ -390,7 +391,7 @@ export default {
 
         ctx.fillStyle = pointColor;
         ctx.beginPath();
-        ctx.arc(x, y, 3, 0, 2 * Math.PI);
+        ctx.arc(x, y, 2, 0, 2 * Math.PI);
         ctx.fill();
 
         ctx.fillStyle = textColor;
@@ -485,7 +486,7 @@ export default {
 
         ctx.fillStyle = fadedColor;
         ctx.beginPath();
-        ctx.arc(x, y, 1.7, 0, 3 * Math.PI);
+        ctx.arc(x, y, 1.3, 0, 2 * Math.PI);
         ctx.fill();
       }
     },
