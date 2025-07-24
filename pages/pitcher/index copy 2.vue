@@ -137,20 +137,7 @@ export default {
       dBDisplay: "--",
       sensitivity: 0.005,
       selectedRootNote: "C",
-      noteOptions: [
-        "C",
-        "C♯",
-        "D",
-        "D♯",
-        "E",
-        "F",
-        "F♯",
-        "G",
-        "G♯",
-        "A",
-        "A♯",
-        "B",
-      ],
+      noteOptions: NOTE_SHORT_STRINGS.filter((n) => !n.includes("+")),
       hasScrolledToFirst: false,
     };
   },
@@ -162,8 +149,8 @@ export default {
   },
   computed: {
     isNoteInScale() {
-      const note = this.noteDisplay.replace(/[0-9+]/g, "");
-      const noteIndex = this.noteOptions.indexOf(note);
+      const note = this.noteDisplay.replace(/[0-9]/g, "");
+      const noteIndex = NOTE_SHORT_STRINGS.findIndex((n) => n === note);
       return this.getMajorScaleNotes(this.selectedRootNote).includes(noteIndex);
     },
   },
@@ -175,24 +162,18 @@ export default {
       return A4_MIDI + 12 * Math.log2(freq / A4_FREQ);
     },
     getNoteNameNum(midiNote) {
-      const noteIndex = Math.floor(midiNote) % 12;
-      const isHalfStep = Math.round(midiNote * 2) % 2 === 1;
-      const note = isHalfStep
-        ? NOTE_SHORT_STRINGS[noteIndex * 2 + 1]
-        : NOTE_SHORT_STRINGS[noteIndex * 2];
+      const note = NOTE_SHORT_STRINGS[(midiNote % 12) * 2]; // use only full notes
       const octave = Math.floor(midiNote / 12 - 1);
       return `${note}${octave}`;
     },
     getNoteName(midiNote) {
-      const noteIndex = Math.floor(midiNote) % 12;
-      const isHalfStep = Math.round(midiNote * 2) % 2 === 1;
-      return isHalfStep
-        ? NOTE_SHORT_STRINGS[noteIndex * 2 + 1]
-        : NOTE_SHORT_STRINGS[noteIndex * 2];
+      return NOTE_SHORT_STRINGS[(midiNote % 12) * 2]; // only natural/semitone notes, not "+"
     },
     getMajorScaleNotes(root) {
-      const rootIndex = this.noteOptions.indexOf(root);
-      return MAJOR_STEPS.map((step) => (rootIndex + step) % 12);
+      const rootIndex = NOTE_SHORT_STRINGS.findIndex((n) => n === root);
+      return MAJOR_STEPS.map(
+        (step) => (rootIndex + step * 2) % NOTE_SHORT_STRINGS.length
+      );
     },
     resetHistory() {
       this.history = [];
@@ -262,12 +243,10 @@ export default {
           this.analyser = this.audioContext.createAnalyser();
           this.analyser.fftSize = 2048;
           this.buffer = new Float32Array(this.analyser.fftSize);
-
           const source = this.audioContext.createMediaStreamSource(
             this.mediaStream
           );
           source.connect(this.analyser);
-
           this.hasScrolledToFirst = false;
           this.isMicActive = true;
           this.drawNoteLines();
@@ -288,11 +267,6 @@ export default {
       rms = Math.sqrt(rms / SIZE);
       const dB_SPL = 20 * Math.log10(rms / 0.00002);
       this.dBDisplay = Math.max(0, dB_SPL).toFixed(1);
-      if (dB_SPL > 80) {
-        console.warn(
-          `¡Nivel de sonido alto! ${this.dBDisplay} dB (NIOSH threshold: 80 dB)`
-        );
-      }
       if (dB_SPL < 30 || rms < this.sensitivity) {
         this.freqDisplay = "--";
         this.noteDisplay = "--";
@@ -355,7 +329,7 @@ export default {
 
       if (freq !== -1) {
         const midi = this.freqToMidi(freq);
-        const note = this.getNoteName(Math.round(midi * 2) / 2);
+        const note = this.getNoteName(Math.round(midi));
         this.freqDisplay = freq.toFixed(0);
         this.noteDisplay = note;
         this.history.unshift({ freq, midi });
@@ -369,7 +343,67 @@ export default {
 
       if (this.isMicActive) requestAnimationFrame(this.update);
     },
+    drawNoteLines() {
+      const canvas = this.$refs.histogram;
+      const ctx = this.ctx;
+      const height = canvas.height;
+      const width = canvas.width;
 
+      ctx.clearRect(0, 0, width, height);
+
+      const recentFreqs = this.history.slice(0, 2).map((h) => h.freq);
+      let currentNoteBase = "";
+      if (recentFreqs.length > 0 && recentFreqs[0]) {
+        const currentMidi = this.freqToMidi(recentFreqs[0]);
+        currentNoteBase = this.getNoteName(Math.round(currentMidi)).replace(
+          /[0-9]/g,
+          ""
+        );
+      }
+
+      for (let i = 0; i < NOTE_SHORT_STRINGS.length; i++) {
+        const relative = i / 2;
+        const midi = MIN_MIDI + relative;
+        const y = height - ((midi - MIN_MIDI) / TOTAL_NOTES) * height;
+        if (y < 0 || y > height) continue;
+
+        const label = NOTE_SHORT_STRINGS[i];
+        if (!label) continue;
+
+        const noteBase = label.replace(/[+#]/g, "").replace("♯", "#");
+        const noteIndex = Math.floor(i / 2) % 12;
+        const freq = this.midiToFreq(midi);
+        const isInScale =
+          i % 2 === 0 &&
+          this.getMajorScaleNotes(this.selectedRootNote).includes(noteIndex);
+        const isNearby = recentFreqs.some(
+          (f) => Math.abs(f - freq) <= TOLERANCE_HZ
+        );
+        const isCurrentNoteFamily =
+          currentNoteBase && noteBase === currentNoteBase;
+
+        ctx.font = isNearby ? "18px sans-serif" : "14px sans-serif";
+        ctx.lineWidth = isNearby ? 2.5 : isInScale ? 1.5 : 1;
+
+        if (isCurrentNoteFamily) {
+          ctx.strokeStyle = isInScale ? "red" : "#FFEE99";
+          ctx.fillStyle = isInScale ? "red" : "#FFEE99";
+        } else if (isNearby) {
+          ctx.strokeStyle = COLORS[noteIndex];
+          ctx.fillStyle = COLORS[noteIndex];
+        } else {
+          ctx.strokeStyle = i % 2 === 1 ? "#444" : isInScale ? "white" : "#555";
+          ctx.fillStyle = "white";
+        }
+
+        ctx.beginPath();
+        ctx.moveTo(5, y);
+        ctx.lineTo(width - TEXT_WIDTH - 3, y);
+        ctx.stroke();
+
+        ctx.fillText(label, width - TEXT_WIDTH, y + 3);
+      }
+    },
     drawHistogram() {
       const canvas = this.$refs.histogram;
       const ctx = this.ctx;
@@ -382,157 +416,11 @@ export default {
       ctx.clearRect(0, 0, width, height);
       this.drawNoteLines();
 
-      const currentData = this.history[0];
-      if (
-        !currentData ||
-        !currentData.freq ||
-        currentData.freq < 20 ||
-        currentData.freq > 2000
-      ) {
-        for (let i = 1; i < len; i++) {
-          const { freq, midi } = this.history[i];
-          if (!freq || freq < 20 || freq > 2000) continue;
-          this.drawHistoryPoints(i, freq, midi, spacing, scaleNoteIndices);
-        }
-        return;
-      }
-
-      const { freq, midi } = currentData;
-      const currentNoteName = this.getNoteNameNum(Math.round(midi * 2) / 2);
-      const currentNoteBase = currentNoteName.replace(/[0-9+]/g, "");
-      const currentNoteIndex = Math.round(midi) % 12;
-      const isCurrentInScale = scaleNoteIndices.includes(currentNoteIndex);
-
-      const staticDisplayText = `${currentNoteName} (${freq.toFixed(0)} Hz)`;
-      ctx.font = "bold 16px sans-serif";
-      const textWidth = ctx.measureText(staticDisplayText).width;
-
-      for (let octaveOffset = -2; octaveOffset <= 4; octaveOffset++) {
-        const shiftedFreq = freq * Math.pow(2, octaveOffset);
-        const shiftedMidi = this.freqToMidi(shiftedFreq);
-        const y = height - ((shiftedMidi - MIN_MIDI) / TOTAL_NOTES) * height;
-        if (y < 0 || y > height) continue;
-
-        const x = width - TEXT_WIDTH - 5;
-        const shiftedNoteName = this.getNoteName(
-          Math.round(shiftedMidi * 2) / 2
-        );
-        const shiftedNoteBase = shiftedNoteName.replace(/[0-9+]/g, "");
-        const isSameNoteFamily = shiftedNoteBase === currentNoteBase;
-        const shiftedNoteIndex = Math.round(shiftedMidi) % 12;
-
-        let pointColor, textColor;
-        if (isSameNoteFamily) {
-          pointColor = textColor = "white";
-        } else {
-          pointColor = textColor = COLORS[shiftedNoteIndex];
-        }
-
-        ctx.fillStyle = pointColor;
-        ctx.beginPath();
-        ctx.arc(x, y, 3, 0, 2 * Math.PI);
-        ctx.fill();
-
-        ctx.fillStyle = textColor;
-        ctx.fillText(staticDisplayText, x - textWidth - 10, y - 5);
-      }
-
       for (let i = 1; i < len; i++) {
         const { freq, midi } = this.history[i];
         if (!freq || freq < 20 || freq > 2000) continue;
         this.drawHistoryPoints(i, freq, midi, spacing, scaleNoteIndices);
       }
-    },
-
-    drawNoteLines() {
-      const canvas = this.$refs.histogram;
-      const ctx = this.ctx;
-      const height = canvas.height;
-      const width = canvas.width;
-      const scaleNoteIndices = this.getMajorScaleNotes(this.selectedRootNote);
-      const recentFreqs = this.history.slice(0, 2).map((h) => h.freq);
-
-      let currentNote = "";
-      let currentNoteType = ""; // "natural" o "halfstep"
-      let currentFreq = 0;
-      if (recentFreqs.length > 0 && recentFreqs[0]) {
-        currentFreq = recentFreqs[0];
-        const currentMidi = this.freqToMidi(currentFreq);
-        const roundedMidi = Math.round(currentMidi * 2) / 2;
-        currentNoteType = roundedMidi % 1 === 0.5 ? "halfstep" : "natural";
-        currentNote = this.getNoteName(roundedMidi);
-      }
-
-      // Dibujar líneas para cada semitono
-      for (let i = 0; i <= (MAX_MIDI - MIN_MIDI) * 2; i++) {
-        const y = height - (i / (TOTAL_NOTES * 2)) * height;
-        const midi = MIN_MIDI + i / 2;
-        const noteIndex = Math.floor(midi) % 12;
-        const isHalfStep = i % 2 === 1;
-        const noteName = isHalfStep
-          ? NOTE_SHORT_STRINGS[noteIndex * 2 + 1]
-          : NOTE_SHORT_STRINGS[noteIndex * 2];
-        const noteBase = noteName.replace(/\+/g, "");
-        const freq = this.midiToFreq(midi);
-
-        // Calcular distancia y pertenencia
-        const freqDistance = currentFreq
-          ? Math.abs(currentFreq - freq)
-          : Infinity;
-        const isExactNote = freqDistance <= TOLERANCE_HZ / 2;
-        const isSameNoteType =
-          currentNote &&
-          ((isHalfStep && currentNoteType === "halfstep") ||
-            (!isHalfStep && currentNoteType === "natural"));
-        const isSameNoteFamily =
-          currentNote && noteBase === currentNote.replace(/\+/g, "");
-
-        // Reglas de pintado
-        if (isSameNoteFamily && isSameNoteType) {
-          // Todas las notas del mismo tipo detectado (C o C+)
-          if (isHalfStep) {
-            ctx.strokeStyle = "#FFEE99"; // Amarillo para C+
-            ctx.fillStyle = "#FFEE99";
-          } else {
-            ctx.strokeStyle = "red"; // Rojo para C natural
-            ctx.fillStyle = "red";
-          }
-          ctx.lineWidth = isExactNote ? 2.5 : 2;
-        } else if (isHalfStep) {
-          // Cualquier otra nota intermedia (D+, F+, etc.)
-          ctx.strokeStyle = "#888"; // Gris
-          ctx.fillStyle = "#888";
-          ctx.lineWidth = 1;
-        } else {
-          // Notas naturales no detectadas
-          ctx.strokeStyle = "#555"; // Gris oscuro
-          ctx.fillStyle = "#aaa";
-          ctx.lineWidth = 1;
-        }
-
-        // Dibujar línea
-        ctx.beginPath();
-        ctx.moveTo(5, y);
-        ctx.lineTo(width - TEXT_WIDTH - 3, y);
-        ctx.stroke();
-
-        // Mostrar etiquetas
-        const isActive = isSameNoteFamily && isSameNoteType;
-        if (isHalfStep) {
-          ctx.font = isActive ? "bold 11px sans-serif" : "10px sans-serif";
-          ctx.fillText(noteName, width - TEXT_WIDTH + 15, y + 3);
-        } else {
-          ctx.font = isActive ? "bold 13px sans-serif" : "12px sans-serif";
-          ctx.fillText(noteName, width - TEXT_WIDTH, y + 3);
-        }
-      }
-
-      // Línea vertical separadora
-      ctx.strokeStyle = "#444";
-      ctx.beginPath();
-      ctx.moveTo(width - TEXT_WIDTH - 5, 0);
-      ctx.lineTo(width - TEXT_WIDTH - 5, height);
-      ctx.stroke();
     },
     drawHistoryPoints(i, freq, midi, spacing, scaleNoteIndices) {
       const canvas = this.$refs.histogram;
@@ -551,7 +439,6 @@ export default {
 
         const x = width - i * spacing - TEXT_WIDTH - 5;
         const shiftedNoteIndex = Math.round(shiftedMidi) % 12;
-
         const color = COLORS[shiftedNoteIndex];
         const fadedColor = this.lightenColor(color, 50);
 
