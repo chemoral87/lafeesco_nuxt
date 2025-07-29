@@ -123,7 +123,7 @@ const TEXT_WIDTH = 40;
 export default {
   data() {
     return {
-      canvasWidth: 800,
+      canvasWidth: 400,
       isMicActive: false,
       mediaStream: null,
       audioContext: null,
