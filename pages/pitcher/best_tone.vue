@@ -302,97 +302,63 @@ export default {
         await this.cleanup();
       }
     },
-    /**
-     * Smooths frequency transitions and corrects octave jumps
-     * @param {number} currentFreq - The current raw frequency in Hz
-     * @returns {number} The smoothed frequency
-     */
+
     smoothFrequency(currentFreq) {
       if (!this.lastFreq) {
         this.lastFreq = currentFreq;
         return currentFreq;
       }
 
-      // Define octave jump thresholds and correction factors
-      const OCTAVE_THRESHOLD_LOW = 1.8;
-      const OCTAVE_THRESHOLD_HIGH = 2.2;
-      const HALF_OCTAVE_THRESHOLD_LOW = 0.45;
-      const HALF_OCTAVE_THRESHOLD_HIGH = 0.55;
-
       const ratio = currentFreq / this.lastFreq;
 
-      // Octave correction with weighted average
-      if (ratio > OCTAVE_THRESHOLD_LOW && ratio < OCTAVE_THRESHOLD_HIGH) {
-        currentFreq = (currentFreq + this.lastFreq * 2) * 0.5;
-      } else if (
-        ratio > HALF_OCTAVE_THRESHOLD_LOW &&
-        ratio < HALF_OCTAVE_THRESHOLD_HIGH
-      ) {
-        currentFreq = (currentFreq + this.lastFreq * 0.5) * 0.5;
+      // Octave correction
+      if (ratio > 1.8 && ratio < 2.2) {
+        currentFreq = (currentFreq + this.lastFreq * 2) / 2;
+      } else if (ratio > 0.45 && ratio < 0.55) {
+        currentFreq = (currentFreq + this.lastFreq / 2) / 2;
       }
 
-      // Apply exponential smoothing
-      const SMOOTHING_FACTOR = 0.3;
+      const smoothingFactor = 0.3;
       this.lastFreq =
-        this.lastFreq * (1 - SMOOTHING_FACTOR) + currentFreq * SMOOTHING_FACTOR;
-
+        this.lastFreq * (1 - smoothingFactor) + currentFreq * smoothingFactor;
       return this.lastFreq;
     },
 
-    /**
-     * Performs autocorrelation pitch detection on audio buffer
-     * @param {Float32Array} buf - The audio buffer to analyze
-     * @param {number} sampleRate - The sample rate in Hz
-     * @returns {number} The detected frequency in Hz or -1 if none detected
-     */
     autoCorrelate(buf, sampleRate) {
       const SIZE = buf.length;
-      const MIN_DB = 30;
-      const MIN_SAMPLE_THRESHOLD = 0.01;
-      const PEAK_THRESHOLD_FACTOR = 0.2;
-      const WINDOW_PADDING = 10;
-
-      // Calculate RMS and dB SPL
-      let sumSquares = 0;
+      let rms = 0;
       let maxSample = 0;
 
       for (let i = 0; i < SIZE; i++) {
-        const sample = buf[i];
-        sumSquares += sample * sample;
-        if (sample > maxSample) maxSample = sample;
-        if (-sample > maxSample) maxSample = -sample;
+        const absVal = Math.abs(buf[i]);
+        rms += buf[i] * buf[i];
+        if (absVal > maxSample) maxSample = absVal;
       }
 
-      const rms = Math.sqrt(sumSquares / SIZE);
+      rms = Math.sqrt(rms / SIZE);
       const dB_SPL = 20 * Math.log10(rms / 0.00002);
       this.dBDisplay = Math.max(0, dB_SPL).toFixed(1);
 
-      // Early exit for silent/noisy signals
-      if (
-        dB_SPL < MIN_DB ||
-        rms < this.sensitivity ||
-        maxSample < MIN_SAMPLE_THRESHOLD
-      ) {
+      if (dB_SPL < 30 || rms < this.sensitivity || maxSample < 0.01) {
         this.freqDisplay = "--";
         this.noteDisplay = "--";
         return -1;
       }
 
-      // Detect active region with hysteresis
-      const threshold = maxSample * PEAK_THRESHOLD_FACTOR;
+      // Detect active region
+      const threshold = maxSample * 0.2;
       let start = 0;
       let end = SIZE - 1;
 
       for (let i = 0; i < SIZE / 2; i++) {
         if (Math.abs(buf[i]) > threshold) {
-          start = Math.max(0, i - WINDOW_PADDING);
+          start = Math.max(0, i - 10);
           break;
         }
       }
-
       for (let i = 1; i < SIZE / 2; i++) {
         if (Math.abs(buf[SIZE - i]) > threshold) {
-          end = Math.min(SIZE - 1, SIZE - i + WINDOW_PADDING);
+          end = Math.min(SIZE - 1, SIZE - i + 10);
           break;
         }
       }
@@ -400,24 +366,22 @@ export default {
       const windowSize = end - start;
       if (windowSize <= 0) return -1;
 
-      // Initialize or resize correlation array if needed
-      if (!this.correlationArray || this.correlationArray.length < windowSize) {
-        this.correlationArray = new Float32Array(windowSize);
+      if (this.correlationArray.length < windowSize) {
+        this.correlationArray = new Array(windowSize);
       } else {
-        this.correlationArray.fill(0);
+        this.correlationArray.fill(0, 0, windowSize);
       }
 
-      // Optimized autocorrelation with pre-calculated values
+      // Autocorrelation
       for (let lag = 0; lag < windowSize; lag++) {
         let sum = 0;
-        const limit = windowSize - lag;
-        for (let i = 0; i < limit; i++) {
+        for (let i = 0; i < windowSize - lag; i++) {
           sum += buf[start + i] * buf[start + i + lag];
         }
         this.correlationArray[lag] = sum;
       }
 
-      // Find initial dip (skip direct current component)
+      // Skip initial dip
       let dipIndex = 0;
       while (
         dipIndex < windowSize - 1 &&
@@ -426,7 +390,7 @@ export default {
         dipIndex++;
       }
 
-      // Find main peak after dip
+      // Find peak
       let maxVal = -Infinity;
       let peakIndex = -1;
       for (let i = dipIndex; i < windowSize; i++) {
@@ -440,25 +404,22 @@ export default {
 
       let freq = sampleRate / peakIndex;
 
-      // Harmonic correction helper
-      const checkHarmonic = (divisor, thresholdRatio) => {
+      // Harmonic correction
+      const checkHarmonic = (divisor, threshold) => {
         const subIndex = Math.floor(peakIndex / divisor);
-        if (subIndex > 0 && subIndex < windowSize) {
+        if (subIndex > 0 && subIndex < this.correlationArray.length) {
           const subVal = this.correlationArray[subIndex];
-          if (subVal > thresholdRatio * maxVal) {
-            return sampleRate / subIndex;
+          if (subVal > threshold * maxVal) {
+            return freq / divisor;
           }
         }
         return freq;
       };
 
-      // Check for common harmonics in voice range
       if (freq > 0 && freq < 2000) {
-        if (freq > 160 && freq < 800) {
-          // Possible 2nd harmonic
+        if (freq / 2 > 80 && freq / 2 < 400) {
           freq = checkHarmonic(2, 0.8);
-        } else if (freq > 240 && freq < 1200) {
-          // Possible 3rd harmonic
+        } else if (freq / 3 > 80 && freq / 3 < 400) {
           freq = checkHarmonic(3, 0.7);
         }
       }
