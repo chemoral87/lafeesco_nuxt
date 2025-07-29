@@ -1,53 +1,36 @@
 <template>
   <v-container class="pa-4" style="max-width: 1000px">
-    <h4 class="text-left mb-4">
-      Tuner
-      <span>
-        Frec: <strong>{{ freqDisplay }}</strong> Hz
-      </span>
+    <h4 class="text-center mb-4">Detección de Nota Musical</h4>
+
+    <div class="text-center mb-3">
+      <span
+        >Frecuencia: <strong>{{ freqDisplay }}</strong> Hz</span
+      >
       |
       <span>
         Nota: <strong>{{ noteDisplay }}</strong>
         <span v-if="isNoteInScale"> (Escala)</span>
         ({{ dBDisplay }} dB)
       </span>
-    </h4>
+    </div>
 
-    <div class="text-center mb-3"></div>
+    <v-row justify="center" class="mb-4" align="center" dense>
+      <v-btn @click="resetHistory" color="primary" class="mr-3"
+        >Reiniciar</v-btn
+      >
+      <v-btn @click="toggleMic" :color="isMicActive ? 'error' : 'success'">
+        {{ isMicActive ? "Desactivar micrófono" : "Activar micrófono" }}
+      </v-btn>
+    </v-row>
 
     <v-row align="center" justify="center" dense>
-      <v-col cols="auto">
-        <v-btn @click="resetHistory" color="primary" class="mr-1">
-          <v-icon>mdi-restart</v-icon>
-          <span class="d-none d-sm-inline">Reiniciar</span>
-        </v-btn>
-        <v-btn @click="toggleMic" :color="isMicActive ? 'error' : 'success'">
-          <v-icon>{{
-            isMicActive ? "mdi-microphone-off" : "mdi-microphone"
-          }}</v-icon>
-          <span class="d-none d-sm-inline">
-            {{ isMicActive ? "Silenciar" : "Activar mic" }}
-          </span>
-        </v-btn>
-      </v-col>
-
-      <v-col cols="6">
-        <v-select
-          :items="noteOptions"
-          v-model="selectedRootNote"
-          label="Escala Mayor"
-          dense
-          outlined
-          hide-details
-        />
-      </v-col>
-      <v-col cols="12" sm="4">
+      <v-col cols="12" sm="6" md="4">
         <v-slider
           v-model="sensitivity"
           :min="0.001"
-          :max="0.01"
-          :step="0.002"
-          label="Sensibilidad"
+          :max="0.02"
+          :step="0.001"
+          label="Sensibilidad (RMS mínima)"
           hide-details
           thumb-label
         />
@@ -55,13 +38,36 @@
           {{ sensitivity.toFixed(3) }}
         </div>
       </v-col>
+
+      <v-col cols="12" sm="6" md="4">
+        <v-select
+          :items="noteOptions"
+          v-model="selectedRootNote"
+          label="Selecciona una nota"
+          dense
+          outlined
+        />
+      </v-col>
     </v-row>
-    <canvas
-      ref="histogram"
-      max-width="900"
-      height="400"
-      style="display: block; margin: auto; background-color: black"
-    ></canvas>
+
+    <div
+      ref="scrollContainer"
+      style="
+        width: 920px;
+        height: 500px;
+        margin: 20px auto 0;
+        border: 1px solid #ccc;
+
+        background-color: black;
+      "
+    >
+      <canvas
+        ref="histogram"
+        width="900"
+        height="700"
+        style="display: block; margin: auto; background-color: black"
+      ></canvas>
+    </div>
   </v-container>
 </template>
 
@@ -129,7 +135,7 @@ export default {
       freqDisplay: "--",
       noteDisplay: "--",
       dBDisplay: "--",
-      sensitivity: 0.003,
+      sensitivity: 0.005,
       selectedRootNote: "C",
       noteOptions: [
         "C",
@@ -160,9 +166,6 @@ export default {
       const note = this.noteDisplay.replace(/[0-9+]/g, "");
       const noteIndex = this.noteOptions.indexOf(note);
       return this.getMajorScaleNotes(this.selectedRootNote).includes(noteIndex);
-    },
-    scaleNoteIndices() {
-      return this.getMajorScaleNotes(this.selectedRootNote);
     },
   },
   methods: {
@@ -346,13 +349,14 @@ export default {
       }
 
       let freq = maxpos > 0 ? sampleRate / maxpos : -1;
-      // Corrección específica para el rango problemático
-      if (freq > 190 && freq < 210) {
-        const possibleFundamental = freq / 2;
-        const midi = this.freqToMidi(possibleFundamental);
-        // Solo corregir si es una nota musical válida (entre C2 y B5)
-        if (midi >= 36 && midi <= 83) {
-          freq = possibleFundamental;
+
+      // Corrección de octava para evitar mostrar armónicos como fundamentales
+      if (freq < 100) {
+        const possibleFreq = freq * 2;
+        const midi = this.freqToMidi(possibleFreq);
+        if (midi >= 40) {
+          // Solo corregir si es una nota musical válida
+          freq = possibleFreq;
         }
       }
 
@@ -380,14 +384,6 @@ export default {
       );
 
       if (rawFreq !== -1) {
-        let correctedFreq = rawFreq;
-        if (rawFreq > 190 && rawFreq < 210) {
-          const possibleFreq = rawFreq / 2;
-          if (this.freqToMidi(possibleFreq) >= 36) {
-            // Nota musical válida
-            correctedFreq = possibleFreq;
-          }
-        }
         const smoothedFreq = this.smoothFrequency(rawFreq);
         const exactFreq = parseFloat(smoothedFreq.toFixed(1));
         const midi = this.freqToMidi(exactFreq);
@@ -520,44 +516,23 @@ export default {
             (!isHalfStep && currentNoteType === "natural"));
         const isSameNoteFamily =
           currentNote && noteBase === currentNote.replace(/\+/g, "");
-        const scaleNotes = this.getMajorScaleNotes(this.selectedRootNote);
-        const currentNoteIndex = Math.floor(midi) % 12;
-        const isInScale = scaleNotes.includes(currentNoteIndex);
 
         if (isSameNoteFamily && isSameNoteType) {
-          // Nota actualmente detectada
           if (isHalfStep) {
-            ctx.strokeStyle = "yellow";
-            ctx.fillStyle = "yellow";
+            ctx.strokeStyle = "#FFEE99";
+            ctx.fillStyle = "#FFEE99";
           } else {
-            if (!isInScale) {
-              ctx.strokeStyle = "orange";
-              ctx.fillStyle = "orange";
-            } else {
-              ctx.strokeStyle = "red";
-              ctx.fillStyle = "red";
-            }
+            ctx.strokeStyle = "red";
+            ctx.fillStyle = "red";
           }
           ctx.lineWidth = isExactNote ? 2.5 : 2;
-        } else if (isInScale) {
-          // Notas de la escala actual
-          if (isHalfStep) {
-            ctx.strokeStyle = "green";
-            ctx.fillStyle = "green";
-          } else {
-            ctx.strokeStyle = "white";
-            ctx.fillStyle = "white";
-          }
+        } else if (isHalfStep) {
+          ctx.strokeStyle = "#888";
+          ctx.fillStyle = "#888";
           ctx.lineWidth = 1;
         } else {
-          // Notas fuera de la escala
-          if (isHalfStep) {
-            ctx.strokeStyle = "green";
-            ctx.fillStyle = "green";
-          } else {
-            ctx.strokeStyle = "gray";
-            ctx.fillStyle = "gray";
-          }
+          ctx.strokeStyle = "#555";
+          ctx.fillStyle = "#aaa";
           ctx.lineWidth = 1;
         }
 
