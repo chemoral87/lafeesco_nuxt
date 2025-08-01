@@ -5,12 +5,7 @@
       <span>
         Frec: <strong>{{ freqDisplay }}</strong> Hz
       </span>
-      | <span> ({{ dBDisplay }} dB)</span>
-      <!-- <span>
-        Nota: <strong>{{ noteDisplay }}</strong>
-        <span v-if="isNoteInScale"> (Escala)</span>
-        
-      </span> -->
+      | <span> ({{ dBDisplay }} dB)</span> {{ history.length }}
     </h4>
 
     <div class="text-center mb-3"></div>
@@ -114,7 +109,7 @@ const MAJOR_STEPS = [0, 2, 4, 5, 7, 9, 11];
 const MIN_MIDI = 47;
 const MAX_MIDI = 61;
 const TOTAL_NOTES = MAX_MIDI - MIN_MIDI;
-const MAX_HISTORY = 700;
+const MAX_HISTORY = 400;
 const TOLERANCE_HZ = 1.95;
 const A4_FREQ = 440;
 const A4_MIDI = 69;
@@ -123,7 +118,7 @@ const TEXT_WIDTH = 40;
 export default {
   data() {
     return {
-      canvasWidth: 800,
+      canvasWidth: 350,
       isMicActive: false,
       mediaStream: null,
       audioContext: null,
@@ -150,7 +145,6 @@ export default {
         "A♯",
         "B",
       ],
-      hasScrolledToFirst: false,
       lastFreq: null,
     };
   },
@@ -158,7 +152,7 @@ export default {
     this.ctx = this.$refs.histogram.getContext("2d");
     this.ctx.lineWidth = 0.5;
     this.buffer = new Float32Array(2048);
-    this.updateCanvasSize(); // Initial size calculation
+    this.updateCanvasSize();
     window.addEventListener("resize", this.updateCanvasSize);
   },
   beforeUnmount() {
@@ -168,11 +162,6 @@ export default {
     window.removeEventListener("resize", this.updateCanvasSize);
   },
   computed: {
-    isNoteInScale() {
-      const note = this.noteDisplay.replace(/[0-9+]/g, "");
-      const noteIndex = this.noteOptions.indexOf(note);
-      return this.getMajorScaleNotes(this.selectedRootNote).includes(noteIndex);
-    },
     scaleNoteIndices() {
       return this.getMajorScaleNotes(this.selectedRootNote);
     },
@@ -181,9 +170,7 @@ export default {
     updateCanvasSize() {
       const container = this.$el.querySelector(".v-container");
       if (container) {
-        // Subtract some padding to account for margins
         this.canvasWidth = Math.min(container.clientWidth - 32, 1000);
-        // Force Vue to update the DOM
         this.$nextTick(() => {
           this.drawHistogram();
         });
@@ -247,33 +234,6 @@ export default {
         this.drawNoteLines();
       }
     },
-    lightenColor(color, percent) {
-      const num = parseInt(color.replace("#", ""), 16);
-      const amt = Math.round(2.55 * percent);
-      const R = (num >> 16) + amt;
-      const G = ((num >> 8) & 0x00ff) + amt;
-      const B = (num & 0x0000ff) + amt;
-      return (
-        "#" +
-        (
-          0x1000000 +
-          (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
-          (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
-          (B < 255 ? (B < 1 ? 0 : B) : 255)
-        )
-          .toString(16)
-          .slice(1)
-      );
-    },
-    maybeAutoScroll(y) {
-      const container = this.$refs.scrollContainer;
-      const canvasHeight = this.$refs.histogram.height;
-      const zoneTop = canvasHeight / 9;
-      const zoneBottom = (canvasHeight * 8) / 9;
-      if (y < zoneTop || y > zoneBottom) {
-        container.scrollTop = y - container.clientHeight / 2;
-      }
-    },
     async toggleMic() {
       if (!this.isMicActive) {
         try {
@@ -291,7 +251,6 @@ export default {
           );
           source.connect(this.analyser);
 
-          this.hasScrolledToFirst = false;
           this.isMicActive = true;
           this.drawNoteLines();
           this.update();
@@ -302,139 +261,151 @@ export default {
         await this.cleanup();
       }
     },
-
     smoothFrequency(currentFreq) {
       if (!this.lastFreq) {
         this.lastFreq = currentFreq;
         return currentFreq;
       }
 
-      // Add octave jump detection
+      const OCTAVE_THRESHOLD_LOW = 1.8;
+      const OCTAVE_THRESHOLD_HIGH = 2.2;
+      const HALF_OCTAVE_THRESHOLD_LOW = 0.45;
+      const HALF_OCTAVE_THRESHOLD_HIGH = 0.55;
+
       const ratio = currentFreq / this.lastFreq;
-      if (ratio > 1.8 && ratio < 2.2) {
-        // Possible octave jump - average with the expected value
-        const expected = this.lastFreq * 2;
-        currentFreq = (currentFreq + expected) / 2;
-      } else if (ratio > 0.45 && ratio < 0.55) {
-        // Possible octave drop - average with the expected value
-        const expected = this.lastFreq / 2;
-        currentFreq = (currentFreq + expected) / 2;
+
+      if (ratio > OCTAVE_THRESHOLD_LOW && ratio < OCTAVE_THRESHOLD_HIGH) {
+        currentFreq = (currentFreq + this.lastFreq * 2) * 0.5;
+      } else if (
+        ratio > HALF_OCTAVE_THRESHOLD_LOW &&
+        ratio < HALF_OCTAVE_THRESHOLD_HIGH
+      ) {
+        currentFreq = (currentFreq + this.lastFreq * 0.5) * 0.5;
       }
 
-      const smoothingFactor = 0.3;
-      const smoothed =
-        this.lastFreq * (1 - smoothingFactor) + currentFreq * smoothingFactor;
-      this.lastFreq = smoothed;
-      return smoothed;
+      const SMOOTHING_FACTOR = 0.3;
+      this.lastFreq =
+        this.lastFreq * (1 - SMOOTHING_FACTOR) + currentFreq * SMOOTHING_FACTOR;
+
+      return this.lastFreq;
     },
     autoCorrelate(buf, sampleRate) {
       const SIZE = buf.length;
-      let rms = 0;
+      const MIN_DB = 30;
+      const MIN_SAMPLE_THRESHOLD = 0.01;
+      const PEAK_THRESHOLD_FACTOR = 0.2;
+      const WINDOW_PADDING = 10;
+
+      // Calculate RMS and dB SPL
+      let sumSquares = 0;
       let maxSample = 0;
 
-      // Calculate RMS and find max sample
       for (let i = 0; i < SIZE; i++) {
-        const val = buf[i];
-        rms += val * val;
-        if (Math.abs(val) > maxSample) {
-          maxSample = Math.abs(val);
-        }
+        const sample = buf[i];
+        sumSquares += sample * sample;
+        if (Math.abs(sample) > maxSample) maxSample = Math.abs(sample);
       }
-      rms = Math.sqrt(rms / SIZE);
+
+      const rms = Math.sqrt(sumSquares / SIZE);
       const dB_SPL = 20 * Math.log10(rms / 0.00002);
       this.dBDisplay = Math.max(0, dB_SPL).toFixed(1);
 
-      // Silence detection
-      if (dB_SPL < 30 || rms < this.sensitivity || maxSample < 0.01) {
+      // Early exit for silent/noisy signals
+      if (
+        dB_SPL < MIN_DB ||
+        rms < this.sensitivity ||
+        maxSample < MIN_SAMPLE_THRESHOLD
+      ) {
         this.freqDisplay = "--";
         this.noteDisplay = "--";
         return -1;
       }
 
-      // Find first and last points above threshold
-      let r1 = 0,
-        r2 = SIZE - 1;
-      const threshold = maxSample * 0.2;
+      // Find the first and last points where the signal is above the threshold
+      const threshold = maxSample * PEAK_THRESHOLD_FACTOR;
+      let start = 0;
+      let end = SIZE - 1;
+
       for (let i = 0; i < SIZE / 2; i++) {
         if (Math.abs(buf[i]) > threshold) {
-          r1 = Math.max(0, i - 10);
-          break;
-        }
-      }
-      for (let i = 1; i < SIZE / 2; i++) {
-        if (Math.abs(buf[SIZE - i]) > threshold) {
-          r2 = Math.min(SIZE - 1, SIZE - i + 10);
+          start = Math.max(0, i - WINDOW_PADDING);
           break;
         }
       }
 
-      const newSize = r2 - r1;
-      if (newSize <= 0) return -1;
-
-      // Resize correlation array if needed
-      if (this.correlationArray.length < newSize) {
-        this.correlationArray = new Array(newSize);
+      for (let i = SIZE - 1; i > SIZE / 2; i--) {
+        if (Math.abs(buf[i]) > threshold) {
+          end = Math.min(SIZE - 1, i + WINDOW_PADDING);
+          break;
+        }
       }
-      this.correlationArray.fill(0);
+
+      const windowSize = end - start;
+      if (windowSize <= 0) return -1;
+
+      // Initialize or resize correlation array if needed
+      if (!this.correlationArray || this.correlationArray.length < windowSize) {
+        this.correlationArray = new Float32Array(windowSize);
+      }
 
       // Perform autocorrelation
-      for (let i = 0; i < newSize; i++) {
-        const offset = r1 + i;
+      for (let lag = 0; lag < windowSize; lag++) {
         let sum = 0;
-        for (let j = 0; j < newSize - i; j++) {
-          sum += buf[r1 + j] * buf[offset + j];
+        for (let i = 0; i < windowSize - lag; i++) {
+          sum += buf[start + i] * buf[start + i + lag];
         }
-        this.correlationArray[i] = sum;
+        this.correlationArray[lag] = sum;
       }
 
-      // Find first dip
-      let d = 0;
-      while (this.correlationArray[d] > this.correlationArray[d + 1]) d++;
+      // Find the first dip (skip the direct current component)
+      let dipIndex = 0;
+      while (
+        dipIndex < windowSize - 1 &&
+        this.correlationArray[dipIndex] > this.correlationArray[dipIndex + 1]
+      ) {
+        dipIndex++;
+      }
 
-      // Find maximum correlation
-      let maxval = -1,
-        maxpos = -1;
-      for (let i = d; i < newSize; i++) {
-        if (this.correlationArray[i] > maxval) {
-          maxval = this.correlationArray[i];
-          maxpos = i;
+      // Find the main peak after the dip
+      let maxVal = -Infinity;
+      let peakIndex = -1;
+      for (let i = dipIndex; i < windowSize; i++) {
+        if (this.correlationArray[i] > maxVal) {
+          maxVal = this.correlationArray[i];
+          peakIndex = i;
         }
       }
 
-      let freq = maxpos > 0 ? sampleRate / maxpos : -1;
+      if (peakIndex <= 0) return -1;
 
-      // Enhanced octave correction
-      if (freq > 0) {
-        // Check for possible octave errors (2x and 3x harmonics)
-        const possibleFundamental = freq / 2;
-        const possibleFundamental2 = freq / 3;
+      // Calculate frequency from peak index
+      let freq = sampleRate / peakIndex;
 
-        // Check if we might have detected a harmonic instead of fundamental
-        if (possibleFundamental > 80 && possibleFundamental < 400) {
-          const halfPos = Math.floor(maxpos / 2);
-          if (halfPos > 0 && halfPos < this.correlationArray.length) {
-            const halfCorrelation = this.correlationArray[halfPos];
-            // If correlation at half position is strong, prefer the fundamental
-            if (halfCorrelation > 0.8 * maxval) {
-              freq = possibleFundamental;
-            }
+      // Harmonic correction
+      const checkHarmonic = (divisor, thresholdRatio) => {
+        const subIndex = Math.floor(peakIndex / divisor);
+        if (subIndex > 0 && subIndex < windowSize) {
+          const subVal = this.correlationArray[subIndex];
+          if (subVal > thresholdRatio * maxVal) {
+            return sampleRate / subIndex;
           }
         }
-        // Check for 3rd harmonic
-        else if (possibleFundamental2 > 80 && possibleFundamental2 < 400) {
-          const thirdPos = Math.floor(maxpos / 3);
-          if (thirdPos > 0 && thirdPos < this.correlationArray.length) {
-            const thirdCorrelation = this.correlationArray[thirdPos];
-            if (thirdCorrelation > 0.7 * maxval) {
-              freq = possibleFundamental2;
-            }
-          }
+        return freq;
+      };
+
+      // Check for common harmonics in voice range
+      if (freq > 0 && freq < 2000) {
+        if (freq > 160 && freq < 800) {
+          // Possible 2nd harmonic
+          freq = checkHarmonic(2, 0.8);
+        } else if (freq > 240 && freq < 1200) {
+          // Possible 3rd harmonic
+          freq = checkHarmonic(3, 0.7);
         }
       }
 
       return freq > 20 && freq < 2000 ? freq : -1;
     },
-
     async update() {
       if (!this.analyser) return;
 
@@ -447,13 +418,10 @@ export default {
       if (rawFreq !== -1) {
         let correctedFreq = rawFreq;
 
-        // Special handling for problematic range (180-220Hz)
         if (rawFreq > 180 && rawFreq < 220) {
           const possibleFreq = rawFreq / 2;
           const midi = this.freqToMidi(possibleFreq);
-          // Only correct if it results in a valid musical note
           if (midi >= 48 && midi <= 84) {
-            // C3 to C6 range
             correctedFreq = possibleFreq;
           }
         }
@@ -482,9 +450,8 @@ export default {
       const ctx = this.ctx;
       const height = canvas.height;
       const width = canvas.width;
-      const spacing = (width - 5) / MAX_HISTORY;
+      const spacing = (width - 50) / MAX_HISTORY;
       const len = Math.min(this.history.length, MAX_HISTORY);
-      const scaleNoteIndices = this.getMajorScaleNotes(this.selectedRootNote);
 
       ctx.clearRect(0, 0, width, height);
       this.drawNoteLines();
@@ -499,7 +466,7 @@ export default {
         for (let i = 1; i < len; i++) {
           const { freq, midi } = this.history[i];
           if (!freq || freq < 20 || freq > 2000) continue;
-          this.drawHistoryPoints(i, freq, midi, spacing, scaleNoteIndices);
+          this.drawHistoryPoints(i, freq, midi, spacing);
         }
         return;
       }
@@ -507,8 +474,6 @@ export default {
       const { freq, midi } = currentData;
       const currentNoteName = this.getNoteNameNum(Math.round(midi * 2) / 2);
       const currentNoteBase = currentNoteName.replace(/[0-9+]/g, "");
-      const currentNoteIndex = Math.round(midi) % 12;
-      const isCurrentInScale = scaleNoteIndices.includes(currentNoteIndex);
 
       const staticDisplayText = `${currentNoteName} (${this.freqDisplay} Hz)`;
       ctx.font = "bold 16px sans-serif";
@@ -547,7 +512,7 @@ export default {
       for (let i = 1; i < len; i++) {
         const { freq, midi } = this.history[i];
         if (!freq || freq < 20 || freq > 2000) continue;
-        this.drawHistoryPoints(i, freq, midi, spacing, scaleNoteIndices);
+        this.drawHistoryPoints(i, freq, midi, spacing);
       }
     },
     drawNoteLines() {
@@ -556,19 +521,21 @@ export default {
       const height = canvas.height;
       const width = canvas.width;
       const scaleNoteIndices = this.getMajorScaleNotes(this.selectedRootNote);
-      const recentFreqs = this.history.slice(0, 2).map((h) => h.freq);
 
-      let currentNote = "";
-      let currentNoteType = "";
-      let currentFreq = 0;
-      if (recentFreqs.length > 0 && recentFreqs[0]) {
-        currentFreq = recentFreqs[0];
-        const currentMidi = this.freqToMidi(currentFreq);
+      // Precalcular información de la nota actual
+      let currentNoteInfo = null;
+      if (this.history.length > 0 && this.history[0].freq) {
+        const currentMidi = this.freqToMidi(this.history[0].freq);
         const roundedMidi = Math.round(currentMidi * 2) / 2;
-        currentNoteType = roundedMidi % 1 === 0.5 ? "halfstep" : "natural";
-        currentNote = this.getNoteName(roundedMidi);
+        currentNoteInfo = {
+          type: roundedMidi % 1 === 0.5 ? "halfstep" : "natural",
+          name: this.getNoteName(roundedMidi),
+          base: this.getNoteName(roundedMidi).replace(/\+/g, ""),
+          freq: this.history[0].freq,
+        };
       }
 
+      // Dibujar líneas de notas
       for (let i = 0; i <= (MAX_MIDI - MIN_MIDI) * 2; i++) {
         const y = height - (i / (TOTAL_NOTES * 2)) * height;
         const midi = MIN_MIDI + i / 2;
@@ -578,105 +545,84 @@ export default {
           ? NOTE_SHORT_STRINGS[noteIndex * 2 + 1]
           : NOTE_SHORT_STRINGS[noteIndex * 2];
         const noteBase = noteName.replace(/\+/g, "");
-        const freq = this.midiToFreq(midi);
+        const isInScale = scaleNoteIndices.includes(noteIndex);
 
-        const freqDistance = currentFreq
-          ? Math.abs(currentFreq - freq)
-          : Infinity;
-        const isExactNote = freqDistance <= TOLERANCE_HZ / 2;
-        const isSameNoteType =
-          currentNote &&
-          ((isHalfStep && currentNoteType === "halfstep") ||
-            (!isHalfStep && currentNoteType === "natural"));
-        const isSameNoteFamily =
-          currentNote && noteBase === currentNote.replace(/\+/g, "");
-        const scaleNotes = this.getMajorScaleNotes(this.selectedRootNote);
-        const currentNoteIndex = Math.floor(midi) % 12;
-        const isInScale = scaleNotes.includes(currentNoteIndex);
+        // Determinar estilo basado en condiciones
+        let style = {
+          stroke: isHalfStep ? "green" : "gray",
+          fill: isHalfStep ? "green" : "gray",
+          lineWidth: 1,
+        };
 
-        if (isSameNoteFamily && isSameNoteType) {
-          // Nota actualmente detectada
-          if (isHalfStep) {
-            ctx.strokeStyle = "yellow";
-            ctx.fillStyle = "yellow";
-          } else {
-            if (!isInScale) {
-              ctx.strokeStyle = "orange";
-              ctx.fillStyle = "orange";
+        if (currentNoteInfo) {
+          const freqDistance = Math.abs(
+            currentNoteInfo.freq - this.midiToFreq(midi)
+          );
+          const isExactNote = freqDistance <= TOLERANCE_HZ / 2;
+          const isSameNoteType =
+            isHalfStep === (currentNoteInfo.type === "halfstep");
+          const isSameNoteFamily = noteBase === currentNoteInfo.base;
+
+          if (isSameNoteFamily && isSameNoteType) {
+            if (isHalfStep) {
+              style.stroke = style.fill = "yellow";
             } else {
-              ctx.strokeStyle = "red";
-              ctx.fillStyle = "red";
+              style.stroke = style.fill = isInScale ? "red" : "orange";
             }
+            style.lineWidth = isExactNote ? 2.5 : 2;
+          } else if (isInScale && !isHalfStep) {
+            style.stroke = style.fill = "white";
           }
-          ctx.lineWidth = isExactNote ? 2.5 : 2;
-        } else if (isInScale) {
-          // Notas de la escala actual
-          if (isHalfStep) {
-            ctx.strokeStyle = "green";
-            ctx.fillStyle = "green";
-          } else {
-            ctx.strokeStyle = "white";
-            ctx.fillStyle = "white";
-          }
-          ctx.lineWidth = 1;
-        } else {
-          // Notas fuera de la escala
-          if (isHalfStep) {
-            ctx.strokeStyle = "green";
-            ctx.fillStyle = "green";
-          } else {
-            ctx.strokeStyle = "gray";
-            ctx.fillStyle = "gray";
-          }
-          ctx.lineWidth = 1;
         }
 
+        // Dibujar línea
+        ctx.strokeStyle = style.stroke;
+        ctx.fillStyle = style.fill;
+        ctx.lineWidth = style.lineWidth;
         ctx.beginPath();
         ctx.moveTo(5, y);
         ctx.lineTo(width - TEXT_WIDTH - 3, y);
         ctx.stroke();
 
-        const isActive = isSameNoteFamily && isSameNoteType;
-        if (isHalfStep) {
-          ctx.font = isActive ? "bold 11px sans-serif" : "10px sans-serif";
-          ctx.fillText(noteName, width - TEXT_WIDTH + 15, y + 3);
-        } else {
-          ctx.font = isActive ? "bold 13px sans-serif" : "12px sans-serif";
-          ctx.fillText(noteName, width - TEXT_WIDTH, y + 3);
-        }
+        // Dibujar texto
+        ctx.font = isHalfStep
+          ? `bold ${style.lineWidth > 1 ? 11 : 10}px sans-serif`
+          : `bold ${style.lineWidth > 1 ? 13 : 12}px sans-serif`;
+        ctx.fillText(
+          noteName,
+          width - TEXT_WIDTH + (isHalfStep ? 15 : 0),
+          y + 3
+        );
       }
 
+      // Línea vertical
       ctx.strokeStyle = "#444";
       ctx.beginPath();
       ctx.moveTo(width - TEXT_WIDTH - 5, 0);
       ctx.lineTo(width - TEXT_WIDTH - 5, height);
       ctx.stroke();
     },
-    drawHistoryPoints(i, freq, midi, spacing, scaleNoteIndices) {
+    drawHistoryPoints(i, freq, midi, spacing) {
       const canvas = this.$refs.histogram;
       const ctx = this.ctx;
       const height = canvas.height;
       const width = canvas.width;
-
-      const noteIndex = Math.round(midi) % 12;
       const baseFreq = freq;
 
       for (let octaveOffset = -2; octaveOffset <= 4; octaveOffset++) {
         const shiftedFreq = baseFreq * Math.pow(2, octaveOffset);
         const shiftedMidi = this.freqToMidi(shiftedFreq);
         const y = height - ((shiftedMidi - MIN_MIDI) / TOTAL_NOTES) * height;
-        if (y < 0 || y > height) continue;
 
-        const x = width - i * spacing - TEXT_WIDTH - 5;
-        const shiftedNoteIndex = Math.round(shiftedMidi) % 12;
+        if (y >= 0 && y <= height) {
+          const x = width - i * spacing - TEXT_WIDTH - 5;
+          const shiftedNoteIndex = Math.round(shiftedMidi) % 12;
 
-        const color = COLORS[shiftedNoteIndex];
-        const fadedColor = this.lightenColor(color, 50);
-
-        ctx.fillStyle = fadedColor;
-        ctx.beginPath();
-        ctx.arc(x, y, 1.7, 0, 3 * Math.PI);
-        ctx.fill();
+          ctx.fillStyle = COLORS[shiftedNoteIndex];
+          ctx.beginPath();
+          ctx.arc(x, y, 1.7, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
     },
   },
@@ -684,11 +630,6 @@ export default {
     selectedRootNote() {
       this.drawHistogram();
     },
-  },
-  beforeUnmount() {
-    if (this.isMicActive) {
-      this.cleanup();
-    }
   },
 };
 </script>
