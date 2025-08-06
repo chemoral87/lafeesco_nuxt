@@ -5,7 +5,7 @@
       <span>
         Frec: <strong>{{ freqDisplay }}</strong> Hz
       </span>
-      | <span> ({{ dBDisplay }} dB)</span> {{ history.length }}
+      | <span> ({{ dBDisplay }} dB)</span>
     </h4>
 
     <div class="text-center mb-3"></div>
@@ -26,7 +26,7 @@
         </v-btn>
       </v-col>
 
-      <v-col cols="6">
+      <v-col cols="6" sm="3" md="2">
         <v-select
           :items="noteOptions"
           v-model="selectedRootNote"
@@ -36,7 +36,7 @@
           hide-details
         />
       </v-col>
-      <v-col cols="12" sm="4">
+      <v-col cols="12" sm="5" md="3">
         <v-slider
           v-model="sensitivity"
           :min="0.001"
@@ -67,6 +67,46 @@
 <script>
 // Se actualiza la constante COLORS con 24 colores (para cada medio tono)
 const COLORS = [
+  // C (Do) and intermediates
+  "#FF0000", // C (bright red)
+  "#FF4000", // C+
+  "#FF8000", // C♯ (orange)
+  "#FFB000", // C♯+
+
+  // D (Re)
+  "#FFD700", // D (gold)
+  "#FFE880", // D+
+  "#FFFF00", // D♯ (yellow)
+  "#FFFF60", // D♯+
+
+  // E (Mi)
+  "#E0FF80", // E
+  "#A0FF00", // E+
+
+  // F (Fa)
+  "#80FF00", // F (lime)
+  "#40FF00", // F+
+  "#00FF00", // F♯ (green)
+  "#00FF80", // F♯+
+
+  // G (Sol)
+  "#00FFC0", // G (aqua)
+  "#00FFFF", // G+ (cyan)
+  "#00BFFF", // G♯ (sky blue)
+  "#0080FF", // G♯+
+
+  // A (La) - Now much brighter!
+  "#0060FF", // A (bright blue)
+  "#0040FF", // A+
+  "#7F5AFF", // A♯ (lighter violet-blue) 👈 Replaced #4020FF
+  "#A066FF", // A♯+
+
+  // B (Si)
+  "#CC00FF", // B (electric purple) 👈 Brighter!
+  "#FF00FF", // B+ (magenta)
+  "#FF20FF", // Cycle back to red (optional)
+];
+const COLORS_s = [
   // C (Do) y C+ (intermedio entre C y C♯)
   "#FF0000", // C
   "#FF2000", // C+ (mix: #FF0000 + #FF4000)
@@ -429,7 +469,7 @@ export default {
         }
 
         const smoothedFreq = this.smoothFrequency(correctedFreq);
-        const exactFreq = parseFloat(smoothedFreq.toFixed(1));
+        const exactFreq = parseFloat(smoothedFreq.toFixed(2));
         const midi = this.freqToMidi(exactFreq);
         const note = this.getNoteNameNum(midi);
 
