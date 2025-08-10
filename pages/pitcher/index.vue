@@ -28,9 +28,9 @@
 
       <v-col cols="6" sm="3" md="2">
         <v-select
-          :items="noteOptions"
+          :items="currentNoteOptions"
           v-model="selectedRootNote"
-          label="Escala Mayor"
+          :label="latinNotation ? 'Nota Raíz' : 'Root Note'"
           dense
           outlined
           hide-details
@@ -49,6 +49,14 @@
         <div class="text-center font-weight-bold">
           {{ sensitivity.toFixed(3) }}
         </div>
+      </v-col>
+      <v-col cols="auto">
+        <v-switch
+          v-model="latinNotation"
+          label="Notación latina"
+          hide-details
+          class="mt-0 pt-0"
+        ></v-switch>
       </v-col>
     </v-row>
     <v-row dense>
@@ -160,6 +168,34 @@ const NOTE_SHORT_STRINGS = [
   "B",
   "B+",
 ];
+
+const NOTE_LATIN_STRINGS = [
+  "Do",
+  "Do+",
+  "Do♯",
+  "Do♯+",
+  "Re",
+  "Re+",
+  "Re♯",
+  "Re♯+",
+  "Mi",
+  "Mi+",
+  "Fa",
+  "Fa+",
+  "Fa♯",
+  "Fa♯+",
+  "Sol",
+  "Sol+",
+  "Sol♯",
+  "Sol♯+",
+  "La",
+  "La+",
+  "La♯",
+  "La♯+",
+  "Si",
+  "Si+",
+];
+
 const MAJOR_STEPS = [0, 2, 4, 5, 7, 9, 11];
 const MIN_MIDI = 47;
 const MAX_MIDI = 61;
@@ -184,22 +220,7 @@ export default {
       freqDisplay: "--",
       noteDisplay: "--",
       dBDisplay: "--",
-      sensitivity: 0.003,
-      selectedRootNote: "C",
-      noteOptions: [
-        "C",
-        "C♯",
-        "D",
-        "D♯",
-        "E",
-        "F",
-        "F♯",
-        "G",
-        "G♯",
-        "A",
-        "A♯",
-        "B",
-      ],
+
       lastFreq: null,
     };
   },
@@ -209,6 +230,7 @@ export default {
     this.buffer = new Float32Array(2048);
     this.updateCanvasSize();
     window.addEventListener("resize", this.updateCanvasSize);
+    this.drawHistogram();
   },
   beforeUnmount() {
     if (this.isMicActive) {
@@ -217,8 +239,104 @@ export default {
     window.removeEventListener("resize", this.updateCanvasSize);
   },
   computed: {
+    selectedRootNote: {
+      get() {
+        return this.$store.state.pitcher_store.selectedRootNote;
+      },
+      set(value) {
+        this.$store.commit("pitcher_store/SET_ROOT_NOTE", value);
+      },
+    },
+    sensitivity: {
+      get() {
+        return this.$store.state.pitcher_store.sensitivity;
+      },
+      set(value) {
+        this.$store.commit("pitcher_store/SET_SENSITIVITY", value);
+      },
+    },
+    latinNotation: {
+      get() {
+        return this.$store.state.pitcher_store.latinNotation;
+      },
+      set(value) {
+        this.$store.commit("pitcher_store/SET_LATIN_NOTATION", value);
+      },
+    },
     scaleNoteIndices() {
       return this.getMajorScaleNotes(this.selectedRootNote);
+    },
+    currentNoteOptions() {
+      return this.latinNotation
+        ? [
+            "Do",
+            "Do♯",
+            "Re",
+            "Re♯",
+            "Mi",
+            "Fa",
+            "Fa♯",
+            "Sol",
+            "Sol♯",
+            "La",
+            "La♯",
+            "Si",
+          ]
+        : ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
+    },
+    convertedRootNote() {
+      if (this.latinNotation) {
+        const angloIndex = [
+          "C",
+          "C♯",
+          "D",
+          "D♯",
+          "E",
+          "F",
+          "F♯",
+          "G",
+          "G♯",
+          "A",
+          "A♯",
+          "B",
+        ].indexOf(this.selectedRootNote);
+        return angloIndex >= 0
+          ? [
+              "Do",
+              "Do♯",
+              "Re",
+              "Re♯",
+              "Mi",
+              "Fa",
+              "Fa♯",
+              "Sol",
+              "Sol♯",
+              "La",
+              "La♯",
+              "Si",
+            ][angloIndex]
+          : "Do";
+      } else {
+        const latinIndex = [
+          "Do",
+          "Do♯",
+          "Re",
+          "Re♯",
+          "Mi",
+          "Fa",
+          "Fa♯",
+          "Sol",
+          "Sol♯",
+          "La",
+          "La♯",
+          "Si",
+        ].indexOf(this.selectedRootNote);
+        return latinIndex >= 0
+          ? ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"][
+              latinIndex
+            ]
+          : "C";
+      }
     },
   },
   methods: {
@@ -244,7 +362,10 @@ export default {
       const isHalfStep = roundedMidi % 1 === 0.5;
       // Para obtener el índice completo dentro de NOTE_SHORT_STRINGS (y COLORS)
       const fullIndex = isHalfStep ? noteIndex * 2 + 1 : noteIndex * 2;
-      const note = NOTE_SHORT_STRINGS[fullIndex];
+      const noteStrings = this.latinNotation
+        ? NOTE_LATIN_STRINGS
+        : NOTE_SHORT_STRINGS;
+      const note = noteStrings[fullIndex];
       const octave = Math.floor(roundedMidi / 12 - 1);
       return `${note}${octave}`;
     },
@@ -252,10 +373,42 @@ export default {
       const noteIndex = Math.floor(midiNote) % 12;
       const isHalfStep = Math.round(midiNote * 2) % 2 === 1;
       const fullIndex = isHalfStep ? noteIndex * 2 + 1 : noteIndex * 2;
-      return NOTE_SHORT_STRINGS[fullIndex];
+      const noteStrings = this.latinNotation
+        ? NOTE_LATIN_STRINGS
+        : NOTE_SHORT_STRINGS;
+      return noteStrings[fullIndex];
     },
     getMajorScaleNotes(root) {
-      const rootIndex = this.noteOptions.indexOf(root);
+      // Convertir root a notación anglosajona si está en latín
+      const rootIndex = this.latinNotation
+        ? [
+            "Do",
+            "Do♯",
+            "Re",
+            "Re♯",
+            "Mi",
+            "Fa",
+            "Fa♯",
+            "Sol",
+            "Sol♯",
+            "La",
+            "La♯",
+            "Si",
+          ].indexOf(root)
+        : [
+            "C",
+            "C♯",
+            "D",
+            "D♯",
+            "E",
+            "F",
+            "F♯",
+            "G",
+            "G♯",
+            "A",
+            "A♯",
+            "B",
+          ].indexOf(root);
       return MAJOR_STEPS.map((step) => (rootIndex + step) % 12);
     },
     resetHistory() {
@@ -584,9 +737,12 @@ export default {
         const isHalfStep = i % 2 === 1;
         // Se calcula el índice completo: si es semitono, se usa noteIndex*2+1, de lo contrario noteIndex*2.
         const fullIndex = isHalfStep ? noteIndex * 2 + 1 : noteIndex * 2;
+        const noteStrings = this.latinNotation
+          ? NOTE_LATIN_STRINGS
+          : NOTE_SHORT_STRINGS;
         const noteName = isHalfStep
-          ? NOTE_SHORT_STRINGS[noteIndex * 2 + 1]
-          : NOTE_SHORT_STRINGS[noteIndex * 2];
+          ? noteStrings[noteIndex * 2 + 1]
+          : noteStrings[noteIndex * 2];
         const noteBase = noteName.replace(/\+/g, "");
         const isInScale = scaleNoteIndices.includes(noteIndex);
 
@@ -667,6 +823,14 @@ export default {
   },
   watch: {
     selectedRootNote() {
+      if (process.client) {
+        localStorage.setItem("selectedRootNote", this.selectedRootNote);
+      }
+      this.drawHistogram();
+    },
+    latinNotation(newVal) {
+      // Convertir la nota seleccionada al cambiar la notación
+      this.selectedRootNote = this.convertedRootNote;
       this.drawHistogram();
     },
   },

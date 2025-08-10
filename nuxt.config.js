@@ -64,6 +64,7 @@ export default {
     "./plugins/google-maps.js",
     // './plugins/vue-gtag.js',
     { src: "./plugins/vue-gtag.js", mode: "client" },
+    { src: "./plugins/localStorage.js" },
     "./plugins/youtube",
   ],
   ignore: ["pages/country*.vue"],
