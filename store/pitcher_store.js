@@ -2,6 +2,8 @@ export const state = () => ({
   sensitivity: 0.003,
   selectedRootNote: "C",
   latinNotation: false,
+  maxHistory: 400,
+  totalNotes: 14,
 });
 
 export const getters = {
@@ -13,6 +15,12 @@ export const getters = {
   },
   latinNotation(state) {
     return state.latinNotation;
+  },
+  maxHistory(state) {
+    return state.maxHistory;
+  },
+  totalNotes(state) {
+    return state.totalNotes;
   },
   // pitcher(state) {
   //   return {
@@ -30,6 +38,22 @@ export const mutations = {
   },
   SET_LATIN_NOTATION(state, latinNotation) {
     state.latinNotation = latinNotation;
+  },
+  SET_MAX_HISTORY(state, maxHistory) {
+    if (maxHistory < 300) {
+      maxHistory = 300;
+    } else if (maxHistory > 800) {
+      maxHistory = 800;
+    }
+    state.maxHistory = maxHistory;
+  },
+  SET_TOTAL_NOTES(state, totalNotes) {
+    if (totalNotes < 13) {
+      totalNotes = 13;
+    } else if (totalNotes > 25) {
+      totalNotes = 25;
+    }
+    state.totalNotes = totalNotes;
   },
 };
 

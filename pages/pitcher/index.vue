@@ -1,6 +1,9 @@
 <template>
   <v-container class="pa-4" style="max-width: 1000px">
     <h4 class="text-left mb-4">
+      <v-btn icon @click="settingsDialog = true">
+        <v-icon>mdi-cog</v-icon>
+      </v-btn>
       Tuner
       <span>
         Frec: <strong>{{ freqDisplay }}</strong> Hz
@@ -36,39 +39,91 @@
           hide-details
         />
       </v-col>
-      <v-col cols="12" sm="5" md="3">
-        <v-slider
-          v-model="sensitivity"
-          :min="0.001"
-          :max="0.01"
-          :step="0.002"
-          label="Sensibilidad"
-          hide-details
-          thumb-label
-        />
-        <div class="text-center font-weight-bold">
-          {{ sensitivity.toFixed(3) }}
-        </div>
-      </v-col>
-      <v-col cols="auto">
-        <v-switch
-          v-model="latinNotation"
-          label="Notación latina"
-          hide-details
-          class="mt-0 pt-0"
-        ></v-switch>
-      </v-col>
     </v-row>
     <v-row dense>
       <v-col cols="12" class="px-0 mx-0">
         <canvas
           ref="histogram"
-          height="400px"
+          height="500px"
           :width="canvasWidth + 'px'"
           style="display: block; background-color: black"
         />
       </v-col>
     </v-row>
+    <!-- Modal Dialog -->
+    <v-dialog v-model="settingsDialog" max-width="500px">
+      <v-card>
+        <v-card-title>
+          Configuración
+          <v-spacer></v-spacer>
+          <v-btn icon @click="settingsDialog = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" sm="6">
+              <v-switch
+                v-model="latinNotation"
+                label="Notación latina"
+                hide-details
+                class="mt-0 pt-0"
+              ></v-switch>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-slider
+                v-model="sensitivity"
+                :min="0.001"
+                :max="0.01"
+                :step="0.002"
+                label="Sensibilidad"
+                hide-details
+                thumb-label
+              />
+              <div class="text-center font-weight-bold">
+                {{ sensitivity.toFixed(3) }}
+              </div>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-slider
+                v-model="MAX_HISTORY"
+                :min="300"
+                :max="800"
+                :step="50"
+                label="Máx Historial"
+                hide-details
+                thumb-label
+              />
+              <div class="text-center font-weight-bold">
+                {{ MAX_HISTORY }}
+              </div>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-slider
+                v-model="totalNotes"
+                :min="13"
+                :max="25"
+                :step="1"
+                label="# Notas"
+                hide-details
+                thumb-label
+              />
+              <div class="text-center font-weight-bold">
+                {{ totalNotes }}
+              </div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="settingsDialog = false"
+            >Cerrar</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -198,9 +253,9 @@ const NOTE_LATIN_STRINGS = [
 
 const MAJOR_STEPS = [0, 2, 4, 5, 7, 9, 11];
 const MIN_MIDI = 47;
-const MAX_MIDI = 61;
-const TOTAL_NOTES = MAX_MIDI - MIN_MIDI;
-const MAX_HISTORY = 400;
+//const MAX_MIDI = 61;
+//const TOTAL_NOTES = this.totalNotes;
+//const MAX_HISTORY = 400;
 const TOLERANCE_HZ = 1.95;
 const A4_FREQ = 440;
 const A4_MIDI = 69;
@@ -209,6 +264,7 @@ const TEXT_WIDTH = 40;
 export default {
   data() {
     return {
+      settingsDialog: false,
       canvasWidth: 350,
       isMicActive: false,
       mediaStream: null,
@@ -261,6 +317,22 @@ export default {
       },
       set(value) {
         this.$store.commit("pitcher_store/SET_LATIN_NOTATION", value);
+      },
+    },
+    MAX_HISTORY: {
+      get() {
+        return this.$store.state.pitcher_store.maxHistory;
+      },
+      set(value) {
+        this.$store.commit("pitcher_store/SET_MAX_HISTORY", value);
+      },
+    },
+    totalNotes: {
+      get() {
+        return this.$store.state.pitcher_store.totalNotes;
+      },
+      set(value) {
+        this.$store.commit("pitcher_store/SET_TOTAL_NOTES", value);
       },
     },
     scaleNoteIndices() {
@@ -630,7 +702,7 @@ export default {
         this.noteDisplay = note;
 
         this.history.unshift({ freq: exactFreq, midi });
-        if (this.history.length > MAX_HISTORY) this.history.pop();
+        if (this.history.length > this.MAX_HISTORY) this.history.pop();
         this.drawHistogram();
       } else {
         this.freqDisplay = "--";
@@ -645,8 +717,8 @@ export default {
       const ctx = this.ctx;
       const height = canvas.height;
       const width = canvas.width;
-      const spacing = (width - 50) / MAX_HISTORY;
-      const len = Math.min(this.history.length, MAX_HISTORY);
+      const spacing = (width - 50) / this.MAX_HISTORY;
+      const len = Math.min(this.history.length, this.MAX_HISTORY);
 
       ctx.clearRect(0, 0, width, height);
       this.drawNoteLines();
@@ -677,7 +749,8 @@ export default {
       for (let octaveOffset = -2; octaveOffset <= 4; octaveOffset++) {
         const shiftedFreq = freq * Math.pow(2, octaveOffset);
         const shiftedMidi = this.freqToMidi(shiftedFreq);
-        const y = height - ((shiftedMidi - MIN_MIDI) / TOTAL_NOTES) * height;
+        const y =
+          height - ((shiftedMidi - MIN_MIDI) / this.totalNotes) * height;
         if (y < 0 || y > height) continue;
 
         const x = width - TEXT_WIDTH - 5;
@@ -730,8 +803,8 @@ export default {
         };
       }
 
-      for (let i = 0; i <= (MAX_MIDI - MIN_MIDI) * 2; i++) {
-        const y = height - (i / (TOTAL_NOTES * 2)) * height;
+      for (let i = 0; i <= this.totalNotes * 2; i++) {
+        const y = height - (i / (this.totalNotes * 2)) * height;
         const midi = MIN_MIDI + i / 2;
         const noteIndex = Math.floor(midi) % 12;
         const isHalfStep = i % 2 === 1;
@@ -807,7 +880,8 @@ export default {
       for (let octaveOffset = -2; octaveOffset <= 4; octaveOffset++) {
         const shiftedFreq = baseFreq * Math.pow(2, octaveOffset);
         const shiftedMidi = this.freqToMidi(shiftedFreq);
-        const y = height - ((shiftedMidi - MIN_MIDI) / TOTAL_NOTES) * height;
+        const y =
+          height - ((shiftedMidi - MIN_MIDI) / this.totalNotes) * height;
 
         if (y >= 0 && y <= height) {
           const x = width - i * spacing - TEXT_WIDTH - 5;
