@@ -72,6 +72,16 @@
               ></v-switch>
             </v-col>
             <v-col cols="12" sm="6">
+              <v-switch
+                v-model="showMicrotones"
+                :label="
+                  latinNotation ? 'Mostrar microtonos' : 'Show microtones'
+                "
+                hide-details
+                class="mt-0 pt-0"
+              ></v-switch>
+            </v-col>
+            <v-col cols="12" sm="6">
               <v-slider
                 v-model="sensitivity"
                 :min="0.001"
@@ -849,22 +859,27 @@ export default {
         ctx.strokeStyle = style.stroke;
         ctx.fillStyle = style.fill;
         ctx.lineWidth = style.lineWidth;
-        ctx.beginPath();
-        ctx.moveTo(5, y);
-        ctx.lineTo(width - TEXT_WIDTH - 3, y);
-        ctx.stroke();
 
-        ctx.font = isHalfStep
-          ? `bold ${style.lineWidth > 1 ? 11 : 10}px sans-serif`
-          : `bold ${style.lineWidth > 1 ? 13 : 12}px sans-serif`;
-        ctx.fillText(
-          noteName,
-          width - TEXT_WIDTH + (isHalfStep ? 15 : 0),
-          y + 3
-        );
+        // Dibujar la línea horizontal
+        if ((this.showMicrotones && isHalfStep) || !isHalfStep) {
+          ctx.beginPath();
+          ctx.moveTo(5, y);
+          ctx.lineTo(width - TEXT_WIDTH - 3, y);
+          ctx.stroke();
+
+          ctx.font = isHalfStep
+            ? `bold ${style.lineWidth > 1 ? 11 : 10}px sans-serif`
+            : `bold ${style.lineWidth > 1 ? 13 : 12}px sans-serif`;
+          ctx.fillText(
+            noteName,
+            width - TEXT_WIDTH + (isHalfStep ? 15 : 0),
+            y + 3
+          );
+        }
       }
 
       ctx.strokeStyle = "#444";
+      // separador
       ctx.beginPath();
       ctx.moveTo(width - TEXT_WIDTH - 5, 0);
       ctx.lineTo(width - TEXT_WIDTH - 5, height);

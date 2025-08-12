@@ -2,6 +2,7 @@ export const state = () => ({
   sensitivity: 0.003,
   selectedRootNote: "C",
   latinNotation: false,
+  showMicrotones: true,
   maxHistory: 400,
   totalNotes: 14,
 });
@@ -22,11 +23,9 @@ export const getters = {
   totalNotes(state) {
     return state.totalNotes;
   },
-  // pitcher(state) {
-  //   return {
-  //     selectedRootNote: state.selectedRootNote,
-  //   };
-  // },
+  showMicrotones(state) {
+    return state.showMicrotones;
+  },
 };
 
 export const mutations = {
@@ -54,6 +53,9 @@ export const mutations = {
       totalNotes = 25;
     }
     state.totalNotes = totalNotes;
+  },
+  SET_SHOW_MICROTONES(state, showMicrotones) {
+    state.showMicrotones = showMicrotones;
   },
 };
 
