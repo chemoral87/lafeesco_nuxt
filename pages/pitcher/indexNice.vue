@@ -97,7 +97,7 @@
             </v-col>
             <v-col cols="12" sm="6">
               <v-slider
-                v-model="maxHistory"
+                v-model="MAX_HISTORY"
                 :min="300"
                 :max="800"
                 :step="50"
@@ -106,7 +106,7 @@
                 thumb-label
               />
               <div class="text-center font-weight-bold">
-                {{ maxHistory }}
+                {{ MAX_HISTORY }}
               </div>
             </v-col>
             <v-col cols="12" sm="6">
@@ -329,15 +329,7 @@ export default {
         this.$store.commit("pitcher_store/SET_LATIN_NOTATION", value);
       },
     },
-    showMicrotones: {
-      get() {
-        return this.$store.state.pitcher_store.showMicrotones;
-      },
-      set(value) {
-        this.$store.commit("pitcher_store/SET_SHOW_MICROTONES", value);
-      },
-    },
-    maxHistory: {
+    MAX_HISTORY: {
       get() {
         return this.$store.state.pitcher_store.maxHistory;
       },
@@ -720,7 +712,7 @@ export default {
         this.noteDisplay = note;
 
         this.history.unshift({ freq: exactFreq, midi });
-        if (this.history.length > this.maxHistory) this.history.pop();
+        if (this.history.length > this.MAX_HISTORY) this.history.pop();
         this.drawHistogram();
       } else {
         this.freqDisplay = "--";
@@ -735,8 +727,8 @@ export default {
       const ctx = this.ctx;
       const height = canvas.height;
       const width = canvas.width;
-      const spacing = (width - 50) / this.maxHistory;
-      const len = Math.min(this.history.length, this.maxHistory);
+      const spacing = (width - 50) / this.MAX_HISTORY;
+      const len = Math.min(this.history.length, this.MAX_HISTORY);
 
       ctx.clearRect(0, 0, width, height);
       this.drawNoteLines();
