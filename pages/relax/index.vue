@@ -14,7 +14,12 @@
       Your browser does not support the video tag.
     </video>
 
-    <audio ref="audioPlayer" loop aria-label="Calming rain audio">
+    <audio
+      ref="audioPlayer"
+      crossorigin="anonymous"
+      loop
+      aria-label="Calming rain audio"
+    >
       <source src="/sounds/relax/calming_rain.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
@@ -113,7 +118,13 @@ export default {
       audioSource: null,
       gainNode: null,
       requiresUserInteraction: true,
-      interactionListeners: [], // Store references to event listeners
+      interactionListeners: [],
+      isMobile:
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        ),
+      audioPlayAttempts: 0,
+      maxAudioPlayAttempts: 3,
     };
   },
   computed: {
@@ -125,6 +136,12 @@ export default {
     },
   },
   methods: {
+    // Add the missing timeupdate handler
+    handleTimeUpdate() {
+      // This can be used to sync elements with video playback if needed
+      // Currently just a placeholder since we're tracking time with elapsedSeconds
+    },
+
     async setupAudioContext() {
       if (!this.audioContext) {
         try {
@@ -145,7 +162,6 @@ export default {
         } catch (error) {
           console.error("Error setting up audio context:", error);
           this.audioBlocked = true;
-          // Fallback to standard audio
           this.audioContext = null;
         }
       }
@@ -161,6 +177,41 @@ export default {
       }
     },
 
+    async safeAudioPlay() {
+      try {
+        if (!this.isPlaying) {
+          this.audioPlayAttempts = 0;
+        }
+
+        if (this.isMobile) {
+          this.$refs.audioPlayer.load();
+          await new Promise((resolve) => setTimeout(resolve, 50));
+        }
+
+        await this.$refs.audioPlayer.play();
+        this.audioPlayAttempts = 0;
+      } catch (error) {
+        console.log(
+          `Audio play attempt ${this.audioPlayAttempts + 1} failed:`,
+          error
+        );
+        this.audioPlayAttempts++;
+
+        if (this.audioPlayAttempts < this.maxAudioPlayAttempts) {
+          const delay = Math.min(
+            100 * Math.pow(2, this.audioPlayAttempts),
+            1000
+          );
+          await new Promise((resolve) => setTimeout(resolve, delay));
+          return this.safeAudioPlay();
+        } else {
+          console.error("Max audio play attempts reached");
+          this.requiresUserInteraction = true;
+          throw error;
+        }
+      }
+    },
+
     async handleFirstInteraction() {
       if (this.requiresUserInteraction && this.audioContext) {
         try {
@@ -168,8 +219,7 @@ export default {
           this.requiresUserInteraction = false;
 
           if (this.isPlaying && this.rainAudioEnabled) {
-            this.$refs.audioPlayer.currentTime = 0;
-            await this.$refs.audioPlayer.play();
+            await this.safeAudioPlay();
           }
         } catch (error) {
           console.error("Error handling first interaction:", error);
@@ -200,13 +250,7 @@ export default {
 
         this.$refs.audioPlayer.currentTime = 0;
         if (!this.requiresUserInteraction) {
-          await this.$refs.audioPlayer.play().catch((e) => {
-            console.log(
-              "Initial audio play attempt failed, will retry after interaction:",
-              e
-            );
-            this.requiresUserInteraction = true;
-          });
+          await this.safeAudioPlay();
         }
 
         this.playbackTimer = setInterval(() => {
@@ -226,6 +270,7 @@ export default {
       this.isPlaying = false;
       this.$refs.videoPlayer.pause();
       this.$refs.audioPlayer.pause();
+      this.audioPlayAttempts = 0;
     },
 
     resetPlayback() {
@@ -235,49 +280,33 @@ export default {
       }
     },
 
-    handleMediaEnd() {
-      if (this.isPlaying && this.elapsedSeconds < this.durationInSeconds) {
+    async handleMediaEnd() {
+      if (!this.isPlaying) return;
+
+      try {
         this.$refs.videoPlayer.currentTime = 0;
-        this.$refs.videoPlayer.play();
+        await this.$refs.videoPlayer.play();
 
         if (this.rainAudioEnabled) {
-          this.$refs.audioPlayer.currentTime = 0;
-          this.$refs.audioPlayer
-            .play()
-            .catch((e) => console.log("Audio play error in loop:", e));
+          if (this.isMobile) {
+            this.$refs.audioPlayer.currentTime = 0;
+            this.$refs.audioPlayer.load();
+            await new Promise((resolve) => setTimeout(resolve, 50));
+          }
+          await this.safeAudioPlay();
         }
+      } catch (error) {
+        console.error("Media loop error:", error);
       }
     },
 
-    handleTimeUpdate() {
-      // Optional: Add any time-based logic here if needed
-    },
-
     async toggleAudio() {
-      try {
-        this.rainAudioEnabled = !this.rainAudioEnabled;
+      this.rainAudioEnabled = !this.rainAudioEnabled;
 
-        if (this.rainAudioEnabled) {
-          await this.setupAudioContext();
-          //this.$refs.audioPlayer.currentTime = 0;
-          if (!this.requiresUserInteraction) {
-            await this.$refs.audioPlayer.play().catch((e) => {
-              console.log(
-                "Audio play failed, waiting for user interaction:",
-                e
-              );
-              this.requiresUserInteraction = true;
-            });
-          }
-        } else {
-          this.$refs.audioPlayer.pause();
-        }
-
-        this.audioBlocked = false;
-      } catch (err) {
-        console.error("Audio toggle error:", err);
-        this.rainAudioEnabled = false;
-        this.audioBlocked = true;
+      if (this.rainAudioEnabled && this.isPlaying) {
+        await this.safeAudioPlay();
+      } else {
+        this.$refs.audioPlayer.pause();
       }
     },
 
@@ -306,16 +335,25 @@ export default {
     this.$refs.videoPlayer.volume = this.videoVolume;
     this.$refs.videoPlayer.muted = !this.voiceAudioEnabled;
 
-    // Configurar eventos para manejar interacciones del usuario
     const interactionEvents = ["click", "touchstart", "keydown"];
     const handler = this.handleFirstInteraction.bind(this);
 
     interactionEvents.forEach((event) => {
-      document.addEventListener(event, handler, {
-        passive: true,
-      });
+      document.addEventListener(event, handler, { passive: true });
       this.interactionListeners.push({ event, handler });
     });
+
+    if (this.isMobile) {
+      document.addEventListener("visibilitychange", () => {
+        if (
+          document.visibilityState === "visible" &&
+          this.isPlaying &&
+          this.rainAudioEnabled
+        ) {
+          this.safeAudioPlay();
+        }
+      });
+    }
   },
   beforeDestroy() {
     this.stopPlayback();
@@ -331,21 +369,21 @@ export default {
         .catch((e) => console.error("Error closing audio context:", e));
     }
 
-    // Limpiar event listeners
     this.interactionListeners.forEach(({ event, handler }) => {
       document.removeEventListener(event, handler);
     });
-    this.interactionListeners = [];
+
+    if (this.isMobile) {
+      document.removeEventListener(
+        "visibilitychange",
+        this.handleVisibilityChange
+      );
+    }
   },
   watch: {
     rainAudioEnabled(newVal) {
-      if (newVal && this.isPlaying && !this.requiresUserInteraction) {
-        // this.$refs.audioPlayer.currentTime = 0;
-        this.$refs.audioPlayer
-          .play()
-          .catch((e) => console.log("Audio play error from watcher:", e));
-      } else if (!newVal) {
-        this.$refs.audioPlayer.pause();
+      if (newVal && this.isPlaying) {
+        this.safeAudioPlay();
       }
     },
   },
