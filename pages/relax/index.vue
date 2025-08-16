@@ -8,12 +8,13 @@
       @ended="handleMediaEnd"
       ref="videoPlayer"
       loop
+      aria-label="Relaxing background video"
     >
       <source src="/videos/relax/relax_crop.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
 
-    <audio ref="audioPlayer" loop>
+    <audio ref="audioPlayer" loop aria-label="Calming rain audio">
       <source src="/sounds/relax/calming_rain.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
@@ -25,12 +26,17 @@
           id="duration"
           v-model="selectedDuration"
           @change="resetPlayback"
+          aria-label="Select duration in minutes"
         >
           <option v-for="minute in durationOptions" :value="minute">
             {{ minute }}
           </option>
         </select>
-        <button class="play-button" @click="togglePlayback">
+        <button
+          class="play-button"
+          @click="togglePlayback"
+          aria-label="Play or stop media"
+        >
           {{ isPlaying ? "⏹ Stop" : "▶ Play" }}
         </button>
       </div>
@@ -41,6 +47,7 @@
             class="audio-toggle"
             @click="toggleVideoMute"
             :title="voiceAudioEnabled ? 'Mute video' : 'Unmute video'"
+            aria-label="Toggle video mute"
           >
             {{ voiceAudioEnabled ? "🔊" : "🔇" }}
           </button>
@@ -53,6 +60,7 @@
               v-model="videoVolume"
               @input="updateVideoVolume"
               class="volume-slider"
+              aria-label="Video volume control"
             />
           </div>
         </div>
@@ -64,6 +72,7 @@
             :title="
               rainAudioEnabled ? 'Disable rain sound' : 'Enable rain sound'
             "
+            aria-label="Toggle rain sound"
           >
             {{ rainAudioEnabled ? "🌧️" : "☁️" }}
           </button>
@@ -76,6 +85,7 @@
               v-model="volume"
               @input="updateVolume"
               class="volume-slider"
+              aria-label="Rain sound volume control"
             />
           </div>
         </div>
@@ -89,16 +99,21 @@ export default {
   name: "HomePage",
   data() {
     return {
-      selectedDuration: 5, // Default duration in minutes
-      durationOptions: [1, 3, 5, 10, 15], // Available duration options
+      selectedDuration: 5,
+      durationOptions: [1, 3, 5, 10, 15],
       playbackTimer: null,
       elapsedSeconds: 0,
-      rainAudioEnabled: true, // Changed to true to enable rain by default when playing
+      rainAudioEnabled: true,
       audioBlocked: false,
-      volume: 0.2, // Default audio volume (20%)
-      voiceAudioEnabled: true, // Video starts unmuted by default
-      videoVolume: 0.7, // Default video volume (70%)
+      volume: 0.2,
+      voiceAudioEnabled: true,
+      videoVolume: 0.7,
       isPlaying: false,
+      audioContext: null,
+      audioSource: null,
+      gainNode: null,
+      requiresUserInteraction: true,
+      interactionListeners: [], // Store references to event listeners
     };
   },
   computed: {
@@ -110,6 +125,58 @@ export default {
     },
   },
   methods: {
+    async setupAudioContext() {
+      if (!this.audioContext) {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.audioContext = new AudioContext();
+          this.gainNode = this.audioContext.createGain();
+          this.gainNode.connect(this.audioContext.destination);
+
+          this.$refs.audioPlayer.crossOrigin = "anonymous";
+          this.audioSource = this.audioContext.createMediaElementSource(
+            this.$refs.audioPlayer
+          );
+          this.audioSource.connect(this.gainNode);
+
+          this.gainNode.gain.value = this.volume;
+          this.requiresUserInteraction =
+            this.audioContext.state === "suspended";
+        } catch (error) {
+          console.error("Error setting up audio context:", error);
+          this.audioBlocked = true;
+          // Fallback to standard audio
+          this.audioContext = null;
+        }
+      }
+
+      if (this.audioContext && this.audioContext.state === "suspended") {
+        try {
+          await this.audioContext.resume();
+          this.requiresUserInteraction = false;
+        } catch (error) {
+          console.error("Error resuming audio context:", error);
+          this.requiresUserInteraction = true;
+        }
+      }
+    },
+
+    async handleFirstInteraction() {
+      if (this.requiresUserInteraction && this.audioContext) {
+        try {
+          await this.audioContext.resume();
+          this.requiresUserInteraction = false;
+
+          if (this.isPlaying && this.rainAudioEnabled) {
+            this.$refs.audioPlayer.currentTime = 0;
+            await this.$refs.audioPlayer.play();
+          }
+        } catch (error) {
+          console.error("Error handling first interaction:", error);
+        }
+      }
+    },
+
     async togglePlayback() {
       if (this.isPlaying) {
         this.stopPlayback();
@@ -120,21 +187,28 @@ export default {
 
     async startPlayback() {
       try {
+        await this.setupAudioContext();
+
         this.isPlaying = true;
         this.elapsedSeconds = 0;
-        this.rainAudioEnabled = true; // Force enable rain audio when playing
+        this.rainAudioEnabled = true;
 
-        // Start video
         this.$refs.videoPlayer.currentTime = 0;
         this.$refs.videoPlayer.muted = !this.voiceAudioEnabled;
         this.$refs.videoPlayer.volume = this.videoVolume;
         await this.$refs.videoPlayer.play();
 
-        // Start audio (rain)
-        this.$refs.audioPlayer.volume = this.volume;
-        await this.$refs.audioPlayer.play();
+        this.$refs.audioPlayer.currentTime = 0;
+        if (!this.requiresUserInteraction) {
+          await this.$refs.audioPlayer.play().catch((e) => {
+            console.log(
+              "Initial audio play attempt failed, will retry after interaction:",
+              e
+            );
+            this.requiresUserInteraction = true;
+          });
+        }
 
-        // Start timer
         this.playbackTimer = setInterval(() => {
           this.elapsedSeconds++;
           if (this.elapsedSeconds >= this.durationInSeconds) {
@@ -165,6 +239,13 @@ export default {
       if (this.isPlaying && this.elapsedSeconds < this.durationInSeconds) {
         this.$refs.videoPlayer.currentTime = 0;
         this.$refs.videoPlayer.play();
+
+        if (this.rainAudioEnabled) {
+          this.$refs.audioPlayer.currentTime = 0;
+          this.$refs.audioPlayer
+            .play()
+            .catch((e) => console.log("Audio play error in loop:", e));
+        }
       }
     },
 
@@ -177,9 +258,16 @@ export default {
         this.rainAudioEnabled = !this.rainAudioEnabled;
 
         if (this.rainAudioEnabled) {
-          await this.$refs.audioPlayer.play();
-          if (this.isPlaying) {
-            this.$refs.audioPlayer.currentTime = 0;
+          await this.setupAudioContext();
+          //this.$refs.audioPlayer.currentTime = 0;
+          if (!this.requiresUserInteraction) {
+            await this.$refs.audioPlayer.play().catch((e) => {
+              console.log(
+                "Audio play failed, waiting for user interaction:",
+                e
+              );
+              this.requiresUserInteraction = true;
+            });
           }
         } else {
           this.$refs.audioPlayer.pause();
@@ -187,10 +275,9 @@ export default {
 
         this.audioBlocked = false;
       } catch (err) {
-        console.error("Audio playback error:", err);
+        console.error("Audio toggle error:", err);
         this.rainAudioEnabled = false;
         this.audioBlocked = true;
-        alert("Please click the play button first to enable audio");
       }
     },
 
@@ -200,30 +287,63 @@ export default {
     },
 
     updateVolume() {
-      this.$refs.audioPlayer.volume = this.volume;
+      if (this.gainNode) {
+        this.gainNode.gain.value = this.volume;
+      } else {
+        this.$refs.audioPlayer.volume = this.volume;
+      }
     },
 
     updateVideoVolume() {
       this.$refs.videoPlayer.volume = this.videoVolume;
-      // Auto-unmute when volume is increased from 0
       if (this.videoVolume > 0 && !this.voiceAudioEnabled) {
         this.toggleVideoMute();
       }
     },
   },
   mounted() {
-    // Initialize media elements
     this.$refs.audioPlayer.volume = this.volume;
     this.$refs.videoPlayer.volume = this.videoVolume;
     this.$refs.videoPlayer.muted = !this.voiceAudioEnabled;
+
+    // Configurar eventos para manejar interacciones del usuario
+    const interactionEvents = ["click", "touchstart", "keydown"];
+    const handler = this.handleFirstInteraction.bind(this);
+
+    interactionEvents.forEach((event) => {
+      document.addEventListener(event, handler, {
+        passive: true,
+      });
+      this.interactionListeners.push({ event, handler });
+    });
   },
   beforeDestroy() {
     this.stopPlayback();
+    if (this.audioSource) {
+      this.audioSource.disconnect();
+    }
+    if (this.gainNode) {
+      this.gainNode.disconnect();
+    }
+    if (this.audioContext) {
+      this.audioContext
+        .close()
+        .catch((e) => console.error("Error closing audio context:", e));
+    }
+
+    // Limpiar event listeners
+    this.interactionListeners.forEach(({ event, handler }) => {
+      document.removeEventListener(event, handler);
+    });
+    this.interactionListeners = [];
   },
   watch: {
     rainAudioEnabled(newVal) {
-      if (newVal && this.isPlaying) {
-        this.$refs.audioPlayer.play();
+      if (newVal && this.isPlaying && !this.requiresUserInteraction) {
+        // this.$refs.audioPlayer.currentTime = 0;
+        this.$refs.audioPlayer
+          .play()
+          .catch((e) => console.log("Audio play error from watcher:", e));
       } else if (!newVal) {
         this.$refs.audioPlayer.pause();
       }
@@ -245,6 +365,7 @@ export default {
 .background-video {
   width: 100%;
   height: 90dvh;
+  display: block;
 }
 
 .media-controls {
