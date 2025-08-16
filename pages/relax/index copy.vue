@@ -7,41 +7,32 @@
       @timeupdate="handleTimeUpdate"
       @ended="handleMediaEnd"
       ref="videoPlayer"
-      loop
     >
       <source src="/videos/relax/relax_crop.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
 
-    <audio ref="audioPlayer" loop>
+    <audio ref="audioPlayer">
       <source src="/sounds/relax/calming_rain.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
 
     <div class="media-controls">
       <div class="duration-selector">
-        <label for="duration">Duración (min):</label>
-        <select
-          id="duration"
-          v-model="selectedDuration"
-          @change="resetPlayback"
-        >
+        <label for="duration">Duration (minutes):</label>
+        <select id="duration" v-model="selectedDuration">
           <option v-for="minute in durationOptions" :value="minute">
             {{ minute }}
           </option>
         </select>
-        <button class="play-button" @click="togglePlayback">
+        <button class="play-button" @click="startPlayback">
           {{ isPlaying ? "⏹ Stop" : "▶ Play" }}
         </button>
       </div>
 
       <div class="audio-controls">
         <div class="video-volume-control">
-          <button
-            class="audio-toggle"
-            @click="toggleVideoMute"
-            :title="voiceAudioEnabled ? 'Mute video' : 'Unmute video'"
-          >
+          <button class="audio-toggle" @click="toggleVideoMute">
             {{ voiceAudioEnabled ? "🔊" : "🔇" }}
           </button>
           <div class="volume-control">
@@ -58,13 +49,7 @@
         </div>
 
         <div class="audio-volume-control">
-          <button
-            class="audio-toggle"
-            @click="toggleAudio"
-            :title="
-              rainAudioEnabled ? 'Disable rain sound' : 'Enable rain sound'
-            "
-          >
+          <button class="audio-toggle" @click="toggleAudio">
             {{ rainAudioEnabled ? "🌧️" : "☁️" }}
           </button>
           <div class="volume-control">
@@ -93,10 +78,10 @@ export default {
       durationOptions: [1, 3, 5, 10, 15], // Available duration options
       playbackTimer: null,
       elapsedSeconds: 0,
-      rainAudioEnabled: true, // Changed to true to enable rain by default when playing
+      rainAudioEnabled: false,
       audioBlocked: false,
-      volume: 0.2, // Default audio volume (20%)
-      voiceAudioEnabled: true, // Video starts unmuted by default
+      volume: 0.2, // Default audio volume (70%)
+      voiceAudioEnabled: true, // Video starts muted by default
       videoVolume: 0.7, // Default video volume (70%)
       isPlaying: false,
     };
@@ -105,63 +90,59 @@ export default {
     durationInSeconds() {
       return this.selectedDuration * 60;
     },
-    remainingTime() {
-      return Math.max(0, this.durationInSeconds - this.elapsedSeconds);
-    },
   },
   methods: {
-    async togglePlayback() {
+    async startPlayback() {
       if (this.isPlaying) {
         this.stopPlayback();
-      } else {
-        await this.startPlayback();
+        return;
       }
-    },
 
-    async startPlayback() {
-      try {
-        this.isPlaying = true;
-        this.elapsedSeconds = 0;
-        this.rainAudioEnabled = true; // Force enable rain audio when playing
+      console.log("starPlayback called with duration:", this.selectedDuration);
+      this.isPlaying = true;
+      this.elapsedSeconds = 0;
 
-        // Start video
-        this.$refs.videoPlayer.currentTime = 0;
-        this.$refs.videoPlayer.muted = !this.voiceAudioEnabled;
-        this.$refs.videoPlayer.volume = this.videoVolume;
-        await this.$refs.videoPlayer.play();
+      // Start video
+      this.$refs.videoPlayer.currentTime = 0;
+      //this.$refs.videoPlayer.muted = this.voiceAudioEnabled;
+      this.$refs.videoPlayer.muted = false;
+      this.$refs.videoPlayer.volume = this.videoVolume;
+      this.$refs.videoPlayer.play();
 
-        // Start audio (rain)
-        this.$refs.audioPlayer.volume = this.volume;
-        await this.$refs.audioPlayer.play();
+      // Activate and start audio
+      if (!this.rainAudioEnabled) await this.$refs.audioPlayer.play();
+      this.rainAudioEnabled = true;
 
-        // Start timer
-        this.playbackTimer = setInterval(() => {
-          this.elapsedSeconds++;
-          if (this.elapsedSeconds >= this.durationInSeconds) {
-            this.stopPlayback();
-          }
-        }, 1000);
-      } catch (error) {
-        console.error("Playback error:", error);
-        this.stopPlayback();
-      }
+      // Start timer
+      this.playbackTimer = setInterval(() => {
+        this.elapsedSeconds++;
+
+        // Check if duration has been reached
+        if (this.elapsedSeconds >= this.durationInSeconds) {
+          this.stopPlayback();
+        }
+      }, 1000);
     },
 
     stopPlayback() {
-      clearInterval(this.playbackTimer);
+      console.log("stopPlayback called");
       this.isPlaying = false;
+      this.rainAudioEnabled = false;
+      clearInterval(this.playbackTimer);
       this.$refs.videoPlayer.pause();
       this.$refs.audioPlayer.pause();
     },
 
-    resetPlayback() {
-      if (this.isPlaying) {
-        this.stopPlayback();
-        this.startPlayback();
-      }
-    },
-
     handleMediaEnd() {
+      console.log(
+        "handleMediaEnd called, isPlaying:",
+        this.isPlaying,
+        "elapsedSeconds:",
+        this.elapsedSeconds,
+        "durationInSeconds:",
+        this.durationInSeconds
+      );
+      // If media ends naturally before timer, restart it
       if (this.isPlaying && this.elapsedSeconds < this.durationInSeconds) {
         this.$refs.videoPlayer.currentTime = 0;
         this.$refs.videoPlayer.play();
@@ -169,28 +150,27 @@ export default {
     },
 
     handleTimeUpdate() {
-      // Optional: Add any time-based logic here if needed
+      const video = this.$refs.videoPlayer;
+      if (!video) return;
+      // Your existing time update logic (if still needed)
     },
 
     async toggleAudio() {
-      try {
-        this.rainAudioEnabled = !this.rainAudioEnabled;
-
-        if (this.rainAudioEnabled) {
-          await this.$refs.audioPlayer.play();
-          if (this.isPlaying) {
-            this.$refs.audioPlayer.currentTime = 0;
-          }
-        } else {
-          this.$refs.audioPlayer.pause();
-        }
-
-        this.audioBlocked = false;
-      } catch (err) {
-        console.error("Audio playback error:", err);
+      console.log("toggleAudio called, current state:", this.rainAudioEnabled);
+      if (this.rainAudioEnabled) {
+        this.$refs.audioPlayer.pause();
         this.rainAudioEnabled = false;
-        this.audioBlocked = true;
-        alert("Please click the play button first to enable audio");
+      } else {
+        try {
+          await this.$refs.audioPlayer.play();
+          this.rainAudioEnabled = true;
+          this.audioBlocked = false;
+        } catch (err) {
+          console.error("Audio playback error:", err);
+          this.audioEnabled = false;
+          this.audioBlocked = true;
+          alert("Please click the play button first to enable audio");
+        }
       }
     },
 
@@ -200,61 +180,57 @@ export default {
     },
 
     updateVolume() {
+      console.log("updateVolume called, new volume:", this.volume);
       this.$refs.audioPlayer.volume = this.volume;
     },
 
     updateVideoVolume() {
+      console.log("updateVideoVolume called, new volume:", this.videoVolume);
       this.$refs.videoPlayer.volume = this.videoVolume;
-      // Auto-unmute when volume is increased from 0
-      if (this.videoVolume > 0 && !this.voiceAudioEnabled) {
+      if (this.videoVolume > 0 && this.voiceAudioEnabled) {
         this.toggleVideoMute();
+      }
+    },
+
+    tryUnlockAudio() {
+      console.log("tryUnlockAudio called, audioBlocked:", this.audioBlocked);
+      if (this.audioBlocked && !this.audioEnabled) {
+        this.toggleAudio();
       }
     },
   },
   mounted() {
-    // Initialize media elements
+    // Initialize volumes
     this.$refs.audioPlayer.volume = this.volume;
     this.$refs.videoPlayer.volume = this.videoVolume;
-    this.$refs.videoPlayer.muted = !this.voiceAudioEnabled;
+    this.$refs.videoPlayer.muted = this.voiceAudioEnabled;
   },
   beforeDestroy() {
-    this.stopPlayback();
-  },
-  watch: {
-    rainAudioEnabled(newVal) {
-      if (newVal && this.isPlaying) {
-        this.$refs.audioPlayer.play();
-      } else if (!newVal) {
-        this.$refs.audioPlayer.pause();
-      }
-    },
+    clearInterval(this.playbackTimer);
+    document.removeEventListener("click", this.tryUnlockAudio);
   },
 };
 </script>
 
 <style scoped>
 .video-wrapper {
+  background-color: white;
   position: relative;
   width: 70%;
-  max-width: 1200px;
-  margin: 0 auto;
   overflow: hidden;
-  background-color: #000;
 }
 
 .background-video {
   width: 100%;
-  height: 90dvh;
+  height: 80dvh;
 }
 
 .media-controls {
-  font-size: 1.2rem;
   position: absolute;
   bottom: 20px;
   left: 20px;
   right: 20px;
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 20px;
@@ -269,21 +245,18 @@ export default {
   padding: 8px 12px;
   border-radius: 20px;
   color: white;
-  backdrop-filter: blur(5px);
 }
 
 .duration-selector label {
   font-size: 14px;
-  white-space: nowrap;
 }
 
 .duration-selector select {
-  background: white;
-  color: black;
+  background: rgba(255, 255, 255, 1);
+  color: rgb(0, 0, 0);
   border: none;
   border-radius: 4px;
   padding: 4px 8px;
-  cursor: pointer;
 }
 
 .play-button {
@@ -293,8 +266,6 @@ export default {
   border-radius: 4px;
   padding: 4px 12px;
   cursor: pointer;
-  transition: background 0.2s ease;
-  min-width: 80px;
 }
 
 .play-button:hover {
@@ -305,7 +276,6 @@ export default {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
 }
 
 .audio-volume-control,
@@ -316,7 +286,6 @@ export default {
   background: rgba(0, 0, 0, 0.7);
   padding: 8px 12px;
   border-radius: 20px;
-  backdrop-filter: blur(5px);
 }
 
 .audio-toggle {
@@ -331,23 +300,19 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s ease;
-}
-
-.audio-toggle:hover {
-  transform: scale(1.1);
 }
 
 .volume-control {
   width: 80px;
+  transition: all 0.3s ease;
 }
 
 .volume-slider {
   width: 100%;
-  height: 8px;
+  height: 4px;
   -webkit-appearance: none;
   background: #555;
-  border-radius: 5px;
+  border-radius: 2px;
   outline: none;
   opacity: 0.8;
   transition: opacity 0.2s;
@@ -359,41 +324,14 @@ export default {
 
 .volume-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: white;
   cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.volume-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
 }
 
 audio {
   display: none;
-}
-
-@media (max-width: 768px) {
-  .video-wrapper {
-    width: 100%;
-  }
-
-  .media-controls {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-
-  .duration-selector {
-    order: 1;
-  }
-
-  .audio-controls {
-    order: 2;
-    justify-content: space-between;
-    width: 100%;
-  }
 }
 </style>
