@@ -1,39 +1,48 @@
 <template>
-  <div class="video-wrapper">
+  <div class="media-container">
+    <!-- Video element -->
     <video
-      muted
-      playsinline
-      class="background-video"
-      @timeupdate="handleTimeUpdate"
-      @ended="handleMediaEnd"
       ref="videoPlayer"
-    >
-      <source src="/videos/relax/relax_crop.mp4" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
+      playsinline
+      webkit-playsinline
+      :muted="videoMuted"
+      :src="videoSrc"
+      class="video-element"
+    ></video>
 
-    <audio ref="audioPlayer">
-      <source src="/sounds/relax/calming_rain.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
+    <audio ref="rainAudio" :src="audioSrc" loop :volume="audioVolume"></audio>
 
     <div class="media-controls">
       <div class="duration-selector">
-        <label for="duration">Duration (minutes):</label>
-        <select id="duration" v-model="selectedDuration">
+        <label for="duration">Duración (min):</label>
+        <select
+          id="duration"
+          v-model="selectedDuration"
+          @change="resetPlayback"
+          aria-label="Select duration in minutes"
+        >
           <option v-for="minute in durationOptions" :value="minute">
             {{ minute }}
           </option>
         </select>
-        <button class="play-button" @click="startPlayback">
+        <button
+          class="play-button"
+          @click="toggleMedia"
+          aria-label="Play or stop media"
+        >
           {{ isPlaying ? "⏹ Stop" : "▶ Play" }}
         </button>
       </div>
 
       <div class="audio-controls">
         <div class="video-volume-control">
-          <button class="audio-toggle" @click="toggleVideoMute">
-            {{ voiceAudioEnabled ? "🔊" : "🔇" }}
+          <button
+            class="audio-toggle"
+            @click="toggleVideoMute"
+            :title="videoMuted ? 'Unmute video' : 'Mute video'"
+            aria-label="Toggle video mute"
+          >
+            {{ videoMuted ? "🔇" : "🔊" }}
           </button>
           <div class="volume-control">
             <input
@@ -41,16 +50,22 @@
               min="0"
               max="1"
               step="0.1"
-              v-model="videoVolume"
+              v-model.number="videoVolume"
               @input="updateVideoVolume"
               class="volume-slider"
+              aria-label="Video volume control"
             />
           </div>
         </div>
 
         <div class="audio-volume-control">
-          <button class="audio-toggle" @click="toggleAudio">
-            {{ rainAudioEnabled ? "🌧️" : "☁️" }}
+          <button
+            class="audio-toggle"
+            @click="toggleAudio"
+            :title="audioEnabled ? 'Disable rain sound' : 'Enable rain sound'"
+            aria-label="Toggle rain sound"
+          >
+            {{ audioEnabled ? "🌧️" : "☁️" }}
           </button>
           <div class="volume-control">
             <input
@@ -58,9 +73,10 @@
               min="0"
               max="1"
               step="0.1"
-              v-model="volume"
-              @input="updateVolume"
+              v-model.number="audioVolume"
+              @input="updateAudioVolume"
               class="volume-slider"
+              aria-label="Rain sound volume control"
             />
           </div>
         </div>
@@ -71,267 +87,221 @@
 
 <script>
 export default {
-  name: "HomePage",
   data() {
     return {
-      selectedDuration: 5, // Default duration in minutes
-      durationOptions: [1, 3, 5, 10, 15], // Available duration options
-      playbackTimer: null,
-      elapsedSeconds: 0,
-      rainAudioEnabled: false,
-      audioBlocked: false,
-      volume: 0.2, // Default audio volume (70%)
-      voiceAudioEnabled: true, // Video starts muted by default
-      videoVolume: 0.7, // Default video volume (70%)
+      videoSrc: "/videos/relax/relax_crop.mp4",
+      audioSrc: "/sounds/relax/calming_rain.mp3",
+      videoMuted: false,
+      videoVolume: 1.0,
+      audioEnabled: true,
+      audioVolume: 0.5,
+      selectedDuration: 10,
+      durationOptions: [1, 5, 10, 15],
       isPlaying: false,
+      audio: null,
+      stopTimeout: null,
     };
   },
-  computed: {
-    durationInSeconds() {
-      return this.selectedDuration * 60;
-    },
+  mounted() {
+    // Initialize audio
+    this.audio = new Audio(this.audioSrc);
+    this.audio.loop = true;
+    this.audio.volume = this.audioVolume;
+
+    // Set video to loop
+    const video = this.$refs.videoPlayer;
+    video.loop = true;
   },
   methods: {
-    async startPlayback() {
+    toggleMedia() {
       if (this.isPlaying) {
-        this.stopPlayback();
-        return;
-      }
-
-      console.log("starPlayback called with duration:", this.selectedDuration);
-      this.isPlaying = true;
-      this.elapsedSeconds = 0;
-
-      // Start video
-      this.$refs.videoPlayer.currentTime = 0;
-      //this.$refs.videoPlayer.muted = this.voiceAudioEnabled;
-      this.$refs.videoPlayer.muted = false;
-      this.$refs.videoPlayer.volume = this.videoVolume;
-      this.$refs.videoPlayer.play();
-
-      // Activate and start audio
-      if (!this.rainAudioEnabled) await this.$refs.audioPlayer.play();
-      this.rainAudioEnabled = true;
-
-      // Start timer
-      this.playbackTimer = setInterval(() => {
-        this.elapsedSeconds++;
-
-        // Check if duration has been reached
-        if (this.elapsedSeconds >= this.durationInSeconds) {
-          this.stopPlayback();
-        }
-      }, 1000);
-    },
-
-    stopPlayback() {
-      console.log("stopPlayback called");
-      this.isPlaying = false;
-      this.rainAudioEnabled = false;
-      clearInterval(this.playbackTimer);
-      this.$refs.videoPlayer.pause();
-      this.$refs.audioPlayer.pause();
-    },
-
-    handleMediaEnd() {
-      console.log(
-        "handleMediaEnd called, isPlaying:",
-        this.isPlaying,
-        "elapsedSeconds:",
-        this.elapsedSeconds,
-        "durationInSeconds:",
-        this.durationInSeconds
-      );
-      // If media ends naturally before timer, restart it
-      if (this.isPlaying && this.elapsedSeconds < this.durationInSeconds) {
-        this.$refs.videoPlayer.currentTime = 0;
-        this.$refs.videoPlayer.play();
-      }
-    },
-
-    handleTimeUpdate() {
-      const video = this.$refs.videoPlayer;
-      if (!video) return;
-      // Your existing time update logic (if still needed)
-    },
-
-    async toggleAudio() {
-      console.log("toggleAudio called, current state:", this.rainAudioEnabled);
-      if (this.rainAudioEnabled) {
-        this.$refs.audioPlayer.pause();
-        this.rainAudioEnabled = false;
+        this.stopMedia();
       } else {
-        try {
-          await this.$refs.audioPlayer.play();
-          this.rainAudioEnabled = true;
-          this.audioBlocked = false;
-        } catch (err) {
-          console.error("Audio playback error:", err);
-          this.audioEnabled = false;
-          this.audioBlocked = true;
-          alert("Please click the play button first to enable audio");
+        this.playMedia();
+      }
+    },
+
+    playMedia() {
+      const video = this.$refs.videoPlayer;
+      video.currentTime = 0;
+      video.play();
+
+      if (this.audioEnabled) {
+        if (!this.audio) {
+          this.audio = new Audio(this.audioSrc);
+          this.audio.loop = true;
+          this.audio.volume = this.audioVolume;
         }
+        this.audio.play().catch((err) => {
+          console.warn("Audio play blocked by browser:", err);
+        });
+      }
+
+      this.isPlaying = true;
+
+      clearTimeout(this.stopTimeout);
+      this.stopTimeout = setTimeout(() => {
+        this.stopMedia();
+      }, this.selectedDuration * 60 * 1000);
+    },
+
+    stopMedia() {
+      const video = this.$refs.videoPlayer;
+      video.pause();
+      video.currentTime = 0;
+
+      if (this.audioEnabled) this.audio.pause();
+
+      this.isPlaying = false;
+      clearTimeout(this.stopTimeout);
+    },
+
+    resetPlayback() {
+      if (this.isPlaying) {
+        this.stopMedia();
+        this.playMedia();
       }
     },
 
     toggleVideoMute() {
-      this.voiceAudioEnabled = !this.voiceAudioEnabled;
-      this.$refs.videoPlayer.muted = !this.voiceAudioEnabled;
-    },
-
-    updateVolume() {
-      console.log("updateVolume called, new volume:", this.volume);
-      this.$refs.audioPlayer.volume = this.volume;
+      this.videoMuted = !this.videoMuted;
+      this.$refs.videoPlayer.muted = this.videoMuted;
     },
 
     updateVideoVolume() {
-      console.log("updateVideoVolume called, new volume:", this.videoVolume);
       this.$refs.videoPlayer.volume = this.videoVolume;
-      if (this.videoVolume > 0 && this.voiceAudioEnabled) {
-        this.toggleVideoMute();
+      this.videoMuted = this.videoVolume === 0;
+      this.$refs.videoPlayer.muted = this.videoMuted;
+    },
+
+    toggleAudio() {
+      this.audioEnabled = !this.audioEnabled;
+      if (this.audioEnabled && this.isPlaying) {
+        this.audio.volume = this.audioVolume;
+        this.audio.play();
+      } else {
+        this.audio.pause();
       }
     },
 
-    tryUnlockAudio() {
-      console.log("tryUnlockAudio called, audioBlocked:", this.audioBlocked);
-      if (this.audioBlocked && !this.audioEnabled) {
-        this.toggleAudio();
+    updateAudioVolume() {
+      this.audio.volume = this.audioVolume;
+      if (this.audioVolume === 0) {
+        this.audioEnabled = false;
+      } else if (!this.audioEnabled) {
+        this.audioEnabled = true;
       }
     },
   },
-  mounted() {
-    // Initialize volumes
-    this.$refs.audioPlayer.volume = this.volume;
-    this.$refs.videoPlayer.volume = this.videoVolume;
-    this.$refs.videoPlayer.muted = this.voiceAudioEnabled;
-  },
   beforeDestroy() {
-    clearInterval(this.playbackTimer);
-    document.removeEventListener("click", this.tryUnlockAudio);
+    clearTimeout(this.stopTimeout);
+    if (this.audio) {
+      this.audio.pause();
+      this.audio = null;
+    }
   },
 };
 </script>
 
-<style scoped>
-.video-wrapper {
-  background-color: white;
+<style>
+.media-container {
   position: relative;
-  width: 70%;
-  overflow: hidden;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-.background-video {
+.video-element {
   width: 100%;
-  height: 80dvh;
+  display: block;
+  background: #000;
 }
 
 .media-controls {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  z-index: 10;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 10px;
 }
 
 .duration-selector {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: rgba(0, 0, 0, 0.7);
-  padding: 8px 12px;
-  border-radius: 20px;
-  color: white;
-}
-
-.duration-selector label {
-  font-size: 14px;
-}
-
-.duration-selector select {
-  background: rgba(255, 255, 255, 1);
-  color: rgb(0, 0, 0);
-  border: none;
-  border-radius: 4px;
-  padding: 4px 8px;
+  gap: 15px;
+  margin-bottom: 15px;
 }
 
 .play-button {
-  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 20px;
+  background: #4caf50;
   color: white;
   border: none;
-  border-radius: 4px;
-  padding: 4px 12px;
+  border-radius: 5px;
   cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
 }
 
 .play-button:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: #45a049;
 }
 
 .audio-controls {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  gap: 25px;
+  justify-content: center;
 }
 
-.audio-volume-control,
-.video-volume-control {
+.video-volume-control,
+.audio-volume-control {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(0, 0, 0, 0.7);
-  padding: 8px 12px;
-  border-radius: 20px;
 }
 
 .audio-toggle {
   background: none;
   border: none;
-  color: white;
-  font-size: 30px;
+  font-size: 1.4em;
   cursor: pointer;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 5px;
+  transition: transform 0.2s;
+}
+
+.audio-toggle:hover {
+  transform: scale(1.1);
 }
 
 .volume-control {
-  width: 80px;
-  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .volume-slider {
-  width: 100%;
-  height: 4px;
-  -webkit-appearance: none;
-  background: #555;
-  border-radius: 2px;
-  outline: none;
-  opacity: 0.8;
-  transition: opacity 0.2s;
-}
-
-.volume-slider:hover {
-  opacity: 1;
-}
-
-.volume-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: white;
+  width: 100px;
   cursor: pointer;
 }
 
-audio {
-  display: none;
+select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  background: white;
+}
+
+label {
+  color: white;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .audio-controls {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .media-controls {
+    padding: 10px;
+  }
 }
 </style>

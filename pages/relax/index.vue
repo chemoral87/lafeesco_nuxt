@@ -8,7 +8,11 @@
       :muted="videoMuted"
       :src="videoSrc"
       class="video-element"
+      loop
     ></video>
+
+    <!-- Rain audio element -->
+    <audio ref="rainAudio" :src="audioSrc" loop></audio>
 
     <div class="media-controls">
       <div class="duration-selector">
@@ -96,19 +100,8 @@ export default {
       selectedDuration: 10,
       durationOptions: [1, 5, 10, 15],
       isPlaying: false,
-      audio: null,
       stopTimeout: null,
     };
-  },
-  mounted() {
-    // Initialize audio
-    this.audio = new Audio(this.audioSrc);
-    this.audio.loop = true;
-    this.audio.volume = this.audioVolume;
-
-    // Set video to loop
-    const video = this.$refs.videoPlayer;
-    video.loop = true;
   },
   methods: {
     toggleMedia() {
@@ -122,21 +115,17 @@ export default {
     playMedia() {
       const video = this.$refs.videoPlayer;
       video.currentTime = 0;
-      video.play();
+      video.play().catch((err) => console.warn("Video play blocked:", err));
 
       if (this.audioEnabled) {
-        if (!this.audio) {
-          this.audio = new Audio(this.audioSrc);
-          this.audio.loop = true;
-          this.audio.volume = this.audioVolume;
-        }
-        this.audio.play().catch((err) => {
-          console.warn("Audio play blocked by browser:", err);
-        });
+        const audio = this.$refs.rainAudio;
+        audio.volume = this.audioVolume;
+        audio.play().catch((err) => console.warn("Audio play blocked:", err));
       }
 
       this.isPlaying = true;
 
+      // Stop after selected duration
       clearTimeout(this.stopTimeout);
       this.stopTimeout = setTimeout(() => {
         this.stopMedia();
@@ -148,7 +137,9 @@ export default {
       video.pause();
       video.currentTime = 0;
 
-      if (this.audioEnabled) this.audio.pause();
+      const audio = this.$refs.rainAudio;
+      audio.pause();
+      audio.currentTime = 0;
 
       this.isPlaying = false;
       clearTimeout(this.stopTimeout);
@@ -174,18 +165,21 @@ export default {
 
     toggleAudio() {
       this.audioEnabled = !this.audioEnabled;
+      const audio = this.$refs.rainAudio;
       if (this.audioEnabled && this.isPlaying) {
-        this.audio.volume = this.audioVolume;
-        this.audio.play();
+        audio.volume = this.audioVolume;
+        audio.play().catch((err) => console.warn("Audio play blocked:", err));
       } else {
-        this.audio.pause();
+        audio.pause();
       }
     },
 
     updateAudioVolume() {
-      this.audio.volume = this.audioVolume;
+      const audio = this.$refs.rainAudio;
+      audio.volume = this.audioVolume;
       if (this.audioVolume === 0) {
         this.audioEnabled = false;
+        audio.pause();
       } else if (!this.audioEnabled) {
         this.audioEnabled = true;
       }
@@ -193,9 +187,10 @@ export default {
   },
   beforeDestroy() {
     clearTimeout(this.stopTimeout);
-    if (this.audio) {
-      this.audio.pause();
-      this.audio = null;
+    const audio = this.$refs.rainAudio;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
     }
   },
 };
