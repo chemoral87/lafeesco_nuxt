@@ -124,11 +124,19 @@ export default {
       video.currentTime = 0;
       video.play();
 
-      if (this.audioEnabled) this.audio.play();
+      if (this.audioEnabled) {
+        if (!this.audio) {
+          this.audio = new Audio(this.audioSrc);
+          this.audio.loop = true;
+          this.audio.volume = this.audioVolume;
+        }
+        this.audio.play().catch((err) => {
+          console.warn("Audio play blocked by browser:", err);
+        });
+      }
 
       this.isPlaying = true;
 
-      // Stop after selected duration
       clearTimeout(this.stopTimeout);
       this.stopTimeout = setTimeout(() => {
         this.stopMedia();
