@@ -12,7 +12,7 @@
     ></video>
 
     <!-- Rain audio element -->
-    <audio ref="rainAudio" :src="audioSrc" loop></audio>
+    <audio ref="rainAudio" :src="audioSrc" loop style="display: none"></audio>
 
     <div class="media-controls">
       <div class="duration-selector">
@@ -105,11 +105,25 @@ export default {
   },
   methods: {
     toggleMedia() {
-      if (this.isPlaying) {
-        this.stopMedia();
-      } else {
-        this.playMedia();
+      const video = this.$refs.videoPlayer;
+      video.currentTime = 0;
+      video.play(); // muted video autoplay works
+
+      if (this.audioEnabled) {
+        const audio = this.$refs.rainAudio;
+        // Play immediately after user click
+        audio.volume = this.audioVolume;
+        audio.play().catch(() => {
+          console.warn("Audio blocked on iOS/Brave, try a second click.");
+        });
       }
+
+      this.isPlaying = true;
+
+      clearTimeout(this.stopTimeout);
+      this.stopTimeout = setTimeout(() => {
+        this.stopMedia();
+      }, this.selectedDuration * 60 * 1000);
     },
 
     playMedia() {
