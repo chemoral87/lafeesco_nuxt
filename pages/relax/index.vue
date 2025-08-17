@@ -105,25 +105,61 @@ export default {
   },
   methods: {
     toggleMedia() {
+      if (this.isPlaying) {
+        this.stopMedia();
+        return;
+      }
+
       const video = this.$refs.videoPlayer;
       video.currentTime = 0;
-      video.play(); // muted video autoplay works
 
+      // First play video (muted autoplay usually works)
+      video.play().catch((err) => console.warn("Video play error:", err));
+
+      // For audio, create a new audio context on user gesture
       if (this.audioEnabled) {
-        const audio = this.$refs.rainAudio;
-        // Play immediately after user click
-        audio.volume = this.audioVolume;
-        audio.play().catch(() => {
-          console.warn("Audio blocked on iOS/Brave, try a second click.");
-        });
+        this.playAudioWithFallback();
       }
 
       this.isPlaying = true;
+      this.scheduleAutoStop();
+    },
 
-      clearTimeout(this.stopTimeout);
-      this.stopTimeout = setTimeout(() => {
-        this.stopMedia();
-      }, this.selectedDuration * 60 * 1000);
+    async playAudioWithFallback() {
+      const audio = this.$refs.rainAudio;
+      audio.volume = this.audioVolume;
+
+      try {
+        // First try standard play
+        await audio.play();
+      } catch (err) {
+        console.warn("Standard audio play failed, trying iOS workaround:", err);
+
+        // iOS workaround - create and start a new audio context
+        try {
+          // Create new audio context on user gesture
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          const audioContext = new AudioContext();
+
+          // Fetch and decode audio
+          const response = await fetch(this.audioSrc);
+          const arrayBuffer = await response.arrayBuffer();
+          const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+          // Create and start source
+          const source = audioContext.createBufferSource();
+          source.buffer = audioBuffer;
+          source.loop = true;
+          source.connect(audioContext.destination);
+          source.start(0);
+
+          // Store for later cleanup
+          this.iosAudioSource = source;
+          this.iosAudioContext = audioContext;
+        } catch (fallbackErr) {
+          console.error("iOS audio fallback failed:", fallbackErr);
+        }
+      }
     },
 
     playMedia() {
@@ -145,15 +181,25 @@ export default {
         this.stopMedia();
       }, this.selectedDuration * 60 * 1000);
     },
-
     stopMedia() {
       const video = this.$refs.videoPlayer;
       video.pause();
       video.currentTime = 0;
 
+      // Stop standard audio
       const audio = this.$refs.rainAudio;
       audio.pause();
       audio.currentTime = 0;
+
+      // Stop iOS fallback audio if exists
+      if (this.iosAudioSource) {
+        this.iosAudioSource.stop();
+        this.iosAudioSource = null;
+      }
+      if (this.iosAudioContext) {
+        this.iosAudioContext.close();
+        this.iosAudioContext = null;
+      }
 
       this.isPlaying = false;
       clearTimeout(this.stopTimeout);
@@ -201,11 +247,7 @@ export default {
   },
   beforeDestroy() {
     clearTimeout(this.stopTimeout);
-    const audio = this.$refs.rainAudio;
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-    }
+    this.stopMedia(); // This will now clean up both audio sources
   },
 };
 </script>
