@@ -16,7 +16,7 @@
 
     <div class="media-controls">
       <div class="duration-selector">
-        <label for="duration">Duración (min):</label>
+        <label for="duration">Duración (minz):</label>
         <select
           id="duration"
           v-model="selectedDuration"
