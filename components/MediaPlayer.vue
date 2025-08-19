@@ -8,8 +8,8 @@
         playsinline
         webkit-playsinline
         preload="auto"
-        :loop="true"
         @click="togglePlay"
+        @ended="handleVideoEnded"
       ></video>
 
       <!-- Play/Pause Button Overlay -->
@@ -77,6 +77,25 @@ export default {
     this.cleanup();
   },
   methods: {
+    handleVideoEnded() {
+      const video = this.$refs.videoPlayer;
+      const audio = this.$refs.audioPlayer;
+
+      this.addLog("Video ended, restarting manually");
+
+      // Restart both in sync
+      video.currentTime = 0;
+      audio.currentTime = 0;
+
+      // Ensure play() is re-triggered as a gesture continuation
+      Promise.all([video.play(), audio.play()])
+        .then(() => {
+          this.addLog("Video + Audio restarted");
+        })
+        .catch((err) => {
+          this.addLog(`Restart failed: ${err.message}`, "error");
+        });
+    },
     // Logging methods
     addLog(message, type = "log") {
       const timestamp = new Date().toLocaleTimeString();
