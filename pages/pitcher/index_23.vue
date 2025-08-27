@@ -72,11 +72,47 @@
               ></v-switch>
             </v-col>
             <v-col cols="12" sm="6">
+              <v-switch
+                v-model="showMicrotones"
+                :label="
+                  latinNotation ? 'Mostrar microtonos' : 'Show microtones'
+                "
+                hide-details
+                class="mt-0 pt-0"
+              ></v-switch>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-switch
+                v-model="adaptiveSensitivity"
+                :label="
+                  latinNotation
+                    ? 'Sensibilidad adaptativa'
+                    : 'Adaptive sensitivity'
+                "
+                hide-details
+                class="mt-0 pt-0"
+              ></v-switch>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-slider
+                v-model="amplificationFactor"
+                :min="1.0"
+                :max="5.0"
+                :step="0.5"
+                :label="latinNotation ? 'Amplificación' : 'Amplification'"
+                hide-details
+                thumb-label
+              />
+              <div class="text-center font-weight-bold">
+                {{ amplificationFactor.toFixed(1) }}x
+              </div>
+            </v-col>
+            <v-col cols="12" sm="6">
               <v-slider
                 v-model="sensitivity"
-                :min="0.001"
-                :max="0.01"
-                :step="0.002"
+                :min="0.0001"
+                :max="0.05"
+                :step="0.0005"
                 label="Sensibilidad"
                 hide-details
                 thumb-label
@@ -87,7 +123,7 @@
             </v-col>
             <v-col cols="12" sm="6">
               <v-slider
-                v-model="MAX_HISTORY"
+                v-model="maxHistory"
                 :min="300"
                 :max="800"
                 :step="50"
@@ -96,7 +132,7 @@
                 thumb-label
               />
               <div class="text-center font-weight-bold">
-                {{ MAX_HISTORY }}
+                {{ maxHistory }}
               </div>
             </v-col>
             <v-col cols="12" sm="6">
@@ -128,73 +164,32 @@
 </template>
 
 <script>
-// Se actualiza la constante COLORS con 24 colores (para cada medio tono)
+// Constants moved outside component for better performance
 const COLORS = [
-  // C (Do) and intermediates
-  "#FF0000", // C (bright red)
-  "#FF4000", // C+
-  "#FF8000", // C♯ (orange)
-  "#FFB000", // C♯+
-
-  // D (Re)
-  "#FFD700", // D (gold)
-  "#FFE880", // D+
-  "#FFFF00", // D♯ (yellow)
-  "#FFFF60", // D♯+
-
-  // E (Mi)
-  "#E0FF80", // E
-  "#A0FF00", // E+
-
-  // F (Fa)
-  "#80FF00", // F (lime)
-  "#40FF00", // F+
-  "#00FF00", // F♯ (green)
-  "#00FF80", // F♯+
-
-  // G (Sol)
-  "#00FFC0", // G (aqua)
-  "#00FFFF", // G+ (cyan)
-  "#00BFFF", // G♯ (sky blue)
-  "#0080FF", // G♯+
-
-  // A (La) - Now much brighter!
-  "#0060FF", // A (bright blue)
-  "#0040FF", // A+
-  "#7F5AFF", // A♯ (lighter violet-blue) 👈 Replaced #4020FF
-  "#A066FF", // A♯+
-
-  // B (Si)
-  "#CC00FF", // B (electric purple) 👈 Brighter!
-  "#FF00FF", // B+ (magenta)
-  "#FF20FF", // Cycle back to red (optional)
-];
-const COLORS_s = [
-  // C (Do) y C+ (intermedio entre C y C♯)
-  "#FF0000", // C
-  "#FF2000", // C+ (mix: #FF0000 + #FF4000)
-  "#FF4000", // C♯ (Do♯)
-  "#FF6000", // C♯+ (mix: #FF4000 + #FF8000)
-  "#FF8000", // D (Re)
-  "#FF9F80", // D+ (mix: #FF8000 + #FFBF00)
-  "#FFBF00", // D♯ (Re♯)
-  "#FFDF00", // D♯+ (mix: #FFBF00 + #FFFF00)
-  "#FFFF00", // E (Mi)
-  "#BFFF40", // E+ (mix: #FFFF00 + #80FF00)
-  "#80FF00", // F (Fa)
-  "#40FF00", // F+ (mix: #80FF00 + #00FF00)
-  "#00FF00", // F♯ (Fa♯)
-  "#00FF80", // F♯+ (mix: #00FF00 + #00FFFF)
-  "#00FFFF", // G (Sol)
-  "#00A0FF", // G+ (mix: #00FFFF + #00BFFF)
-  "#00BFFF", // G♯ (Sol♯)
-  "#0060FF", // G♯+ (mix: #00BFFF + #0000FF)
-  "#0000FF", // A (La)
-  "#2000FF", // A+ (mix: #0000FF + #4000FF)
-  "#4000FF", // A♯ (La♯)
-  "#6000FF", // A♯+ (mix: #4000FF + #8000FF)
-  "#8000FF", // B (Si)
-  "#A000FF", // B+ (mix: #8000FF + #FF0000 - ciclo)
+  "#FF0000",
+  "#FF4000",
+  "#FF8000",
+  "#FFB000",
+  "#FFD700",
+  "#FFE880",
+  "#FFFF00",
+  "#FFFF60",
+  "#E0FF80",
+  "#A0FF00",
+  "#80FF00",
+  "#40FF00",
+  "#00FF00",
+  "#00FF80",
+  "#00FFC0",
+  "#00FFFF",
+  "#00BFFF",
+  "#0080FF",
+  "#0060FF",
+  "#0040FF",
+  "#7F5AFF",
+  "#A066FF",
+  "#CC00FF",
+  "#FF00FF",
 ];
 
 const NOTE_SHORT_STRINGS = [
@@ -253,13 +248,16 @@ const NOTE_LATIN_STRINGS = [
 
 const MAJOR_STEPS = [0, 2, 4, 5, 7, 9, 11];
 const MIN_MIDI = 47;
-//const MAX_MIDI = 61;
-//const TOTAL_NOTES = this.totalNotes;
-//const MAX_HISTORY = 400;
 const TOLERANCE_HZ = 1.95;
 const A4_FREQ = 440;
 const A4_MIDI = 69;
 const TEXT_WIDTH = 40;
+
+// Precompute MIDI to frequency conversion table
+const midiToFreqTable = new Float32Array(128);
+for (let i = 0; i < 128; i++) {
+  midiToFreqTable[i] = A4_FREQ * Math.pow(2, (i - A4_MIDI) / 12);
+}
 
 export default {
   data() {
@@ -272,27 +270,57 @@ export default {
       analyser: null,
       buffer: null,
       history: [],
-      correlationArray: [],
+      correlationArray: null,
       freqDisplay: "--",
       noteDisplay: "--",
       dBDisplay: "--",
-
       lastFreq: null,
+      adaptiveSensitivity: true,
+      amplificationFactor: 2.0,
+      minSensitivity: 0.0001,
+      maxSensitivity: 0.01,
+      noiseFloor: 0.0005,
+      signalAverage: 0,
+      animationFrameId: null,
+      currentNoteOptions: null,
+      noteNameCache: new Map(),
+      noteNameNumCache: new Map(),
     };
   },
   mounted() {
     this.ctx = this.$refs.histogram.getContext("2d");
     this.ctx.lineWidth = 0.5;
-    this.buffer = new Float32Array(2048);
+    this.buffer = new Float32Array(4096);
     this.updateCanvasSize();
     window.addEventListener("resize", this.updateCanvasSize);
     this.drawHistogram();
+
+    // Precompute note options
+    this.currentNoteOptions = this.latinNotation
+      ? [
+          "Do",
+          "Do♯",
+          "Re",
+          "Re♯",
+          "Mi",
+          "Fa",
+          "Fa♯",
+          "Sol",
+          "Sol♯",
+          "La",
+          "La♯",
+          "Si",
+        ]
+      : ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
   },
   beforeUnmount() {
     if (this.isMicActive) {
       this.cleanup();
     }
     window.removeEventListener("resize", this.updateCanvasSize);
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
   },
   computed: {
     selectedRootNote: {
@@ -319,7 +347,15 @@ export default {
         this.$store.commit("pitcher_store/SET_LATIN_NOTATION", value);
       },
     },
-    MAX_HISTORY: {
+    showMicrotones: {
+      get() {
+        return this.$store.state.pitcher_store.showMicrotones;
+      },
+      set(value) {
+        this.$store.commit("pitcher_store/SET_SHOW_MICROTONES", value);
+      },
+    },
+    maxHistory: {
       get() {
         return this.$store.state.pitcher_store.maxHistory;
       },
@@ -338,78 +374,6 @@ export default {
     scaleNoteIndices() {
       return this.getMajorScaleNotes(this.selectedRootNote);
     },
-    currentNoteOptions() {
-      return this.latinNotation
-        ? [
-            "Do",
-            "Do♯",
-            "Re",
-            "Re♯",
-            "Mi",
-            "Fa",
-            "Fa♯",
-            "Sol",
-            "Sol♯",
-            "La",
-            "La♯",
-            "Si",
-          ]
-        : ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
-    },
-    convertedRootNote() {
-      if (this.latinNotation) {
-        const angloIndex = [
-          "C",
-          "C♯",
-          "D",
-          "D♯",
-          "E",
-          "F",
-          "F♯",
-          "G",
-          "G♯",
-          "A",
-          "A♯",
-          "B",
-        ].indexOf(this.selectedRootNote);
-        return angloIndex >= 0
-          ? [
-              "Do",
-              "Do♯",
-              "Re",
-              "Re♯",
-              "Mi",
-              "Fa",
-              "Fa♯",
-              "Sol",
-              "Sol♯",
-              "La",
-              "La♯",
-              "Si",
-            ][angloIndex]
-          : "Do";
-      } else {
-        const latinIndex = [
-          "Do",
-          "Do♯",
-          "Re",
-          "Re♯",
-          "Mi",
-          "Fa",
-          "Fa♯",
-          "Sol",
-          "Sol♯",
-          "La",
-          "La♯",
-          "Si",
-        ].indexOf(this.selectedRootNote);
-        return latinIndex >= 0
-          ? ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"][
-              latinIndex
-            ]
-          : "C";
-      }
-    },
   },
   methods: {
     updateCanvasSize() {
@@ -422,36 +386,56 @@ export default {
       }
     },
     midiToFreq(midi) {
-      return A4_FREQ * Math.pow(2, (midi - A4_MIDI) / 12);
+      // Use precomputed table for faster conversion
+      const roundedMidi = Math.round(midi);
+      return roundedMidi >= 0 && roundedMidi < 128
+        ? midiToFreqTable[roundedMidi]
+        : A4_FREQ * Math.pow(2, (midi - A4_MIDI) / 12);
     },
     freqToMidi(freq) {
       if (freq <= 0) return 0;
       return 69 + 12 * Math.log2(freq / 440);
     },
     getNoteNameNum(midiNote) {
+      // Use caching for better performance
+      const cacheKey = `${midiNote}|${this.latinNotation}`;
+      if (this.noteNameNumCache.has(cacheKey)) {
+        return this.noteNameNumCache.get(cacheKey);
+      }
+
       const roundedMidi = Math.round(midiNote * 2) / 2;
       const noteIndex = Math.floor(roundedMidi) % 12;
       const isHalfStep = roundedMidi % 1 === 0.5;
-      // Para obtener el índice completo dentro de NOTE_SHORT_STRINGS (y COLORS)
       const fullIndex = isHalfStep ? noteIndex * 2 + 1 : noteIndex * 2;
       const noteStrings = this.latinNotation
         ? NOTE_LATIN_STRINGS
         : NOTE_SHORT_STRINGS;
       const note = noteStrings[fullIndex];
       const octave = Math.floor(roundedMidi / 12 - 1);
-      return `${note}${octave}`;
+      const result = `${note}${octave}`;
+
+      this.noteNameNumCache.set(cacheKey, result);
+      return result;
     },
     getNoteName(midiNote) {
+      // Use caching for better performance
+      const cacheKey = `${midiNote}|${this.latinNotation}`;
+      if (this.noteNameCache.has(cacheKey)) {
+        return this.noteNameCache.get(cacheKey);
+      }
+
       const noteIndex = Math.floor(midiNote) % 12;
       const isHalfStep = Math.round(midiNote * 2) % 2 === 1;
       const fullIndex = isHalfStep ? noteIndex * 2 + 1 : noteIndex * 2;
       const noteStrings = this.latinNotation
         ? NOTE_LATIN_STRINGS
         : NOTE_SHORT_STRINGS;
-      return noteStrings[fullIndex];
+      const result = noteStrings[fullIndex];
+
+      this.noteNameCache.set(cacheKey, result);
+      return result;
     },
     getMajorScaleNotes(root) {
-      // Convertir root a notación anglosajona si está en latín
       const rootIndex = this.latinNotation
         ? [
             "Do",
@@ -498,11 +482,16 @@ export default {
         await this.audioContext.close();
         this.audioContext = null;
       }
+      if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+      }
       this.isMicActive = false;
       this.freqDisplay = "--";
       this.noteDisplay = "--";
       this.dBDisplay = "--";
       this.history = [];
+      this.signalAverage = 0;
       if (this.ctx && this.$refs.histogram) {
         this.ctx.clearRect(
           0,
@@ -522,7 +511,7 @@ export default {
           this.audioContext = new (window.AudioContext ||
             window.webkitAudioContext)();
           this.analyser = this.audioContext.createAnalyser();
-          this.analyser.fftSize = 2048;
+          this.analyser.fftSize = 4096;
           this.buffer = new Float32Array(this.analyser.fftSize);
 
           const source = this.audioContext.createMediaStreamSource(
@@ -570,14 +559,15 @@ export default {
     },
     autoCorrelate(buf, sampleRate) {
       const SIZE = buf.length;
-      const MIN_DB = 30;
-      const MIN_SAMPLE_THRESHOLD = 0.01;
-      const PEAK_THRESHOLD_FACTOR = 0.2;
+      const MIN_DB = 20;
+      const MIN_SAMPLE_THRESHOLD = 0.005;
+      const PEAK_THRESHOLD_FACTOR = 0.15;
       const WINDOW_PADDING = 10;
 
       let sumSquares = 0;
       let maxSample = 0;
 
+      // Use a single loop for multiple calculations
       for (let i = 0; i < SIZE; i++) {
         const sample = buf[i];
         sumSquares += sample * sample;
@@ -588,9 +578,23 @@ export default {
       const dB_SPL = 20 * Math.log10(rms / 0.00002);
       this.dBDisplay = Math.max(0, dB_SPL).toFixed(1);
 
+      // Update moving average of signal
+      this.signalAverage = 0.95 * this.signalAverage + 0.05 * rms;
+
+      // Apply adaptive sensitivity
+      let currentSensitivity = this.sensitivity;
+      if (this.adaptiveSensitivity) {
+        const strengthFactor = Math.min(1.0, rms / 0.1);
+        currentSensitivity =
+          this.minSensitivity +
+          (this.maxSensitivity - this.minSensitivity) * (1.0 - strengthFactor);
+      }
+
+      // Apply noise gate and sensitivity threshold
       if (
+        this.signalAverage < this.noiseFloor ||
         dB_SPL < MIN_DB ||
-        rms < this.sensitivity ||
+        rms < currentSensitivity ||
         maxSample < MIN_SAMPLE_THRESHOLD
       ) {
         this.freqDisplay = "--";
@@ -602,6 +606,7 @@ export default {
       let start = 0;
       let end = SIZE - 1;
 
+      // Find window start
       for (let i = 0; i < SIZE / 2; i++) {
         if (Math.abs(buf[i]) > threshold) {
           start = Math.max(0, i - WINDOW_PADDING);
@@ -609,6 +614,7 @@ export default {
         }
       }
 
+      // Find window end
       for (let i = SIZE - 1; i > SIZE / 2; i--) {
         if (Math.abs(buf[i]) > threshold) {
           end = Math.min(SIZE - 1, i + WINDOW_PADDING);
@@ -619,14 +625,17 @@ export default {
       const windowSize = end - start;
       if (windowSize <= 0) return -1;
 
+      // Reuse correlation array if possible
       if (!this.correlationArray || this.correlationArray.length < windowSize) {
         this.correlationArray = new Float32Array(windowSize);
       }
 
+      // Optimized correlation calculation
       for (let lag = 0; lag < windowSize; lag++) {
         let sum = 0;
+        const bufStart = start;
         for (let i = 0; i < windowSize - lag; i++) {
-          sum += buf[start + i] * buf[start + i + lag];
+          sum += buf[bufStart + i] * buf[bufStart + i + lag];
         }
         this.correlationArray[lag] = sum;
       }
@@ -663,20 +672,44 @@ export default {
         return freq;
       };
 
+      // Enhanced harmonic detection
       if (freq > 0 && freq < 2000) {
+        // Check for sub-harmonics (octave below)
+        if (freq > 80 && freq < 400) {
+          freq = checkHarmonic(2, 0.6);
+        }
+        // Check for third harmonic
+        if (freq > 120 && freq < 600) {
+          freq = checkHarmonic(3, 0.5);
+        }
+        // Check for fourth harmonic
         if (freq > 160 && freq < 800) {
-          freq = checkHarmonic(2, 0.8);
-        } else if (freq > 240 && freq < 1200) {
-          freq = checkHarmonic(3, 0.7);
+          freq = checkHarmonic(4, 0.4);
         }
       }
 
       return freq > 20 && freq < 2000 ? freq : -1;
     },
-    async update() {
+    update() {
       if (!this.analyser) return;
 
       this.analyser.getFloatTimeDomainData(this.buffer);
+
+      // Signal amplification with clamping
+      const amplification = this.amplificationFactor;
+      for (let i = 0; i < this.buffer.length; i++) {
+        this.buffer[i] = Math.max(
+          -1.0,
+          Math.min(1.0, this.buffer[i] * amplification)
+        );
+      }
+
+      // Pre-emphasis filter to boost high frequencies
+      const preEmphasis = 0.97;
+      for (let i = 1; i < this.buffer.length; i++) {
+        this.buffer[i] = this.buffer[i] - preEmphasis * this.buffer[i - 1];
+      }
+
       const rawFreq = this.autoCorrelate(
         this.buffer,
         this.audioContext.sampleRate
@@ -702,23 +735,32 @@ export default {
         this.noteDisplay = note;
 
         this.history.unshift({ freq: exactFreq, midi });
-        if (this.history.length > this.MAX_HISTORY) this.history.pop();
-        this.drawHistogram();
+        if (this.history.length > this.maxHistory) this.history.pop();
+
+        // Only redraw if frequency has changed significantly
+        if (
+          this.history.length < 2 ||
+          Math.abs(this.history[0].freq - this.history[1].freq) > 0.5
+        ) {
+          this.drawHistogram();
+        }
       } else {
         this.freqDisplay = "--";
         this.noteDisplay = "--";
         this.dBDisplay = "--";
       }
 
-      if (this.isMicActive) requestAnimationFrame(this.update);
+      if (this.isMicActive) {
+        this.animationFrameId = requestAnimationFrame(this.update);
+      }
     },
     drawHistogram() {
       const canvas = this.$refs.histogram;
       const ctx = this.ctx;
       const height = canvas.height;
       const width = canvas.width;
-      const spacing = (width - 50) / this.MAX_HISTORY;
-      const len = Math.min(this.history.length, this.MAX_HISTORY);
+      const spacing = (width - 50) / this.maxHistory;
+      const len = Math.min(this.history.length, this.maxHistory);
 
       ctx.clearRect(0, 0, width, height);
       this.drawNoteLines();
@@ -746,7 +788,10 @@ export default {
       ctx.font = "bold 16px sans-serif";
       const textWidth = ctx.measureText(staticDisplayText).width;
 
-      for (let octaveOffset = -2; octaveOffset <= 4; octaveOffset++) {
+      // Precompute values for the loop
+      const octaveOffsets = [-2, -1, 0, 1, 2, 3, 4];
+
+      for (const octaveOffset of octaveOffsets) {
         const shiftedFreq = freq * Math.pow(2, octaveOffset);
         const shiftedMidi = this.freqToMidi(shiftedFreq);
         const y =
@@ -759,7 +804,6 @@ export default {
         );
         const shiftedNoteBase = shiftedNoteName.replace(/[0-9+]/g, "");
         const isSameNoteFamily = shiftedNoteBase === currentNoteBase;
-        // Se obtiene el índice completo (0 a 23) usando la resolución de medio tono
         const fullIndex = Math.round(shiftedMidi * 2) % 24;
 
         let pointColor, textColor;
@@ -803,12 +847,14 @@ export default {
         };
       }
 
-      for (let i = 0; i <= this.totalNotes * 2; i++) {
-        const y = height - (i / (this.totalNotes * 2)) * height;
+      // Precompute values for the loop
+      const totalLines = this.totalNotes * 2;
+
+      for (let i = 0; i <= totalLines; i++) {
+        const y = height - (i / totalLines) * height;
         const midi = MIN_MIDI + i / 2;
         const noteIndex = Math.floor(midi) % 12;
         const isHalfStep = i % 2 === 1;
-        // Se calcula el índice completo: si es semitono, se usa noteIndex*2+1, de lo contrario noteIndex*2.
         const fullIndex = isHalfStep ? noteIndex * 2 + 1 : noteIndex * 2;
         const noteStrings = this.latinNotation
           ? NOTE_LATIN_STRINGS
@@ -849,19 +895,22 @@ export default {
         ctx.strokeStyle = style.stroke;
         ctx.fillStyle = style.fill;
         ctx.lineWidth = style.lineWidth;
-        ctx.beginPath();
-        ctx.moveTo(5, y);
-        ctx.lineTo(width - TEXT_WIDTH - 3, y);
-        ctx.stroke();
 
-        ctx.font = isHalfStep
-          ? `bold ${style.lineWidth > 1 ? 11 : 10}px sans-serif`
-          : `bold ${style.lineWidth > 1 ? 13 : 12}px sans-serif`;
-        ctx.fillText(
-          noteName,
-          width - TEXT_WIDTH + (isHalfStep ? 15 : 0),
-          y + 3
-        );
+        if ((this.showMicrotones && isHalfStep) || !isHalfStep) {
+          ctx.beginPath();
+          ctx.moveTo(5, y);
+          ctx.lineTo(width - TEXT_WIDTH - 3, y);
+          ctx.stroke();
+
+          ctx.font = isHalfStep
+            ? `bold ${style.lineWidth > 1 ? 11 : 10}px sans-serif`
+            : `bold ${style.lineWidth > 1 ? 13 : 12}px sans-serif`;
+          ctx.fillText(
+            noteName,
+            width - TEXT_WIDTH + (isHalfStep ? 15 : 0),
+            y + 3
+          );
+        }
       }
 
       ctx.strokeStyle = "#444";
@@ -877,7 +926,10 @@ export default {
       const width = canvas.width;
       const baseFreq = freq;
 
-      for (let octaveOffset = -2; octaveOffset <= 4; octaveOffset++) {
+      // Precompute octave offsets
+      const octaveOffsets = [-2, -1, 0, 1, 2, 3, 4];
+
+      for (const octaveOffset of octaveOffsets) {
         const shiftedFreq = baseFreq * Math.pow(2, octaveOffset);
         const shiftedMidi = this.freqToMidi(shiftedFreq);
         const y =
@@ -885,7 +937,6 @@ export default {
 
         if (y >= 0 && y <= height) {
           const x = width - i * spacing - TEXT_WIDTH - 5;
-          // Calcular el índice completo (0–23) a partir del valor midi redondeado a medio tono
           const fullIndex = Math.round(shiftedMidi * 2) % 24;
           ctx.fillStyle = COLORS[fullIndex];
           ctx.beginPath();
@@ -903,8 +954,28 @@ export default {
       this.drawHistogram();
     },
     latinNotation(newVal) {
-      // Convertir la nota seleccionada al cambiar la notación
-      this.selectedRootNote = this.convertedRootNote;
+      // Update note options when notation changes
+      this.currentNoteOptions = newVal
+        ? [
+            "Do",
+            "Do♯",
+            "Re",
+            "Re♯",
+            "Mi",
+            "Fa",
+            "Fa♯",
+            "Sol",
+            "Sol♯",
+            "La",
+            "La♯",
+            "Si",
+          ]
+        : ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
+
+      // Clear caches when notation changes
+      this.noteNameCache.clear();
+      this.noteNameNumCache.clear();
+
       this.drawHistogram();
     },
   },

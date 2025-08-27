@@ -84,15 +84,15 @@
             <v-col cols="12" sm="6">
               <v-slider
                 v-model="sensitivity"
-                :min="0.001"
+                :min="0.0001"
                 :max="0.01"
-                :step="0.002"
+                :step="0.0005"
                 label="Sensibilidad"
                 hide-details
                 thumb-label
               />
               <div class="text-center font-weight-bold">
-                {{ sensitivity.toFixed(3) }}
+                {{ sensitivity.toFixed(4) }}
               </div>
             </v-col>
             <v-col cols="12" sm="6">

@@ -98,7 +98,7 @@ export default {
       audioEnabled: true,
       audioVolume: 0.5,
       selectedDuration: 10,
-      durationOptions: [1, 5, 10, 15],
+      durationOptions: [1, 5, 10, 15, 30, 45, 60],
       isPlaying: false,
       stopTimeout: null,
       showIosWarning: false,
