@@ -54,7 +54,7 @@
     <v-dialog v-model="settingsDialog" max-width="500px">
       <v-card>
         <v-card-title>
-          Configuración
+          Configuración v2.023
           <v-spacer></v-spacer>
           <v-btn icon @click="settingsDialog = false">
             <v-icon>mdi-close</v-icon>

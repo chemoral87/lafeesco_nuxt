@@ -6,7 +6,7 @@
           <v-row align="center" no-gutters>
             <v-col>
               <h1 class="text-h5 font-weight-bold mb-2">
-                Video + Background Audio Mixer
+                Video + Background Audio Mixer v.2.0323
               </h1>
               <div class="subtitle-2 grey--text">
                 Replace the media URLs below with your own. Tap “Enable Audio”
@@ -186,7 +186,6 @@ export default {
         {
           name: "Rain",
           src: "https://cdn.pixabay.com/audio/2025/07/23/audio_63d9f37e74.mp3",
-          // src: "https://cdn.freesound.org/previews/414/414209_5121236-lq.mp3",
           volume: 60,
           muted: false,
           solo: false,
@@ -197,7 +196,7 @@ export default {
         },
         {
           name: "Cafe Ambience",
-          src: "https://cdn.freesound.org/previews/341/341695_5858296-lq.mp3",
+          src: "https://cdn.pixabay.com/audio/2025/07/23/audio_63d9f37e74.mp3",
           volume: 45,
           muted: false,
           solo: false,
@@ -208,7 +207,7 @@ export default {
         },
         {
           name: "Soft Pad",
-          src: "https://cdn.freesound.org/previews/431/431117_1648170-lq.mp3",
+          src: "https://cdn.pixabay.com/audio/2025/07/23/audio_63d9f37e74.mp3",
           volume: 35,
           muted: false,
           solo: false,
@@ -224,6 +223,8 @@ export default {
       videoMuted: false,
       videoLoop: true,
       videoVolume: 100,
+      videoGainNode: null,
+      videoSourceNode: null,
 
       // Web Audio
       audioCtx: null,
@@ -239,7 +240,6 @@ export default {
     // Wait for user to press Enable Audio (toggleAudioContext).
   },
   beforeDestroy() {
-    // Clean up media & audio graph
     try {
       this.tracks.forEach((t) => {
         if (t._el) {
@@ -258,6 +258,16 @@ export default {
           } catch (e) {}
         }
       });
+      if (this.videoSourceNode) {
+        try {
+          this.videoSourceNode.disconnect();
+        } catch (e) {}
+      }
+      if (this.videoGainNode) {
+        try {
+          this.videoGainNode.disconnect();
+        } catch (e) {}
+      }
       if (this.masterGainNode) {
         try {
           this.masterGainNode.disconnect();
@@ -292,16 +302,38 @@ export default {
       this.videoMuted = !this.videoMuted;
       const video = this.$refs.video;
       if (video) video.muted = this.videoMuted;
+
+      if (this.videoGainNode) {
+        this.videoGainNode.gain.value = this.videoMuted
+          ? 0
+          : this.videoVolume / 100;
+      }
     },
     applyVideoVolume() {
-      const video = this.$refs.video;
-      if (video) video.volume = this.videoVolume / 100;
+      if (this.videoGainNode) {
+        const value = this.videoVolume / 100;
+        try {
+          this.videoGainNode.gain.cancelScheduledValues(
+            this.audioCtx.currentTime
+          );
+          this.videoGainNode.gain.linearRampToValueAtTime(
+            value,
+            this.audioCtx.currentTime + 0.05
+          );
+        } catch (e) {
+          this.videoGainNode.gain.value = value;
+        }
+      } else {
+        // fallback for when audioCtx not yet enabled
+        const video = this.$refs.video;
+        if (video) video.volume = this.videoVolume / 100;
+      }
     },
 
     // --- Audio Context lifecycle ---
     toggleAudioContext() {
       if (this.audioReady) return;
-      // Lazily create audio context on user gesture
+
       const AC = window.AudioContext || window.webkitAudioContext;
       this.audioCtx = new AC();
 
@@ -314,29 +346,35 @@ export default {
       // Build nodes for each track
       this.tracks.forEach((track) => this._setupTrack(track));
 
+      // Setup video audio routing
+      const video = this.$refs.video;
+      if (video) {
+        this.videoSourceNode = this.audioCtx.createMediaElementSource(video);
+        this.videoGainNode = this.audioCtx.createGain();
+        this.videoSourceNode.connect(this.videoGainNode);
+        this.videoGainNode.connect(this.masterGainNode);
+        this.applyVideoVolume();
+      }
+
       this.audioReady = true;
     },
     _setupTrack(track) {
-      // Use HTMLAudioElement with MediaElementSource for robust streaming & caching
       const el = new Audio();
       el.src = track.src;
       el.loop = true;
-      el.crossOrigin = "anonymous"; // needed if using remote files with CORS
+      el.crossOrigin = "anonymous";
       el.preload = "auto";
 
       const source = this.audioCtx.createMediaElementSource(el);
       const gain = this.audioCtx.createGain();
 
-      // Connect graph: el -> gain -> master -> destination
       source.connect(gain);
       gain.connect(this.masterGainNode);
 
-      // Persist refs
       track._el = el;
       track._gain = gain;
       track._node = source;
 
-      // Apply initial state
       this.applyTrackGain(track);
       this.applyTrackMute(track);
     },
@@ -351,7 +389,6 @@ export default {
         });
         this.mixerPlaying = false;
       } else {
-        // Respect Solo state
         const anySolo = this.tracks.some((t) => t.solo);
         this.tracks.forEach((t) => {
           const shouldPlay = anySolo ? t.solo : true;
@@ -376,7 +413,7 @@ export default {
     },
     applyMasterGain() {
       if (!this.masterGainNode) return;
-      if (this.masterMute) return; // muted overrides slider
+      if (this.masterMute) return;
       this.masterGainNode.gain.value = this.masterVolume / 100;
     },
     applyMasterMute() {
@@ -388,7 +425,6 @@ export default {
     applyTrackGain(track) {
       if (!track._gain) return;
       const value = (track.volume || 0) / 100;
-      // Smooth changes
       try {
         track._gain.gain.cancelScheduledValues(this.audioCtx.currentTime);
         track._gain.gain.linearRampToValueAtTime(
