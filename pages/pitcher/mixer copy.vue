@@ -9,7 +9,7 @@
                 Video + Background Audio Mixer v.2.3
               </h1>
               <div class="subtitle-2 grey--text">
-                Replace the media URLs below with your own. Tap "Enable Audio"
+                Replace the media URLs below with your own. Tap “Enable Audio”
                 on iOS to start the mixer.
               </div>
             </v-col>
@@ -33,66 +33,8 @@
             </v-col>
           </v-row>
 
-          <!-- TIMER SECTION -->
-          <v-card class="mt-6" outlined>
-            <v-card-title class="text-subtitle-1 font-weight-bold">
-              Timer
-            </v-card-title>
-            <v-card-text>
-              <v-row align="center">
-                <v-col cols="12" sm="6" md="4">
-                  <v-select
-                    v-model="selectedTimerDuration"
-                    :items="timerOptions"
-                    label="Set Timer"
-                    outlined
-                    dense
-                  ></v-select>
-                </v-col>
-                <v-col cols="12" sm="6" md="4" class="text-center">
-                  <div class="text-h4">{{ formattedTime }}</div>
-                </v-col>
-                <v-col
-                  cols="12"
-                  sm="12"
-                  md="4"
-                  class="text-center text-md-right"
-                >
-                  <v-btn
-                    color="primary"
-                    class="mr-2"
-                    @click="startTimer"
-                    :disabled="!selectedTimerDuration || timerRunning"
-                  >
-                    Start
-                  </v-btn>
-                  <v-btn
-                    color="error"
-                    @click="stopTimer"
-                    :disabled="!timerRunning"
-                  >
-                    Stop
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-
           <!-- VIDEO PLAYER -->
           <v-card class="mt-6" outlined>
-            <div v-if="!videoLoaded" class="pa-2">
-              <v-progress-linear
-                :value="videoLoading"
-                color="primary"
-                height="6"
-                striped
-                rounded
-              >
-                <template v-slot:default>
-                  <strong>{{ videoLoading }}%</strong>
-                </template>
-              </v-progress-linear>
-            </div>
             <v-responsive>
               <video
                 ref="video"
@@ -103,8 +45,6 @@
                 :loop="videoLoop"
                 :muted="videoMuted"
                 @loadedmetadata="onVideoLoaded"
-                @progress="onVideoProgress"
-                @canplaythrough="onVideoCanPlay"
               ></video>
             </v-responsive>
             <v-divider></v-divider>
@@ -220,8 +160,8 @@
                   • Replace <code>videoSrc</code> and each track
                   <code>src</code> with your files. For remote files, ensure
                   CORS allows <code>MediaElementSource</code>.<br />
-                  • iOS requires a user gesture to start audio — press "Enable
-                  Audio" first.
+                  • iOS requires a user gesture to start audio — press “Enable
+                  Audio” first.
                 </div>
               </v-alert>
             </v-card-text>
@@ -239,8 +179,7 @@ export default {
     return {
       // Replace with your own assets
       videoSrc: "/videos/relax/relax_crop_min2.mp4",
-      videoLoading: 0, // percent 0–100
-      videoLoaded: false, // flag when ready to play
+
       // Initial tracks (replace URLs)
       tracks: [
         {
@@ -292,28 +231,7 @@ export default {
       masterMute: false,
       audioReady: false,
       mixerPlaying: false,
-
-      // Timer functionality
-      selectedTimerDuration: null,
-      timerOptions: [
-        { text: "1 minute", value: 1 },
-        { text: "3 minutes", value: 3 },
-        { text: "5 minutes", value: 5 },
-        { text: "10 minutes", value: 10 },
-      ],
-      timerRunning: false,
-      timeRemaining: 0,
-      timerInterval: null,
     };
-  },
-  computed: {
-    formattedTime() {
-      const minutes = Math.floor(this.timeRemaining / 60);
-      const seconds = this.timeRemaining % 60;
-      return `${minutes.toString().padStart(2, "0")}:${seconds
-        .toString()
-        .padStart(2, "0")}`;
-    },
   },
   mounted() {
     // Do not auto-create AudioContext to avoid iOS autoplay restrictions.
@@ -352,94 +270,8 @@ export default {
     } catch (e) {
       // ignore
     }
-
-    // Clear timer interval
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-    }
   },
   methods: {
-    onVideoLoaded() {
-      this.applyVideoVolume();
-    },
-    onVideoProgress() {
-      const video = this.$refs.video;
-      if (!video || !video.duration) return;
-
-      try {
-        const buffered = video.buffered;
-        if (buffered.length) {
-          const end = buffered.end(buffered.length - 1);
-          this.videoLoading = Math.min(
-            Math.round((end / video.duration) * 100),
-            100
-          );
-        }
-      } catch (e) {
-        this.videoLoading = 0;
-      }
-    },
-    onVideoCanPlay() {
-      this.videoLoaded = true;
-      this.videoLoading = 100;
-    },
-    // --- Timer Methods ---
-    startTimer() {
-      if (!this.selectedTimerDuration) return;
-
-      this.timeRemaining = this.selectedTimerDuration * 60;
-      this.timerRunning = true;
-
-      // Clear any existing interval
-      if (this.timerInterval) {
-        clearInterval(this.timerInterval);
-      }
-
-      // Set up new interval
-      this.timerInterval = setInterval(() => {
-        this.timeRemaining--;
-
-        if (this.timeRemaining <= 0) {
-          this.timerFinished();
-        }
-      }, 1000);
-    },
-
-    stopTimer() {
-      this.timerRunning = false;
-      if (this.timerInterval) {
-        clearInterval(this.timerInterval);
-        this.timerInterval = null;
-      }
-      this.timeRemaining = 0;
-    },
-
-    timerFinished() {
-      // Stop the timer
-      this.stopTimer();
-
-      // Pause video
-      if (this.$refs.video && !this.$refs.video.paused) {
-        this.$refs.video.pause();
-        this.videoPlaying = false;
-      }
-
-      // Pause all audio tracks
-      this.tracks.forEach((track) => {
-        if (track._el && !track._el.paused) {
-          track._el.pause();
-          track.playing = false;
-        }
-      });
-
-      // Show notification
-      this.$notify({
-        title: "Timer Finished",
-        text: "Video and audio have been paused.",
-        type: "success",
-      });
-    },
-
     // --- Video ---
     onVideoLoaded() {
       this.applyVideoVolume();
@@ -591,8 +423,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.text-h4 {
-  font-family: monospace;
-}
-</style>
+<style scoped></style>
