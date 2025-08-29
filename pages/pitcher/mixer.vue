@@ -6,7 +6,7 @@
           <v-row align="center" no-gutters>
             <v-col>
               <h1 class="text-h5 font-weight-bold mb-2">
-                Video + Background Audio Mixer v.2.3
+                Video + Background Audio Mixer v.2.4
               </h1>
               <div class="subtitle-2 grey--text">
                 Replace the media URLs below with your own. Tap "Enable Audio"
