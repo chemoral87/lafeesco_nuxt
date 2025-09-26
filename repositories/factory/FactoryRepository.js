@@ -13,6 +13,7 @@ import TemplateGeneratorRepository from "../TemplateGeneratorRepository";
 import MinistryLeaderRepository from "../MinistryLeaderRepository";
 import UserRepository from "../UserRepository";
 import ProfileRepository from "../ProfileRepository";
+import ExerciseRepository from "../ExerciseRepository";
 // import SkyRegistrationRepository from '../SkyRegistrationRepository'
 const repositories = {
   Role: { repo: CommonRepository, path: "/roles" },
@@ -62,7 +63,7 @@ const repositories = {
   },
   SkyRegistration: { repo: CommonRepository, path: "/sky-registration" },
   SkyRoom: { repo: CommonRepository, path: "/sky-room" },
-  // ForgotPasswordRepository: { repo: ForgotPasswordRepository, path: '/forgot-password' }
+  Exercise: { repo: ExerciseRepository, path: "/exercises" },
 };
 
 export default ($axios) => {
